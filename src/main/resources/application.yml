@@ -1,0 +1,15 @@
+server:
+  port: 8787
+
+
+spring:
+  application:
+    name: @artifactId@
+  banner:
+    location: banner.txt
+config:
+  webhooks:
+    - id: finance
+      type: GITLAB
+      handler-type: NOTIFY_DING_TALK
+
