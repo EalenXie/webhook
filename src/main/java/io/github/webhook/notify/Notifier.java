@@ -8,8 +8,13 @@ import io.github.webhook.meta.Webhook;
 public interface Notifier {
 
 
+    /**
+     * 消息通知
+     *
+     * @param webhook webhook信息
+     * @param message 通知消息
+     */
     void notify(Webhook webhook, NotifyMessage message);
-
 
 
 }

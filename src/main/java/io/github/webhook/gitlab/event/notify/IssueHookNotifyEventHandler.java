@@ -1,31 +1,26 @@
-package io.github.webhook.gitlab;
+package io.github.webhook.gitlab.event.notify;
 
+import io.github.webhook.gitlab.event.IssueEventHandler;
 import io.github.webhook.gitlab.vo.Project;
 import io.github.webhook.gitlab.vo.User;
 import io.github.webhook.gitlab.vo.issue.IssueHook;
 import io.github.webhook.meta.Webhook;
-import io.github.webhook.notify.MessageGenerator;
-import io.github.webhook.notify.Notifier;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-@Component
-public class IssueHookNotifyEventHandler implements MessageGenerator<IssueHook>, IssueEventHandler {
+public class IssueHookNotifyEventHandler extends GitlabNotifyEventHandler<IssueHook> implements IssueEventHandler {
 
-    @Resource
-    private NotifierFactory notifierFactory;
+    public IssueHookNotifyEventHandler(NotifierFactory notifierFactory) {
+        super(notifierFactory);
+    }
 
     @Override
-    public void handleEvent(Webhook webhook, IssueHook data) {
-        NotifyMessage generate = generate(data);
-        Notifier notifier = notifierFactory.getNotifier(webhook);
-        notifier.notify(webhook, generate);
+    protected boolean shouldNotify(Webhook webhook, IssueHook data) {
+        String issueAction = data.getObjectAttributes().getAction();
+        return !"update".equals(issueAction);
     }
 
     @Override
@@ -53,17 +48,6 @@ public class IssueHookNotifyEventHandler implements MessageGenerator<IssueHook>,
         sb.append(String.format("<font color='#000000'>The Issue [%s] %s%s by [%s](%s) </font> %n>%s", issue, objectAttributes.getState(), statusEmoji, user.getUsername(), getUserHomePage(project.getWebUrl(), user.getUsername()), objectAttributes.getDescription()));
         message.setMessage(sb.toString());
         return message;
-    }
-
-    static String getUserHomePage(String projectUrl, String username) {
-        return String.format("%s/%s", getHostSchema(projectUrl), username);
-    }
-
-    static String getHostSchema(String projectUrl) {
-        String schema = projectUrl.substring(0, projectUrl.indexOf("//"));
-        String body = projectUrl.substring(projectUrl.indexOf("//") + 2);
-        String host = body.substring(0, body.indexOf("/"));
-        return schema + host;
     }
 
 

@@ -14,14 +14,12 @@ public class Webhook {
      */
     private String id;
     /**
-     * webhook 类型
+     * webhook 类型 会根据类型处理不同的事件类型
      */
     private WebhookType type;
-
     /**
-     * webhook 处理器类型
+     * 通知 配置
      */
-    private HandlerType handlerType;
-
+    private NotifyConfig notify;
 
 }

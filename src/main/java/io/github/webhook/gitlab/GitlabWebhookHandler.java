@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.webhook.core.EventHandler;
 import io.github.webhook.core.WebhookHandler;
+import io.github.webhook.gitlab.event.GitlabEventFactory;
 import io.github.webhook.meta.Webhook;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author EalenXie created on 2023/4/14 12:39
@@ -29,10 +31,12 @@ public class GitlabWebhookHandler implements WebhookHandler<Void> {
         assert attributes != null;
         HttpServletRequest request = attributes.getRequest();
         String event = request.getHeader("X-Gitlab-Event");
-        // 获取事件处理器
-        EventHandler<Object> eventHandler = gitlabEventFactory.getEventHandler(event, webhook.getHandlerType().name());
-        // 处理事件
-        eventHandler.handleEvent(webhook, objectMapper.convertValue(params, eventHandler.getDataType()));
+        // 针对某一事件可能有多个事件处理器
+        List<EventHandler<Object>> handlers = gitlabEventFactory.getEventHandlers(event, webhook);
+        for (EventHandler<Object> handler : handlers) {
+            // 处理事件
+            handler.handleEvent(webhook, objectMapper.convertValue(params, handler.getDataType()));
+        }
         return null;
     }
 

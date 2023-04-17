@@ -1,5 +1,7 @@
 package io.github.webhook.notify.dingtalk;
 
+import io.github.webhook.meta.DingTalkConf;
+import io.github.webhook.meta.NotifyConfig;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.Notifier;
 import io.github.webhook.notify.NotifyMessage;
@@ -72,10 +74,9 @@ public class DingTalkNotifier implements Notifier {
         sb.append(message.getMessage());
         Markdown markdown = new Markdown(message.getTitle(), sb.toString());
         markdownMessage.setMarkdown(markdown);
-
-        // TODO
-        sendMessage("", "", markdownMessage);
-
+        NotifyConfig notify = webhook.getNotify();
+        DingTalkConf dingTalk = notify.getDingTalk();
+        sendMessage(dingTalk.getAccessToken(), dingTalk.getSignKey(), markdownMessage);
     }
 
     public void sendMessage(String accessToken, String signKey, MarkdownMessage message) {

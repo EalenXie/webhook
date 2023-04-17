@@ -12,7 +12,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class MergeRequestHook  {
+public class MergeRequestHook {
     @JsonProperty("object_kind")
     private String objectKind;
     @JsonProperty("event_type")

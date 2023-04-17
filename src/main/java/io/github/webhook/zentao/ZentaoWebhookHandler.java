@@ -9,11 +9,6 @@ import io.github.webhook.meta.Webhook;
  */
 public class ZentaoWebhookHandler implements WebhookHandler<Void> {
 
-
-
-
-
-
     @Override
     public Void handleWebhook(Webhook webhook, JsonNode params) {
         return null;

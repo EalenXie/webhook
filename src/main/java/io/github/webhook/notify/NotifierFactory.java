@@ -1,26 +1,24 @@
 package io.github.webhook.notify;
 
-import io.github.webhook.meta.HandlerType;
+import io.github.webhook.meta.NotifyConfig;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.dingtalk.DingTalkNotifier;
+import io.github.webhook.notify.feishu.FeiShuNotifier;
 import io.github.webhook.notify.wechat.CorpWechatNotifier;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * @author EalenXie created on 2023/4/14 16:37
  */
-@Component
 public class NotifierFactory implements ApplicationContextAware {
-
-    private final Map<String, Notifier> notifies = new HashMap<>();
-
+    private final Map<String, List<Notifier>> webhookNotifies = new HashMap<>();
     private ApplicationContext applicationContext;
 
     @Override
@@ -28,24 +26,28 @@ public class NotifierFactory implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-
-    @PostConstruct
-    public void init() {
-        notifies.put("_DING_TALK", getNotifier(DingTalkNotifier.class));
-        notifies.put("_CORP_WECHAT", getNotifier(CorpWechatNotifier.class));
-    }
-
     private Notifier getNotifier(Class<? extends Notifier> clz) {
         return applicationContext.getBean(clz);
     }
 
-    public Notifier getNotifier(Webhook webhook) {
-        HandlerType handlerType = webhook.getHandlerType();
-        String name = handlerType.name();
-        String regex = "_";
-        String notifierKey = name.contains(regex) ? name.split(regex, 2)[1] : name;
-        return notifies.get(notifierKey);
-    }
 
+    public List<Notifier> getNotifies(Webhook webhook) {
+        List<Notifier> notifiers = webhookNotifies.get(webhook.getId());
+        if (notifiers == null) {
+            notifiers = new ArrayList<>();
+            NotifyConfig notify = webhook.getNotify();
+            if (notify.getDingTalk() != null) {
+                notifiers.add(getNotifier(DingTalkNotifier.class));
+            }
+            if (notify.getWeChat() != null) {
+                notifiers.add(getNotifier(CorpWechatNotifier.class));
+            }
+            if (notify.getFeiShu() != null) {
+                notifiers.add(getNotifier(FeiShuNotifier.class));
+            }
+            webhookNotifies.put(webhook.getId(), notifiers);
+        }
+        return notifiers;
+    }
 
 }

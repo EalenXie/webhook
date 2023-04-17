@@ -1,4 +1,4 @@
-package io.github.webhook.gitlab;
+package io.github.webhook.gitlab.event;
 
 import io.github.webhook.core.EventHandler;
 import io.github.webhook.gitlab.vo.note.NoteHook;

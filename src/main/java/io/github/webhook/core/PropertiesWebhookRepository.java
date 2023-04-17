@@ -21,6 +21,7 @@ public class PropertiesWebhookRepository implements WebhookRepository {
             webhooks.put(webhook.getId(), webhook);
         }
     }
+
     @Override
     public List<Webhook> getWebhooks() {
         return properties.getWebhooks();

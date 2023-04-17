@@ -9,8 +9,10 @@ import io.github.webhook.meta.Webhook;
 public interface EventHandler<D> {
 
 
+    /**
+     * 事件数据类型
+     */
     Class<D> getDataType();
-
 
     /**
      * 处理请求事件

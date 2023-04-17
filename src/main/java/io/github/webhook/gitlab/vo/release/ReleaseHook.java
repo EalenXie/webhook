@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class ReleaseHook   {
+public class ReleaseHook {
 
     private String id;
     @JsonProperty("created_at")

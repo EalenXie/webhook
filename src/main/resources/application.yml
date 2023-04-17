@@ -11,5 +11,8 @@ config:
   webhooks:
     - id: finance
       type: GITLAB
-      handler-type: NOTIFY_DING_TALK
+      notify:
+        ding-talk:
+          access-token: "93a93799cde9a3ab3a8c871ec45455b7856c790a41646f655ae0d4eb9872883c"
+          sign-key: "SECcd68c6b173cca046231c48739c6141a891c92644e1b1c2e67c82fe811656bdd0"
 

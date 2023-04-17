@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class PushHook   {
+public class PushHook {
     @JsonProperty("object_kind")
     private String objectKind;
     @JsonProperty("event_name")
