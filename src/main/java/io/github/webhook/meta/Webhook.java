@@ -20,6 +20,9 @@ public class Webhook {
     /**
      * 通知 配置
      */
-    private NotifyConfig notify;
-
+    private NotifyConf notify;
+    /**
+     * webhook 配置
+     */
+    private WebhookConf conf;
 }

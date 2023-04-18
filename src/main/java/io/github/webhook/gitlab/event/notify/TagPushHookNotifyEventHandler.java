@@ -1,8 +1,8 @@
 package io.github.webhook.gitlab.event.notify;
 
 import io.github.webhook.gitlab.event.TagPushEventHandler;
-import io.github.webhook.gitlab.vo.Project;
-import io.github.webhook.gitlab.vo.tag.TagPushHook;
+import io.github.webhook.gitlab.webhook.Project;
+import io.github.webhook.gitlab.webhook.tag.TagPushHook;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
@@ -24,7 +24,7 @@ public class TagPushHookNotifyEventHandler extends GitlabNotifyEventHandler<TagP
     }
 
     @Override
-    public NotifyMessage generate(TagPushHook tagPushHook) {
+    public NotifyMessage generate(Webhook webhook, TagPushHook tagPushHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(tagPushHook.getObjectKind());
         // TODO

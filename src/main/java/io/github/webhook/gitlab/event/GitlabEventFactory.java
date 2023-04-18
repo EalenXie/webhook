@@ -1,11 +1,12 @@
 package io.github.webhook.gitlab.event;
 
 import io.github.webhook.core.EventHandler;
-import io.github.webhook.meta.NotifyConfig;
+import io.github.webhook.meta.NotifyConf;
 import io.github.webhook.meta.Webhook;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,11 +38,11 @@ public class GitlabEventFactory implements ApplicationContextAware {
         if (eventHandlers == null) {
             eventHandlers = new ArrayList<>();
             String hookName = gitlabEvent.replace(" ", "");
-            NotifyConfig notify = webhook.getNotify();
+            NotifyConf notify = webhook.getNotify();
             if (notify != null) {
                 String beanName = String.format("%sNotifyEventHandler", hookName);
-                eventHandlers.add((EventHandler<Object>) applicationContext.getBean(beanName));
                 try {
+                    eventHandlers.add((EventHandler<Object>) applicationContext.getBean(capitalize(beanName)));
                     handlers.put(gitlabEvent, eventHandlers);
                 } catch (BeansException e) {
                     throw new UnsupportedOperationException(String.format("Can not get EventHandler[%s]", beanName));
@@ -49,5 +50,20 @@ public class GitlabEventFactory implements ApplicationContextAware {
             }
         }
         return eventHandlers;
+    }
+
+    /**
+     * 将字符串的首字母转换为小写
+     *
+     * @param str 需要转换的字符串
+     * @return 转换后的字符串
+     */
+    public static String capitalize(String str) {
+        if (ObjectUtils.isEmpty(str)) {
+            return str;
+        }
+        char[] charArray = str.toCharArray();
+        charArray[0] = Character.toLowerCase(charArray[0]);
+        return new String(charArray);
     }
 }

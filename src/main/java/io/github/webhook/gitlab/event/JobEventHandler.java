@@ -1,7 +1,7 @@
 package io.github.webhook.gitlab.event;
 
 import io.github.webhook.core.EventHandler;
-import io.github.webhook.gitlab.vo.job.JobHook;
+import io.github.webhook.gitlab.webhook.job.JobHook;
 
 /**
  * @author EalenXie created on 2023/4/14 12:53

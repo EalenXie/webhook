@@ -1,9 +1,9 @@
 package io.github.webhook.gitlab.event.notify;
 
 import io.github.webhook.gitlab.event.PushEventHandler;
-import io.github.webhook.gitlab.vo.Commit;
-import io.github.webhook.gitlab.vo.Project;
-import io.github.webhook.gitlab.vo.push.PushHook;
+import io.github.webhook.gitlab.webhook.Commit;
+import io.github.webhook.gitlab.webhook.Project;
+import io.github.webhook.gitlab.webhook.push.PushHook;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
@@ -27,7 +27,7 @@ public class PushHookNotifyEventHandler extends GitlabNotifyEventHandler<PushHoo
     }
 
     @Override
-    public NotifyMessage generate(PushHook pushHook) {
+    public NotifyMessage generate(Webhook webhook, PushHook pushHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(pushHook.getObjectKind());
         // TODO

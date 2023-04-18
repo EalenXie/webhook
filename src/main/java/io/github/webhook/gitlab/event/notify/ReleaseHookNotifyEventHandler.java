@@ -1,8 +1,8 @@
 package io.github.webhook.gitlab.event.notify;
 
 import io.github.webhook.gitlab.event.ReleaseEventHandler;
-import io.github.webhook.gitlab.vo.Project;
-import io.github.webhook.gitlab.vo.release.ReleaseHook;
+import io.github.webhook.gitlab.webhook.Project;
+import io.github.webhook.gitlab.webhook.release.ReleaseHook;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
@@ -24,7 +24,7 @@ public class ReleaseHookNotifyEventHandler extends GitlabNotifyEventHandler<Rele
     }
 
     @Override
-    public NotifyMessage generate(ReleaseHook releaseHook) {
+    public NotifyMessage generate(Webhook webhook, ReleaseHook releaseHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(releaseHook.getObjectKind());
         // TODO

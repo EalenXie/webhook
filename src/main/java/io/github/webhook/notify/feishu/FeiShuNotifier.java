@@ -1,7 +1,7 @@
 package io.github.webhook.notify.feishu;
 
 import io.github.webhook.meta.FeiShuConf;
-import io.github.webhook.meta.NotifyConfig;
+import io.github.webhook.meta.NotifyConf;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.Notifier;
 import io.github.webhook.notify.NotifyMessage;
@@ -39,7 +39,7 @@ public class FeiShuNotifier implements Notifier {
         MarkdownElement markdownElement = new MarkdownElement(message.getMessage());
         interactive.setElements(Collections.singletonList(markdownElement));
         InteractiveMessage interactiveMessage = new InteractiveMessage(interactive);
-        NotifyConfig notify = webhook.getNotify();
+        NotifyConf notify = webhook.getNotify();
         FeiShuConf feiShu = notify.getFeiShu();
         sendMessage(feiShu.getUrl(), feiShu.getSignKey(), interactiveMessage);
 

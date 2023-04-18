@@ -27,7 +27,7 @@ public abstract class NotifyEventHandler<D> implements NotifyMessageGenerator<D>
     @Override
     public void handleEvent(Webhook webhook, D data) {
         if (shouldNotify(webhook, data)) {
-            NotifyMessage message = generate(data);
+            NotifyMessage message = generate(webhook, data);
             // 根据webhook 获取 Notifier
             List<Notifier> notifiers = notifierFactory.getNotifies(webhook);
             for (Notifier notifier : notifiers) {

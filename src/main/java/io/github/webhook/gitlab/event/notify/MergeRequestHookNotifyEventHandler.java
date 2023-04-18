@@ -1,9 +1,9 @@
 package io.github.webhook.gitlab.event.notify;
 
 import io.github.webhook.gitlab.event.MergeRequestEventHandler;
-import io.github.webhook.gitlab.vo.Project;
-import io.github.webhook.gitlab.vo.User;
-import io.github.webhook.gitlab.vo.mergerequest.MergeRequestHook;
+import io.github.webhook.gitlab.webhook.Project;
+import io.github.webhook.gitlab.webhook.User;
+import io.github.webhook.gitlab.webhook.mergerequest.MergeRequestHook;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
@@ -25,7 +25,7 @@ public class MergeRequestHookNotifyEventHandler extends GitlabNotifyEventHandler
     }
 
     @Override
-    public NotifyMessage generate(MergeRequestHook mergeRequestHook) {
+    public NotifyMessage generate(Webhook webhook, MergeRequestHook mergeRequestHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(mergeRequestHook.getObjectKind());
         // TODO

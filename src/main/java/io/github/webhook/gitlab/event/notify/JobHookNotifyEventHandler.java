@@ -1,8 +1,9 @@
 package io.github.webhook.gitlab.event.notify;
 
 import io.github.webhook.gitlab.event.JobEventHandler;
-import io.github.webhook.gitlab.vo.Repository;
-import io.github.webhook.gitlab.vo.job.JobHook;
+import io.github.webhook.gitlab.webhook.Repository;
+import io.github.webhook.gitlab.webhook.job.JobHook;
+import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
 
@@ -18,7 +19,7 @@ public class JobHookNotifyEventHandler extends GitlabNotifyEventHandler<JobHook>
     }
 
     @Override
-    public NotifyMessage generate(JobHook jobHook) {
+    public NotifyMessage generate(Webhook webhook, JobHook jobHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(jobHook.getObjectKind());
         // TODO

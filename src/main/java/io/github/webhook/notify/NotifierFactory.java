@@ -1,6 +1,6 @@
 package io.github.webhook.notify;
 
-import io.github.webhook.meta.NotifyConfig;
+import io.github.webhook.meta.NotifyConf;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.dingtalk.DingTalkNotifier;
 import io.github.webhook.notify.feishu.FeiShuNotifier;
@@ -35,11 +35,11 @@ public class NotifierFactory implements ApplicationContextAware {
         List<Notifier> notifiers = webhookNotifies.get(webhook.getId());
         if (notifiers == null) {
             notifiers = new ArrayList<>();
-            NotifyConfig notify = webhook.getNotify();
+            NotifyConf notify = webhook.getNotify();
             if (notify.getDingTalk() != null) {
                 notifiers.add(getNotifier(DingTalkNotifier.class));
             }
-            if (notify.getWeChat() != null) {
+            if (notify.getWechat() != null) {
                 notifiers.add(getNotifier(CorpWechatNotifier.class));
             }
             if (notify.getFeiShu() != null) {
