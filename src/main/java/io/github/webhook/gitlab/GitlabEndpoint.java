@@ -6,6 +6,7 @@ import io.github.webhook.gitlab.rest.GitlabRestClient;
 import io.github.webhook.gitlab.rest.GitlabRestClientFactory;
 import io.github.webhook.gitlab.rest.vo.CancelPipeline;
 import io.github.webhook.meta.Webhook;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
 /**
  * @author EalenXie created on 2023/4/18 14:54
  */
+@Slf4j
 @Controller
 public class GitlabEndpoint {
     @Resource
@@ -49,7 +51,7 @@ public class GitlabEndpoint {
                     }
                     return String.format("redirect:%s", webUrl);
                 } catch (Exception e) {
-                    System.out.println(e);
+                    log.warn(e.getMessage());
                     // ig
                 }
             }

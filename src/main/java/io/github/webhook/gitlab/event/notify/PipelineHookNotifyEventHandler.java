@@ -29,7 +29,13 @@ public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<Pip
     }
 
     @Override
+    protected boolean shouldNotify(Webhook webhook, PipelineHook data) {
+        PipelineHook.ObjectAttributes objectAttributes = data.getObjectAttributes();
+        return objectAttributes != null && !"pending".equals(objectAttributes.getStatus());
+    }
+
     @SuppressWarnings("all")
+    @Override
     public NotifyMessage generate(Webhook webhook, PipelineHook pipelineHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(pipelineHook.getObjectKind());

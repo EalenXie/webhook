@@ -3,6 +3,7 @@ package io.github.webhook.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.webhook.core.PropertiesWebhookRepository;
+import io.github.webhook.core.WebhookExecutor;
 import io.github.webhook.core.WebhookHandlerFactory;
 import io.github.webhook.core.WebhookRepository;
 import io.github.webhook.meta.WebhookProperties;
@@ -26,11 +27,27 @@ import java.util.List;
  * @author EalenXie created on 2023/4/14 17:55
  */
 @Configuration
-public class AutoConfig {
+public class GlobalAutoConfig {
 
     @Bean
     public WebhookHandlerFactory webhookHandlerFactory() {
         return new WebhookHandlerFactory();
+    }
+
+    @Bean
+    public WebhookExecutor webhookExecutor(WebhookHandlerFactory webhookHandlerFactory) {
+        return new WebhookExecutor(webhookHandlerFactory);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public WebhookRepository webhookRepository(WebhookProperties webhookProperties) {
+        return new PropertiesWebhookRepository(webhookProperties);
+    }
+
+    @Bean
+    public SpringEnvHelper springEnvHelper() {
+        return new SpringEnvHelper();
     }
 
     @Bean
@@ -70,19 +87,6 @@ public class AutoConfig {
         }
         restTemplate.setMessageConverters(converters);
         return restTemplate;
-    }
-
-
-    @Bean
-    @ConditionalOnMissingBean
-    public WebhookRepository webhookRepository(WebhookProperties webhookProperties) {
-        return new PropertiesWebhookRepository(webhookProperties);
-    }
-
-
-    @Bean
-    public SpringEnvHelper springEnvHelper() {
-        return new SpringEnvHelper();
     }
 
 
