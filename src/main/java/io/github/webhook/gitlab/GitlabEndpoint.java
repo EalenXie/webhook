@@ -22,14 +22,13 @@ import java.util.regex.Pattern;
 public class GitlabEndpoint {
     @Resource
     private WebhookRepository webhookRepository;
-
+    @Resource
+    private GitlabRestClientFactory gitlabRestClientFactory;
     public static final String ENDPOINT_URL = "/actuator/webhook";
     /**
      * 默认的404页面 😄
      */
     public static final String NOT_FOUND_URL = "https://github.com/EalenXie/webhook";
-    @Resource
-    private GitlabRestClientFactory gitlabRestClientFactory;
 
     private static final Pattern PATTERN = Pattern.compile("^cancel$|^delete$|^retry$");
 

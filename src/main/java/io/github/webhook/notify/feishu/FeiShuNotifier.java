@@ -69,9 +69,9 @@ public class FeiShuNotifier implements Notifier {
     public static String sign(long timestamp, String signKey) {
         String stringToSign = timestamp + "\n" + signKey;
         try {
-            final String ALGORITHM = "HmacSHA256";
-            Mac mac = Mac.getInstance(ALGORITHM);
-            mac.init(new SecretKeySpec(signKey.getBytes(StandardCharsets.UTF_8), ALGORITHM));
+            final String algorithm = "HmacSHA256";
+            Mac mac = Mac.getInstance(algorithm);
+            mac.init(new SecretKeySpec(signKey.getBytes(StandardCharsets.UTF_8), algorithm));
             byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
             return URLEncoder.encode(new String(Base64.encodeBase64(signData)), StandardCharsets.UTF_8.name());
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e) {
