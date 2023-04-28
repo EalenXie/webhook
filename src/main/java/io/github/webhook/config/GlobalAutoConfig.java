@@ -7,7 +7,6 @@ import io.github.webhook.core.WebhookExecutor;
 import io.github.webhook.core.WebhookHandlerFactory;
 import io.github.webhook.core.WebhookRepository;
 import io.github.webhook.meta.WebhookProperties;
-import io.github.webhook.zentao.ZentaoWebhookHandler;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -50,10 +49,6 @@ public class GlobalAutoConfig {
         return new SpringEnvHelper();
     }
 
-    @Bean
-    public ZentaoWebhookHandler zentaoWebhookHandler() {
-        return new ZentaoWebhookHandler();
-    }
 
     @Bean
     @ConditionalOnMissingBean
