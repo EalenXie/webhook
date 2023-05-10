@@ -37,8 +37,8 @@ public class PushHookNotifyEventHandler extends GitlabNotifyEventHandler<PushHoo
         String userUsername = pushHook.getUserUsername();
         Collections.sort(commits);
         StringBuilder sb = new StringBuilder();
-        String[] refSplit = pushHook.getRef().split("/");
-        String branch = refSplit[refSplit.length - 1];
+        String ref = pushHook.getRef();
+        String branch = ref.replace("refs/heads/", "");
         sb.append(String.format("[[%s:%s]](%s/-/tree/%s) ", project.getName(), branch, project.getWebUrl(), branch));
         String c = commits.size() > 1 ? "commits" : "commit";
         String user = userUsername == null ? pushHook.getUserName() : String.format("[%s](%s)", userUsername, getUserHomePage(project.getWebUrl(), userUsername));
