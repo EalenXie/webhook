@@ -25,11 +25,48 @@ import java.util.List;
 /**
  * @author EalenXie created on 2023/4/14 16:17
  */
-public class DingTalkNotifier implements Notifier {
+public class DingTalkNotifier implements Notifier<MarkdownMessage> {
     private final RestOperations restOperations;
 
     public DingTalkNotifier(RestOperations restOperations) {
         this.restOperations = restOperations;
+    }
+
+    @Override
+    public MarkdownMessage process(NotifyMessage message) {
+        MarkdownMessage markdownMessage = new MarkdownMessage();
+        StringBuilder sb = new StringBuilder();
+        if (!ObjectUtils.isEmpty(message.getNotifies())) {
+            List<String> notifies = message.getNotifies();
+            List<String> atMobiles = new ArrayList<>();
+            for (String notifier : notifies) {
+                if (!ObjectUtils.isEmpty(notifier) && PHONE_PATTERN.matcher(notifier).matches()) {
+                    sb.append("@").append(notifier);
+                    atMobiles.add(notifier);
+                }
+            }
+            if (sb.length() > 0) {
+                sb.append("\n\n");
+            }
+            DingRobotAt at = new DingRobotAt();
+            at.setAtMobiles(atMobiles);
+            markdownMessage.setAt(at);
+        }
+        sb.append(message.getMessage());
+        Markdown markdown = new Markdown(message.getTitle(), sb.toString());
+        markdownMessage.setMarkdown(markdown);
+        return markdownMessage;
+    }
+
+    @Override
+    public void notify(Webhook webhook, MarkdownMessage markdownMessage) {
+        NotifyConf notify = webhook.getNotify();
+        DingTalkConf dingTalk = notify.getDingTalk();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<MarkdownMessage> entity = new HttpEntity<>(markdownMessage, httpHeaders);
+        long timeStamp = System.currentTimeMillis();
+        restOperations.postForEntity(String.format("https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%s&sign=%s", dingTalk.getAccessToken(), timeStamp, sign(timeStamp, dingTalk.getSignKey())), entity, Object.class);
     }
 
     /**
@@ -49,41 +86,5 @@ public class DingTalkNotifier implements Notifier {
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e) {
             throw new UnsupportedOperationException(e);
         }
-    }
-
-    @Override
-    public void notify(Webhook webhook, NotifyMessage message) {
-        MarkdownMessage markdownMessage = new MarkdownMessage();
-        StringBuilder sb = new StringBuilder();
-        if (!ObjectUtils.isEmpty(message.getNotifies())) {
-            List<String> notifies = message.getNotifies();
-            List<String> atMobiles = new ArrayList<>();
-            for (String notifier : notifies) {
-                if (!ObjectUtils.isEmpty(notifier)) {
-                    sb.append("@").append(notifier);
-                    atMobiles.add(notifier);
-                }
-            }
-            if (sb.length() > 0) {
-                sb.append("\n\n");
-            }
-            DingRobotAt at = new DingRobotAt();
-            at.setAtMobiles(atMobiles);
-            markdownMessage.setAt(at);
-        }
-        sb.append(message.getMessage());
-        Markdown markdown = new Markdown(message.getTitle(), sb.toString());
-        markdownMessage.setMarkdown(markdown);
-        NotifyConf notify = webhook.getNotify();
-        DingTalkConf dingTalk = notify.getDingTalk();
-        sendMessage(dingTalk.getAccessToken(), dingTalk.getSignKey(), markdownMessage);
-    }
-
-    public void sendMessage(String accessToken, String signKey, MarkdownMessage message) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<MarkdownMessage> entity = new HttpEntity<>(message, httpHeaders);
-        long timeStamp = System.currentTimeMillis();
-        restOperations.postForEntity(String.format("https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%s&sign=%s", accessToken, timeStamp, sign(timeStamp, signKey)), entity, Object.class);
     }
 }

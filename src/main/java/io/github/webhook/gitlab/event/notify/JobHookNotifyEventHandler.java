@@ -7,6 +7,7 @@ import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
 
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -22,8 +23,7 @@ public class JobHookNotifyEventHandler extends GitlabNotifyEventHandler<JobHook>
     public NotifyMessage generate(Webhook webhook, JobHook jobHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(jobHook.getObjectKind());
-        // TODO
-        message.setNotifies(null);
+        message.setNotifies(Collections.singletonList(String.valueOf(jobHook.getUser().getId())));
         Repository repository = jobHook.getRepository();
         Long pipelineId = jobHook.getPipelineId();
         String buildStatus = jobHook.getBuildStatus();

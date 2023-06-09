@@ -8,6 +8,8 @@ import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
 
+import java.util.Collections;
+
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
@@ -27,8 +29,7 @@ public class IssueHookNotifyEventHandler extends GitlabNotifyEventHandler<IssueH
     public NotifyMessage generate(Webhook webhook, IssueHook issueHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(issueHook.getObjectKind());
-        // TODO
-        message.setNotifies(null);
+        message.setNotifies(Collections.singletonList(String.valueOf(issueHook.getUser().getId())));
         IssueHook.ObjectAttributes objectAttributes = issueHook.getObjectAttributes();
         Project project = issueHook.getProject();
         User user = issueHook.getUser();

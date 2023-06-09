@@ -1,6 +1,5 @@
 package io.github.webhook.notify;
 
-import io.github.webhook.meta.NotifyConf;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.dingtalk.DingTalkNotifier;
 import io.github.webhook.notify.feishu.FeiShuNotifier;
@@ -18,7 +17,7 @@ import java.util.Map;
  * @author EalenXie created on 2023/4/14 16:37
  */
 public class NotifierFactory implements ApplicationContextAware {
-    private final Map<String, List<Notifier>> webhookNotifies = new HashMap<>();
+    private final Map<String, List<Notifier<Object>>> webhookNotifies = new HashMap<>();
     private ApplicationContext applicationContext;
 
     @Override
@@ -26,24 +25,24 @@ public class NotifierFactory implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    private Notifier getNotifier(Class<? extends Notifier> clz) {
+    private Notifier<?> getNotifier(Class<? extends Notifier<?>> clz) {
         return applicationContext.getBean(clz);
     }
 
 
-    public List<Notifier> getNotifies(Webhook webhook) {
-        List<Notifier> notifiers = webhookNotifies.get(webhook.getId());
+    @SuppressWarnings("unchecked")
+    public List<Notifier<Object>> getNotifies(Webhook webhook) {
+        List<Notifier<Object>> notifiers = webhookNotifies.get(webhook.getId());
         if (notifiers == null) {
             notifiers = new ArrayList<>();
-            NotifyConf notify = webhook.getNotify();
-            if (notify.getDingTalk() != null) {
-                notifiers.add(getNotifier(DingTalkNotifier.class));
+            if (webhook.getNotify().getDingTalk() != null) {
+                notifiers.add((Notifier<Object>) getNotifier(DingTalkNotifier.class));
             }
-            if (notify.getWechat() != null) {
-                notifiers.add(getNotifier(CorpWechatNotifier.class));
+            if (webhook.getNotify().getWechat() != null) {
+                notifiers.add((Notifier<Object>) getNotifier(CorpWechatNotifier.class));
             }
-            if (notify.getFeiShu() != null) {
-                notifiers.add(getNotifier(FeiShuNotifier.class));
+            if (webhook.getNotify().getFeiShu() != null) {
+                notifiers.add((Notifier<Object>) getNotifier(FeiShuNotifier.class));
             }
             webhookNotifies.put(webhook.getId(), notifiers);
         }

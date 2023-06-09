@@ -27,7 +27,6 @@ public class ReleaseHookNotifyEventHandler extends GitlabNotifyEventHandler<Rele
     public NotifyMessage generate(Webhook webhook, ReleaseHook releaseHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(releaseHook.getObjectKind());
-        // TODO
         message.setNotifies(null);
         String tag = releaseHook.getTag();
         Project project = releaseHook.getProject();

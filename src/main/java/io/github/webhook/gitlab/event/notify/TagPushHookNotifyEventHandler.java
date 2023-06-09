@@ -7,6 +7,7 @@ import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
 
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -27,8 +28,7 @@ public class TagPushHookNotifyEventHandler extends GitlabNotifyEventHandler<TagP
     public NotifyMessage generate(Webhook webhook, TagPushHook tagPushHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(tagPushHook.getObjectKind());
-        // TODO
-        message.setNotifies(null);
+        message.setNotifies(Collections.singletonList(String.valueOf(tagPushHook.getUserId())));
         Project project = tagPushHook.getProject();
         String userUsername = tagPushHook.getUserUsername();
         String[] refSplit = tagPushHook.getRef().split("/");

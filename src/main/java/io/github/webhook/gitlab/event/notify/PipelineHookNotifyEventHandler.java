@@ -39,8 +39,7 @@ public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<Pip
     public NotifyMessage generate(Webhook webhook, PipelineHook pipelineHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(pipelineHook.getObjectKind());
-        // TODO
-        message.setNotifies(null);
+        message.setNotifies(Collections.singletonList(String.valueOf(pipelineHook.getUser().getId())));
         StringBuilder sb = new StringBuilder();
         PipelineHook.ObjectAttributes objectAttributes = pipelineHook.getObjectAttributes();
         Project project = pipelineHook.getProject();

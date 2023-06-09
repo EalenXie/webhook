@@ -23,7 +23,7 @@ import java.util.Collections;
 /**
  * @author EalenXie created on 2023/4/17 12:53
  */
-public class FeiShuNotifier implements Notifier {
+public class FeiShuNotifier implements Notifier<InteractiveMessage> {
 
     private final RestOperations restOperations;
 
@@ -32,20 +32,10 @@ public class FeiShuNotifier implements Notifier {
     }
 
     @Override
-    public void notify(Webhook webhook, NotifyMessage message) {
-        Interactive interactive = new Interactive();
-        interactive.setConfig(new Config(true, true));
-        interactive.setHeader(new Header(new Title(message.getTitle(), "plain_text")));
-        MarkdownElement markdownElement = new MarkdownElement(message.getMessage());
-        interactive.setElements(Collections.singletonList(markdownElement));
-        InteractiveMessage interactiveMessage = new InteractiveMessage(interactive);
+    public void notify(Webhook webhook, InteractiveMessage interactiveMessage) {
         NotifyConf notify = webhook.getNotify();
         FeiShuConf feiShu = notify.getFeiShu();
-        sendMessage(feiShu.getUrl(), feiShu.getSignKey(), interactiveMessage);
-
-    }
-
-    public void sendMessage(String url, String signKey, InteractiveMessage interactiveMessage) {
+        String signKey = feiShu.getSignKey();
         if (signKey != null && !"".equals(signKey.trim())) {
             long timestamp = System.currentTimeMillis();
             String sign = sign(timestamp, signKey);
@@ -55,9 +45,19 @@ public class FeiShuNotifier implements Notifier {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<InteractiveMessage> entity = new HttpEntity<>(interactiveMessage, httpHeaders);
-        restOperations.postForEntity(url, entity, Object.class);
+        restOperations.postForEntity(feiShu.getUrl(), entity, Object.class);
     }
 
+
+    @Override
+    public InteractiveMessage process(NotifyMessage message) {
+        Interactive interactive = new Interactive();
+        interactive.setConfig(new Config(true, true));
+        interactive.setHeader(new Header(new Title(message.getTitle(), "plain_text")));
+        MarkdownElement markdownElement = new MarkdownElement(message.getMessage());
+        interactive.setElements(Collections.singletonList(markdownElement));
+        return new InteractiveMessage(interactive);
+    }
 
     /**
      * 飞书接口签名

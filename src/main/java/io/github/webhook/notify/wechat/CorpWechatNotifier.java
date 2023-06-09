@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author EalenXie created on 2023/4/14 17:52
  */
-public class CorpWechatNotifier implements Notifier {
+public class CorpWechatNotifier implements Notifier<MarkdownMessage> {
 
     private final RestOperations restOperations;
 
@@ -26,16 +26,25 @@ public class CorpWechatNotifier implements Notifier {
     }
 
     @Override
-    public void notify(Webhook webhook, NotifyMessage message) {
+    public MarkdownMessage process(NotifyMessage message) {
         Markdown markdown = new Markdown();
         StringBuilder sb = new StringBuilder();
         if (!ObjectUtils.isEmpty(message.getNotifies())) {
-            List<String> atMobiles = new ArrayList<>(message.getNotifies());
+            List<String> atMobiles = new ArrayList<>();
+            for (String notifier : message.getNotifies()) {
+                if (!ObjectUtils.isEmpty(notifier) && PHONE_PATTERN.matcher(notifier).matches()) {
+                    atMobiles.add(notifier);
+                }
+            }
             markdown.setMentionedMobileList(atMobiles.toArray(new String[0]));
         }
         sb.append(message.getMessage());
         markdown.setContent(sb.toString());
-        MarkdownMessage markdownMessage = new MarkdownMessage(markdown);
+        return new MarkdownMessage(markdown);
+    }
+
+    @Override
+    public void notify(Webhook webhook, MarkdownMessage markdownMessage) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<MarkdownMessage> entity = new HttpEntity<>(markdownMessage, httpHeaders);

@@ -20,6 +20,12 @@ public abstract class NotifyEventHandler<D> implements NotifyMessageGenerator<D>
         this.notifierFactory = notifierFactory;
     }
 
+    /**
+     * 是否执行通知
+     *
+     * @param webhook webhook信息
+     * @param data    请求数据
+     */
     protected boolean shouldNotify(Webhook webhook, D data) {
         return true;
     }
@@ -29,10 +35,10 @@ public abstract class NotifyEventHandler<D> implements NotifyMessageGenerator<D>
         if (shouldNotify(webhook, data)) {
             NotifyMessage message = generate(webhook, data);
             // 根据webhook 获取 Notifier
-            List<Notifier> notifiers = notifierFactory.getNotifies(webhook);
-            for (Notifier notifier : notifiers) {
+            List<Notifier<Object>> notifies = notifierFactory.getNotifies(webhook);
+            for (Notifier<Object> notifier : notifies) {
                 // Notifier 发起通知
-                notifier.notify(webhook, message);
+                notifier.notify(webhook, notifier.process(message));
             }
         }
     }

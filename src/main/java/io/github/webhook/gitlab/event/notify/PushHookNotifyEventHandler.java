@@ -30,8 +30,7 @@ public class PushHookNotifyEventHandler extends GitlabNotifyEventHandler<PushHoo
     public NotifyMessage generate(Webhook webhook, PushHook pushHook) {
         NotifyMessage message = new NotifyMessage();
         message.setTitle(pushHook.getObjectKind());
-        // TODO
-        message.setNotifies(null);
+        message.setNotifies(Collections.singletonList(String.valueOf(pushHook.getUserId())));
         List<Commit> commits = pushHook.getCommits();
         Project project = pushHook.getProject();
         String userUsername = pushHook.getUserUsername();
