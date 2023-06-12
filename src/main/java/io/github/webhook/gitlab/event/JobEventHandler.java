@@ -6,7 +6,7 @@ import io.github.webhook.gitlab.webhook.job.JobHook;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public interface JobEventHandler extends EventHandler<JobHook> {
+public interface JobEventHandler extends EventHandler<JobHook, Object> {
     default Class<JobHook> getDataType() {
         return JobHook.class;
     }

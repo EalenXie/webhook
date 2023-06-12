@@ -6,7 +6,7 @@ import io.github.webhook.gitlab.webhook.mergerequest.MergeRequestHook;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public interface MergeRequestEventHandler extends EventHandler<MergeRequestHook> {
+public interface MergeRequestEventHandler extends EventHandler<MergeRequestHook, Object> {
     default Class<MergeRequestHook> getDataType() {
         return MergeRequestHook.class;
     }

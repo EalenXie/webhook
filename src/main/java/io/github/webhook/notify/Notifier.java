@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 /**
  * @author EalenXie created on 2023/4/14 13:57
  */
-public interface Notifier<M> {
+public interface Notifier<M, R> {
 
     /**
      * 手机号正则
@@ -28,8 +28,9 @@ public interface Notifier<M> {
      *
      * @param webhook webhook信息
      * @param message 请求消息对象
+     * @return 通知的处理返回对象
      */
-    void notify(Webhook webhook, M message);
+    R notify(Webhook webhook, M message);
 
 
 }

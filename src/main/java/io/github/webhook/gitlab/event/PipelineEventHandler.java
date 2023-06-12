@@ -6,7 +6,7 @@ import io.github.webhook.gitlab.webhook.pipeline.PipelineHook;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public interface PipelineEventHandler extends EventHandler<PipelineHook> {
+public interface PipelineEventHandler extends EventHandler<PipelineHook, Object> {
     default Class<PipelineHook> getDataType() {
         return PipelineHook.class;
     }

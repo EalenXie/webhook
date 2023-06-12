@@ -1,7 +1,6 @@
 package io.github.webhook.gitlab.event;
 
 import io.github.webhook.core.EventHandler;
-import io.github.webhook.meta.NotifyConf;
 import io.github.webhook.meta.Webhook;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +18,7 @@ import java.util.Map;
 public class GitlabEventFactory implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
-    private final Map<String, List<EventHandler<Object>>> handlers = new HashMap<>();
+    private final Map<String, List<EventHandler<Object, Object>>> handlers = new HashMap<>();
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -33,16 +32,14 @@ public class GitlabEventFactory implements ApplicationContextAware {
      * @return 事件处理器
      */
     @SuppressWarnings("unchecked")
-    public List<EventHandler<Object>> getEventHandlers(String gitlabEvent, Webhook webhook) {
-        List<EventHandler<Object>> eventHandlers = handlers.get(gitlabEvent);
+    public List<EventHandler<Object, Object>> getEventHandlers(String gitlabEvent, Webhook webhook) {
+        List<EventHandler<Object, Object>> eventHandlers = handlers.get(gitlabEvent);
         if (eventHandlers == null) {
             eventHandlers = new ArrayList<>();
-            String hookName = gitlabEvent.replace(" ", "");
-            NotifyConf notify = webhook.getNotify();
-            if (notify != null) {
-                String beanName = String.format("%sNotifyEventHandler", hookName);
+            if (webhook.getNotify() != null) {
+                String beanName = String.format("%sNotifyEventHandler", gitlabEvent.replace(" ", ""));
                 try {
-                    eventHandlers.add((EventHandler<Object>) applicationContext.getBean(capitalize(beanName)));
+                    eventHandlers.add((EventHandler<Object, Object>) applicationContext.getBean(capitalize(beanName)));
                     handlers.put(gitlabEvent, eventHandlers);
                 } catch (BeansException e) {
                     throw new UnsupportedOperationException(String.format("Can not get EventHandler[%s]", beanName));

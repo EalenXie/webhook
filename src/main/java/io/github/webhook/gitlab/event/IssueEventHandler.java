@@ -6,7 +6,7 @@ import io.github.webhook.gitlab.webhook.issue.IssueHook;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public interface IssueEventHandler extends EventHandler<IssueHook> {
+public interface IssueEventHandler extends EventHandler<IssueHook, Object> {
     default Class<IssueHook> getDataType() {
         return IssueHook.class;
     }

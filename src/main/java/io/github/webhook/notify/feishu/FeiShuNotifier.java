@@ -23,7 +23,7 @@ import java.util.Collections;
 /**
  * @author EalenXie created on 2023/4/17 12:53
  */
-public class FeiShuNotifier implements Notifier<InteractiveMessage> {
+public class FeiShuNotifier implements Notifier<InteractiveMessage, Object> {
 
     private final RestOperations restOperations;
 
@@ -32,7 +32,7 @@ public class FeiShuNotifier implements Notifier<InteractiveMessage> {
     }
 
     @Override
-    public void notify(Webhook webhook, InteractiveMessage interactiveMessage) {
+    public Object notify(Webhook webhook, InteractiveMessage interactiveMessage) {
         NotifyConf notify = webhook.getNotify();
         FeiShuConf feiShu = notify.getFeiShu();
         String signKey = feiShu.getSignKey();
@@ -45,7 +45,7 @@ public class FeiShuNotifier implements Notifier<InteractiveMessage> {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<InteractiveMessage> entity = new HttpEntity<>(interactiveMessage, httpHeaders);
-        restOperations.postForEntity(feiShu.getUrl(), entity, Object.class);
+        return restOperations.postForEntity(feiShu.getUrl(), entity, Object.class).getBody();
     }
 
 

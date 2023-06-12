@@ -36,8 +36,7 @@ public class WebhookEndpoint {
         if (webhook == null) {
             return ResponseEntity.notFound().build();
         }
-        webhookExecutor.handleWebhook(webhook, requestBody);
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok(webhookExecutor.handleWebhook(webhook, requestBody));
     }
 
 

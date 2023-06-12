@@ -10,12 +10,13 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author EalenXie created on 2023/4/14 12:39
  */
-public class GitlabWebhookHandler implements WebhookHandler<Void> {
+public class GitlabWebhookHandler implements WebhookHandler<Object> {
     private final GitlabEventFactory gitlabEventFactory;
     private final ObjectMapper objectMapper;
 
@@ -25,19 +26,20 @@ public class GitlabWebhookHandler implements WebhookHandler<Void> {
     }
 
     @Override
-    public Void handleWebhook(Webhook webhook, JsonNode params) {
+    public Object handleWebhook(Webhook webhook, JsonNode params) {
         // 1. 获取请求事件
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         assert attributes != null;
         HttpServletRequest request = attributes.getRequest();
         String event = request.getHeader("X-Gitlab-Event");
         // 针对某一事件可能有多个事件处理器
-        List<EventHandler<Object>> handlers = gitlabEventFactory.getEventHandlers(event, webhook);
-        for (EventHandler<Object> handler : handlers) {
+        List<EventHandler<Object, Object>> handlers = gitlabEventFactory.getEventHandlers(event, webhook);
+        List<Object> resp = new ArrayList<>();
+        for (EventHandler<Object, Object> handler : handlers) {
             // 处理事件
-            handler.handleEvent(webhook, objectMapper.convertValue(params, handler.getDataType()));
+            resp.add(handler.handleEvent(webhook, objectMapper.convertValue(params, handler.getDataType())));
         }
-        return null;
+        return resp.size() == 1 ? resp.get(0) : resp;
     }
 
 

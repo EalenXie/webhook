@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author EalenXie created on 2023/4/14 16:17
  */
-public class DingTalkNotifier implements Notifier<MarkdownMessage> {
+public class DingTalkNotifier implements Notifier<MarkdownMessage, Object> {
     private final RestOperations restOperations;
 
     public DingTalkNotifier(RestOperations restOperations) {
@@ -59,14 +59,15 @@ public class DingTalkNotifier implements Notifier<MarkdownMessage> {
     }
 
     @Override
-    public void notify(Webhook webhook, MarkdownMessage markdownMessage) {
+    public Object notify(Webhook webhook, MarkdownMessage markdownMessage) {
         NotifyConf notify = webhook.getNotify();
         DingTalkConf dingTalk = notify.getDingTalk();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<MarkdownMessage> entity = new HttpEntity<>(markdownMessage, httpHeaders);
         long timeStamp = System.currentTimeMillis();
-        restOperations.postForEntity(String.format("https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%s&sign=%s", dingTalk.getAccessToken(), timeStamp, sign(timeStamp, dingTalk.getSignKey())), entity, Object.class);
+        return restOperations.postForEntity(String.format("https://oapi.dingtalk.com/robot/send?access_token=%s&timestamp=%s&sign=%s",
+                dingTalk.getAccessToken(), timeStamp, sign(timeStamp, dingTalk.getSignKey())), entity, Object.class).getBody();
     }
 
     /**

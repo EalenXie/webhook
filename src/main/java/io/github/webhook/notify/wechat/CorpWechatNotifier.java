@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * @author EalenXie created on 2023/4/14 17:52
  */
-public class CorpWechatNotifier implements Notifier<MarkdownMessage> {
+public class CorpWechatNotifier implements Notifier<MarkdownMessage, Object> {
 
     private final RestOperations restOperations;
 
@@ -44,12 +44,12 @@ public class CorpWechatNotifier implements Notifier<MarkdownMessage> {
     }
 
     @Override
-    public void notify(Webhook webhook, MarkdownMessage markdownMessage) {
+    public Object notify(Webhook webhook, MarkdownMessage markdownMessage) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<MarkdownMessage> entity = new HttpEntity<>(markdownMessage, httpHeaders);
         NotifyConf notify = webhook.getNotify();
         WechatConf wechat = notify.getWechat();
-        restOperations.postForEntity(String.format("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=%s", wechat.getKey()), entity, Object.class);
+        return restOperations.postForEntity(String.format("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=%s", wechat.getKey()), entity, Object.class).getBody();
     }
 }

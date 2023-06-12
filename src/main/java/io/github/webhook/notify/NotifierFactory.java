@@ -17,7 +17,7 @@ import java.util.Map;
  * @author EalenXie created on 2023/4/14 16:37
  */
 public class NotifierFactory implements ApplicationContextAware {
-    private final Map<String, List<Notifier<Object>>> webhookNotifies = new HashMap<>();
+    private final Map<String, List<Notifier<Object, Object>>> webhookNotifies = new HashMap<>();
     private ApplicationContext applicationContext;
 
     @Override
@@ -25,24 +25,24 @@ public class NotifierFactory implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    private Notifier<?> getNotifier(Class<? extends Notifier<?>> clz) {
+    private Notifier<?, ?> getNotifier(Class<? extends Notifier<?, ?>> clz) {
         return applicationContext.getBean(clz);
     }
 
 
     @SuppressWarnings("unchecked")
-    public List<Notifier<Object>> getNotifies(Webhook webhook) {
-        List<Notifier<Object>> notifiers = webhookNotifies.get(webhook.getId());
+    public List<Notifier<Object, Object>> getNotifies(Webhook webhook) {
+        List<Notifier<Object, Object>> notifiers = webhookNotifies.get(webhook.getId());
         if (notifiers == null) {
             notifiers = new ArrayList<>();
             if (webhook.getNotify().getDingTalk() != null) {
-                notifiers.add((Notifier<Object>) getNotifier(DingTalkNotifier.class));
+                notifiers.add((Notifier<Object, Object>) getNotifier(DingTalkNotifier.class));
             }
             if (webhook.getNotify().getWechat() != null) {
-                notifiers.add((Notifier<Object>) getNotifier(CorpWechatNotifier.class));
+                notifiers.add((Notifier<Object, Object>) getNotifier(CorpWechatNotifier.class));
             }
             if (webhook.getNotify().getFeiShu() != null) {
-                notifiers.add((Notifier<Object>) getNotifier(FeiShuNotifier.class));
+                notifiers.add((Notifier<Object, Object>) getNotifier(FeiShuNotifier.class));
             }
             webhookNotifies.put(webhook.getId(), notifiers);
         }

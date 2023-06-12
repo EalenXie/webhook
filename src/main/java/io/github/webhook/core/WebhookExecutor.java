@@ -14,11 +14,11 @@ public class WebhookExecutor {
         this.webhookHandlerFactory = webhookHandlerFactory;
     }
 
-    public void handleWebhook(Webhook webhook, JsonNode json) {
+    public Object handleWebhook(Webhook webhook, JsonNode json) {
         WebhookHandler<?> webhookHandler = webhookHandlerFactory.getWebhookHandler(webhook.getType());
         if (webhookHandler == null) {
             throw new UnsupportedOperationException("unsupported webhook handler");
         }
-        webhookHandler.handleWebhook(webhook, json);
+        return webhookHandler.handleWebhook(webhook, json);
     }
 }

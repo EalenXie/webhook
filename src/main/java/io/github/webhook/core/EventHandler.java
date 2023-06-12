@@ -6,7 +6,7 @@ import io.github.webhook.meta.Webhook;
  * @author EalenXie created on 2023/4/14 12:47
  * 事件处理器
  */
-public interface EventHandler<D> {
+public interface EventHandler<D, R> {
 
 
     /**
@@ -19,7 +19,7 @@ public interface EventHandler<D> {
      *
      * @param data 事件数据
      */
-    void handleEvent(Webhook webhook, D data);
+    R handleEvent(Webhook webhook, D data);
 
 
 }
