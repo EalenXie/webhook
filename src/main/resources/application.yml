@@ -14,16 +14,10 @@ config:
       type: GITLAB
       conf:
         gitlab:
-          host: http://192.168.180.10:9080/
-          private-token: Gcs1eJnoLkaGMsEqSbu-
+          host: http://192.168.10.1:8080/
+          private-token: xxxxxxx
       notify:
         ding-talk:
-          access-token: "93a93799cde9a3ab3a8c871ec45455b7856c790a41646f655ae0d4eb9872883c"
-          sign-key: "SECcd68c6b173cca046231c48739c6141a891c92644e1b1c2e67c82fe811656bdd0"
-        fei-shu:
-          url: https://open.feishu.cn/open-apis/bot/v2/hook/4ad2ff7d-78e4-4ef0-84be-ee6f0cac25e7
-        wechat:
-          key: 11910fab-07f1-49ce-87d0-4cd44c8b81c7
-    - id: zentao
-      type: ZENTAO
+          access-token: "93axxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx83c"
+          sign-key: "SECcd6xxxxxxxxxxxxxxxxxxxxxxx67c82fe811656bdd0"
 
