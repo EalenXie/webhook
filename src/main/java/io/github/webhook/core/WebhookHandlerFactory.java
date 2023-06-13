@@ -2,7 +2,6 @@ package io.github.webhook.core;
 
 import io.github.webhook.gitlab.GitlabWebhookHandler;
 import io.github.webhook.meta.WebhookType;
-import io.github.webhook.zentao.ZentaoWebhookHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,7 +25,6 @@ public class WebhookHandlerFactory implements ApplicationContextAware {
     @PostConstruct
     public void init() {
         webhookHandlers.put(WebhookType.GITLAB, getWebhookHandler(GitlabWebhookHandler.class));
-        webhookHandlers.put(WebhookType.ZENTAO, getWebhookHandler(ZentaoWebhookHandler.class));
     }
 
     private WebhookHandler<?> getWebhookHandler(Class<?> clz) {
