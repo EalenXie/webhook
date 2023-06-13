@@ -6,6 +6,7 @@ import io.github.webhook.core.EventHandler;
 import io.github.webhook.core.WebhookHandler;
 import io.github.webhook.gitlab.event.GitlabEventFactory;
 import io.github.webhook.meta.Webhook;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -32,6 +33,9 @@ public class GitlabWebhookHandler implements WebhookHandler<Object> {
         assert attributes != null;
         HttpServletRequest request = attributes.getRequest();
         String event = request.getHeader("X-Gitlab-Event");
+        if (ObjectUtils.isEmpty(event)) {
+            throw new UnsupportedOperationException("Unable to get the Gitlab event type, please check that your webhook configuration is correct");
+        }
         // 针对某一事件可能有多个事件处理器
         List<EventHandler<Object, Object>> handlers = gitlabEventFactory.getEventHandlers(event, webhook);
         List<Object> resp = new ArrayList<>();

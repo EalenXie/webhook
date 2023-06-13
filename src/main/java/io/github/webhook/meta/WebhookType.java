@@ -7,7 +7,6 @@ public enum WebhookType {
 
     GITLAB,
     CONFLUENCE,
-    ZENTAO,
     JIRA
 
 
