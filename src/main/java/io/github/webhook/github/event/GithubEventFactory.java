@@ -1,4 +1,4 @@
-package io.github.webhook.gitlab.event;
+package io.github.webhook.github.event;
 
 import io.github.webhook.core.EventHandler;
 import io.github.webhook.meta.Webhook;
@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @author EalenXie created on 2023/4/14 12:57
  */
-public class GitlabEventFactory implements ApplicationContextAware {
+public class GithubEventFactory implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
     private final Map<String, List<EventHandler<Object, Object>>> handlers = new HashMap<>();
@@ -26,21 +26,21 @@ public class GitlabEventFactory implements ApplicationContextAware {
     }
 
     /**
-     * 获取Gitlab事件处理器
+     * 获取Github事件处理器
      *
-     * @param gitlabEvent Gitlab webhook 事件
+     * @param event Github webhook 事件
      * @return 事件处理器
      */
     @SuppressWarnings("all")
-    public List<EventHandler<Object, Object>> getEventHandlers(String gitlabEvent, Webhook webhook) {
-        List<EventHandler<Object, Object>> eventHandlers = handlers.get(gitlabEvent);
+    public List<EventHandler<Object, Object>> getEventHandlers(String event, Webhook webhook) {
+        List<EventHandler<Object, Object>> eventHandlers = handlers.get(event);
         if (eventHandlers == null) {
             eventHandlers = new ArrayList<>();
             if (webhook.getNotify() != null) {
-                String beanName = String.format("%sNotifyEventHandler", gitlabEvent.replace(" ", ""));
+                String beanName = String.format("%sNotifyEventHandler", event.replace(" ", ""));
                 try {
                     eventHandlers.add((EventHandler<Object, Object>) applicationContext.getBean(capitalize(beanName)));
-                    handlers.put(gitlabEvent, eventHandlers);
+                    handlers.put(event, eventHandlers);
                 } catch (BeansException e) {
                     throw new UnsupportedOperationException(String.format("Can not get EventHandler[%s]", beanName));
                 }

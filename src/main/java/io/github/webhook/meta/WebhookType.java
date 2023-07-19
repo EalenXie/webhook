@@ -6,6 +6,7 @@ package io.github.webhook.meta;
 public enum WebhookType {
 
     GITLAB,
+    GITHUB,
     CONFLUENCE,
     JIRA
 
