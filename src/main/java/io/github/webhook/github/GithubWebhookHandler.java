@@ -28,7 +28,6 @@ public class GithubWebhookHandler implements WebhookHandler<Object> {
         this.objectMapper = objectMapper;
     }
 
-
     @Override
     public Object handleWebhook(Webhook webhook, JsonNode params) {
         // 1. 获取请求事件
@@ -37,7 +36,7 @@ public class GithubWebhookHandler implements WebhookHandler<Object> {
         HttpServletRequest request = attributes.getRequest();
         String event = request.getHeader("X-GitHub-Event");
         if (ObjectUtils.isEmpty(event)) {
-            throw new UnsupportedOperationException("Unable to get the Gitlab event type, please check that your webhook configuration is correct");
+            throw new UnsupportedOperationException("Unable to get the GitHub event type, please check that your webhook configuration is correct");
         }
         // 针对某一事件可能有多个事件处理器
         List<EventHandler<Object, Object>> handlers = githubEventFactory.getEventHandlers(event, webhook);
