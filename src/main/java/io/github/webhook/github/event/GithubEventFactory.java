@@ -1,5 +1,6 @@
 package io.github.webhook.github.event;
 
+import io.github.webhook.core.EventFactory;
 import io.github.webhook.core.EventHandler;
 import io.github.webhook.meta.Webhook;
 import org.springframework.beans.BeansException;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * @author EalenXie created on 2023/4/14 12:57
  */
-public class GithubEventFactory implements ApplicationContextAware {
+public class GithubEventFactory implements EventFactory, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
     private final Map<String, List<EventHandler<Object, Object>>> handlers = new HashMap<>();
@@ -31,6 +32,7 @@ public class GithubEventFactory implements ApplicationContextAware {
      * @param event Github webhook 事件
      * @return 事件处理器
      */
+    @Override
     @SuppressWarnings("all")
     public List<EventHandler<Object, Object>> getEventHandlers(String event, Webhook webhook) {
         List<EventHandler<Object, Object>> eventHandlers = handlers.get(event);
