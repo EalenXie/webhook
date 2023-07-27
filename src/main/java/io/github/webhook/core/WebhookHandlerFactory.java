@@ -12,6 +12,7 @@ import java.util.EnumMap;
 
 /**
  * @author EalenXie created on 2023/4/14 12:36
+ * Webhook 处理器工厂
  */
 public class WebhookHandlerFactory implements ApplicationContextAware {
 

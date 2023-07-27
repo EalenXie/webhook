@@ -27,7 +27,9 @@ import java.util.List;
  */
 @Configuration
 public class GlobalAutoConfig {
-
+    /**
+     * Webhook 处理器 工厂
+     */
     @Bean
     public WebhookHandlerFactory webhookHandlerFactory() {
         return new WebhookHandlerFactory();

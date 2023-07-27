@@ -8,7 +8,7 @@ import org.springframework.web.client.RestOperations;
 
 /**
  * @author EalenXie created on 2023/4/17 13:24
- * Gitlab 事件配置
+ * Gitlab 配置
  */
 @Configuration
 public class GitlabConfig {

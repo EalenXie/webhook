@@ -16,6 +16,10 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class WebhookHandlerConfig {
+
+    /**
+     * Gitlab 事件工厂
+     */
     @Bean
     public GitlabEventFactory gitlabEventFactory(ApplicationContext applicationContext, NotifierFactory notifierFactory) {
         return new GitlabEventFactory(applicationContext, notifierFactory);
@@ -30,6 +34,7 @@ public class WebhookHandlerConfig {
     public GitlabWebhookHandler gitlabWebhookHandler(GitlabEventFactory gitlabEventFactory, ObjectMapper objectMapper) {
         return new GitlabWebhookHandler(gitlabEventFactory, objectMapper);
     }
+
     /**
      * Github 事件工厂
      */

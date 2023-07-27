@@ -12,8 +12,6 @@ import java.util.List;
 @Getter
 @Setter
 public class PushPayload {
-
-
     /**
      * ref
      */
