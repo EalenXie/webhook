@@ -66,6 +66,7 @@ The webhook[gitlab_project] type is:GITLAB,address: http://192.168.180.198:8787/
 | webhook类型  | 实现类                  | 完成状态 |
 |:-----------|:---------------------|:-----|
 | GITLAB     | GitlabWebhookHandler | ✔️   |
+| GITHUB     | GithubWebhookHandler | ✔️   |
 | JIRA       | 暂无                   | ❌    |
 | CONFLUENCE | 暂无                   | ❌    |
 
