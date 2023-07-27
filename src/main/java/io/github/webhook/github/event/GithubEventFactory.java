@@ -2,12 +2,16 @@ package io.github.webhook.github.event;
 
 import io.github.webhook.core.EventFactory;
 import io.github.webhook.core.EventHandler;
+import io.github.webhook.github.event.notify.PushNotifyEventHandler;
+import io.github.webhook.github.event.notify.StarNotifyEventHandler;
 import io.github.webhook.meta.Webhook;
+import io.github.webhook.notify.NotifierFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ObjectUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,15 +19,27 @@ import java.util.Map;
 
 /**
  * @author EalenXie created on 2023/4/14 12:57
+ * Github 事件处理器工厂
  */
-public class GithubEventFactory implements EventFactory, ApplicationContextAware {
-
-    private ApplicationContext applicationContext;
+public class GithubEventFactory implements EventFactory {
+    private final ApplicationContext applicationContext;
+    private final NotifierFactory notifierFactory;
     private final Map<String, List<EventHandler<Object, Object>>> handlers = new HashMap<>();
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public GithubEventFactory(ApplicationContext applicationContext, NotifierFactory notifierFactory) {
         this.applicationContext = applicationContext;
+        this.notifierFactory = notifierFactory;
+    }
+
+    /**
+     * 初始化注册Github所有事件
+     */
+    @PostConstruct
+    public void registerEvents() {
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
+        // Github 通知类 事件处理器 xxxNotifyEventHandler
+        beanFactory.registerSingleton("pushNotifyEventHandler", new PushNotifyEventHandler(notifierFactory));
+        beanFactory.registerSingleton("starNotifyEventHandler", new StarNotifyEventHandler(notifierFactory));
     }
 
     /**
@@ -38,6 +54,7 @@ public class GithubEventFactory implements EventFactory, ApplicationContextAware
         List<EventHandler<Object, Object>> eventHandlers = handlers.get(event);
         if (eventHandlers == null) {
             eventHandlers = new ArrayList<>();
+            // 查找通知类 事件处理器 xxxNotifyEventHandler
             if (webhook.getNotify() != null) {
                 String beanName = String.format("%sNotifyEventHandler", event.replace(" ", ""));
                 try {

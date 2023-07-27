@@ -2,12 +2,15 @@ package io.github.webhook.gitlab.event;
 
 import io.github.webhook.core.EventFactory;
 import io.github.webhook.core.EventHandler;
+import io.github.webhook.gitlab.event.notify.*;
 import io.github.webhook.meta.Webhook;
+import io.github.webhook.notify.NotifierFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ObjectUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,11 +18,35 @@ import java.util.Map;
 
 /**
  * @author EalenXie created on 2023/4/14 12:57
+ * Gitlab 事件工厂
  */
-public class GitlabEventFactory implements EventFactory, ApplicationContextAware {
+public class GitlabEventFactory implements EventFactory {
+    private final ApplicationContext applicationContext;
+    private final NotifierFactory notifierFactory;
 
-    private ApplicationContext applicationContext;
     private final Map<String, List<EventHandler<Object, Object>>> handlers = new HashMap<>();
+
+    public GitlabEventFactory(ApplicationContext applicationContext, NotifierFactory notifierFactory) {
+        this.applicationContext = applicationContext;
+        this.notifierFactory = notifierFactory;
+    }
+
+    /**
+     * 初始化注册Gitlab所有事件
+     */
+    @PostConstruct
+    public void registerEvents() {
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
+        // Gitlab 通知类 事件处理器 xxxHookNotifyEventHandler
+        beanFactory.registerSingleton("pushHookNotifyEventHandler", new PushHookNotifyEventHandler(notifierFactory));
+        beanFactory.registerSingleton("issueHookNotifyEventHandler", new IssueHookNotifyEventHandler(notifierFactory));
+        beanFactory.registerSingleton("mergeRequestHookNotifyEventHandler", new MergeRequestHookNotifyEventHandler(notifierFactory));
+        beanFactory.registerSingleton("jobHookNotifyEventHandler", new JobHookNotifyEventHandler(notifierFactory));
+        beanFactory.registerSingleton("noteHookNotifyEventHandler", new NoteHookNotifyEventHandler(notifierFactory));
+        beanFactory.registerSingleton("releaseHookNotifyEventHandler", new ReleaseHookNotifyEventHandler(notifierFactory));
+        beanFactory.registerSingleton("tagPushHookNotifyEventHandler", new TagPushHookNotifyEventHandler(notifierFactory));
+        beanFactory.registerSingleton("pipelineHookNotifyEventHandler", new PipelineHookNotifyEventHandler(notifierFactory));
+    }
 
     /**
      * 获取Gitlab事件处理器
@@ -44,11 +71,6 @@ public class GitlabEventFactory implements EventFactory, ApplicationContextAware
             }
         }
         return eventHandlers;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
     }
 
     /**

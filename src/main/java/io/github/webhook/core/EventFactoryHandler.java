@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * @author EalenXie created on 2023/7/27 11:31
+ * 事件工厂处理器
  */
 public abstract class EventFactoryHandler implements WebhookHandler<Object> {
     private final EventFactory eventFactory;
@@ -27,7 +28,13 @@ public abstract class EventFactoryHandler implements WebhookHandler<Object> {
         this.objectMapper = objectMapper;
     }
 
-
+    /**
+     * 执行事件处理
+     *
+     * @param event   事件
+     * @param webhook webhook
+     * @param params  请求信息
+     */
     public Object handlerExecute(String event, Webhook webhook, JsonNode params) {
         List<EventHandler<Object, Object>> handlers = eventFactory.getEventHandlers(event, webhook);
         List<Object> resp = new ArrayList<>();
