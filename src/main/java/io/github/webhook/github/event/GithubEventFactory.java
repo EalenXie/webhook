@@ -1,6 +1,6 @@
 package io.github.webhook.github.event;
 
-import io.github.webhook.core.EventFactory;
+import io.github.webhook.core.EventHandlerFactory;
 import io.github.webhook.core.EventHandler;
 import io.github.webhook.github.event.notify.PushNotifyEventHandler;
 import io.github.webhook.github.event.notify.StarNotifyEventHandler;
@@ -21,7 +21,7 @@ import java.util.Map;
  * @author EalenXie created on 2023/4/14 12:57
  * Github 事件处理器工厂
  */
-public class GithubEventFactory implements EventFactory {
+public class GithubEventFactory implements EventHandlerFactory {
     private final ApplicationContext applicationContext;
     private final NotifierFactory notifierFactory;
     private final Map<String, List<EventHandler<Object, Object>>> handlers = new HashMap<>();

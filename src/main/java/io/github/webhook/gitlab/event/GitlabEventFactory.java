@@ -1,6 +1,6 @@
 package io.github.webhook.gitlab.event;
 
-import io.github.webhook.core.EventFactory;
+import io.github.webhook.core.EventHandlerFactory;
 import io.github.webhook.core.EventHandler;
 import io.github.webhook.gitlab.event.notify.*;
 import io.github.webhook.meta.Webhook;
@@ -20,7 +20,7 @@ import java.util.Map;
  * @author EalenXie created on 2023/4/14 12:57
  * Gitlab 事件工厂
  */
-public class GitlabEventFactory implements EventFactory {
+public class GitlabEventFactory implements EventHandlerFactory {
     private final ApplicationContext applicationContext;
     private final NotifierFactory notifierFactory;
 

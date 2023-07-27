@@ -6,8 +6,9 @@ import java.util.List;
 
 /**
  * @author EalenXie created on 2023/7/27 11:32
+ * 事件处理器工厂
  */
-public interface EventFactory {
+public interface EventHandlerFactory {
 
 
     /**

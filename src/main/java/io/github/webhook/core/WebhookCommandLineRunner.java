@@ -41,7 +41,7 @@ public class WebhookCommandLineRunner implements CommandLineRunner {
             StringBuilder sb = new StringBuilder("Webhooks are successfully configured.\n");
             sb.append("The following webhooks are available,Please fill in the following address in your system's webhook: \n");
             for (Webhook webhook : webhooks) {
-                sb.append(String.format("The webhook[%s] type is:%s,address: %s%s/%s%n", webhook.getId(), webhook.getType(), contentPath, WebhookEndpoint.ENDPOINT_URL, webhook.getId()));
+                sb.append(String.format("Webhook[%s] of type %s is configured,Address: %s%s/%s%n", webhook.getId(), webhook.getType(), contentPath, WebhookEndpoint.ENDPOINT_URL, webhook.getId()));
             }
             log.info(sb.toString());
         }

@@ -2,7 +2,7 @@ package io.github.webhook.github;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.webhook.core.EventFactoryHandler;
+import io.github.webhook.core.FactoryEventHandler;
 import io.github.webhook.github.event.GithubEventFactory;
 import io.github.webhook.meta.Webhook;
 import org.springframework.util.ObjectUtils;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author EalenXie created on 2023/7/19 16:05
  */
-public class GithubWebhookHandler extends EventFactoryHandler {
+public class GithubWebhookHandler extends FactoryEventHandler {
 
     public GithubWebhookHandler(GithubEventFactory githubEventFactory, ObjectMapper objectMapper) {
         super(githubEventFactory, objectMapper);

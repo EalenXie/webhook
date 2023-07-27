@@ -9,22 +9,22 @@ import java.util.List;
 
 /**
  * @author EalenXie created on 2023/7/27 11:31
- * 事件工厂处理器
+ * 工厂事件类型的 处理器
  */
-public abstract class EventFactoryHandler implements WebhookHandler<Object> {
-    private final EventFactory eventFactory;
+public abstract class FactoryEventHandler implements WebhookHandler<Object> {
+    private final EventHandlerFactory eventHandlerFactory;
     private final ObjectMapper objectMapper;
 
-    public EventFactory getEventFactory() {
-        return eventFactory;
+    public EventHandlerFactory getEventHandlerFactory() {
+        return eventHandlerFactory;
     }
 
     public ObjectMapper getObjectMapper() {
         return objectMapper;
     }
 
-    protected EventFactoryHandler(EventFactory eventFactory, ObjectMapper objectMapper) {
-        this.eventFactory = eventFactory;
+    protected FactoryEventHandler(EventHandlerFactory eventHandlerFactory, ObjectMapper objectMapper) {
+        this.eventHandlerFactory = eventHandlerFactory;
         this.objectMapper = objectMapper;
     }
 
@@ -36,7 +36,7 @@ public abstract class EventFactoryHandler implements WebhookHandler<Object> {
      * @param params  请求信息
      */
     public Object handlerExecute(String event, Webhook webhook, JsonNode params) {
-        List<EventHandler<Object, Object>> handlers = eventFactory.getEventHandlers(event, webhook);
+        List<EventHandler<Object, Object>> handlers = eventHandlerFactory.getEventHandlers(event, webhook);
         List<Object> resp = new ArrayList<>();
         for (EventHandler<Object, Object> handler : handlers) {
             // 处理事件
