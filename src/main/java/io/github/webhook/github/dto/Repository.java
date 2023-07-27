@@ -1,16 +1,16 @@
 package io.github.webhook.github.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 /**
  * @author EalenXie created on 2023/7/19 16:08
  */
-@NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Repository {
     /**
      * id
@@ -246,7 +246,7 @@ public class Repository {
      * createdAt
      */
     @JsonProperty("created_at")
-    private Integer createdAt;
+    private String createdAt;
     /**
      * updatedAt
      */
@@ -256,7 +256,7 @@ public class Repository {
      * pushedAt
      */
     @JsonProperty("pushed_at")
-    private Integer pushedAt;
+    private String pushedAt;
     /**
      * gitUrl
      */
@@ -281,7 +281,7 @@ public class Repository {
      * homepage
      */
     @JsonProperty("homepage")
-    private Object homepage;
+    private String homepage;
     /**
      * size
      */
@@ -341,7 +341,7 @@ public class Repository {
      * mirrorUrl
      */
     @JsonProperty("mirror_url")
-    private Object mirrorUrl;
+    private String mirrorUrl;
     /**
      * archived
      */

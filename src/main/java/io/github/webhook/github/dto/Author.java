@@ -1,14 +1,14 @@
 package io.github.webhook.github.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author EalenXie created on 2023/7/19 16:08
  */
-@NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Author {
     /**
      * name
