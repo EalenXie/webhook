@@ -43,12 +43,9 @@ public class MergeRequestHookNotifyEventHandler extends GitlabNotifyEventHandler
         sb.append(String.format("<font color='#000000'>%s %s %s %s %s </font>%n%n", p, u, objectAttributes.getState(), mergeRequestHook.getObjectKind(), merge));
         switch (objectAttributes.getState()) {
             case "opened":
-                sb.append(String.format("%s %s  wants to merge %s ➔➔ %s %n",
-                        " \uD83D\uDE00 ", user.getUsername(), sources, targets));
-                String c = String.format(" %s - %s%n",
-                        objectAttributes.getLastCommit().getAuthor().getName(), objectAttributes.getLastCommit().getMessage());
-                sb.append(String.format(">[%s](%s)%s",
-                        objectAttributes.getLastCommit().getId().substring(0, 8), objectAttributes.getLastCommit().getUrl(), c));
+                sb.append(String.format("%s %s  wants to merge %s ➔➔ %s %n", " \uD83D\uDE00 ", user.getUsername(), sources, targets));
+                String c = String.format(" %s - %s%n", objectAttributes.getLastCommit().getAuthor().getName(), objectAttributes.getLastCommit().getMessage());
+                sb.append(String.format(">[%s](%s)%s", objectAttributes.getLastCommit().getId().substring(0, 8), objectAttributes.getLastCommit().getUrl(), c));
                 break;
             case "merged":
                 sb.append(String.format(" %s %s has completed the merge %s➔➔%s%s%n", " \uD83D\uDE00 ", user.getUsername(), sources, targets, "✔️"));
