@@ -1,6 +1,7 @@
 package io.github.webhook.github.event;
 
 import io.github.webhook.core.DefaultEventHandlerFactory;
+import io.github.webhook.github.event.notify.ForkNotifyEventHandler;
 import io.github.webhook.github.event.notify.PullRequestNotifyEventHandler;
 import io.github.webhook.github.event.notify.PushNotifyEventHandler;
 import io.github.webhook.github.event.notify.StarNotifyEventHandler;
@@ -30,5 +31,6 @@ public class GithubEventFactory extends DefaultEventHandlerFactory {
         beanFactory.registerSingleton("pushNotifyEventHandler", new PushNotifyEventHandler(notifierFactory));
         beanFactory.registerSingleton("starNotifyEventHandler", new StarNotifyEventHandler(notifierFactory));
         beanFactory.registerSingleton("pullRequestNotifyEventHandler", new PullRequestNotifyEventHandler(notifierFactory));
+        beanFactory.registerSingleton("forkNotifyEventHandler", new ForkNotifyEventHandler(notifierFactory));
     }
 }
