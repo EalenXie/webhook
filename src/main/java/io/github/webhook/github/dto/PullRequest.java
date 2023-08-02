@@ -76,7 +76,7 @@ public class PullRequest {
      * body
      */
     @JsonProperty("body")
-    private Object body;
+    private String body;
     /**
      * createdAt
      */
@@ -91,22 +91,22 @@ public class PullRequest {
      * closedAt
      */
     @JsonProperty("closed_at")
-    private Object closedAt;
+    private String closedAt;
     /**
      * mergedAt
      */
     @JsonProperty("merged_at")
-    private Object mergedAt;
+    private String mergedAt;
     /**
      * mergeCommitSha
      */
     @JsonProperty("merge_commit_sha")
-    private Object mergeCommitSha;
+    private String mergeCommitSha;
     /**
      * assignee
      */
     @JsonProperty("assignee")
-    private Object assignee;
+    private String assignee;
     /**
      * assignees
      */
@@ -131,7 +131,7 @@ public class PullRequest {
      * milestone
      */
     @JsonProperty("milestone")
-    private Object milestone;
+    private String milestone;
     /**
      * draft
      */
@@ -186,12 +186,12 @@ public class PullRequest {
      * autoMerge
      */
     @JsonProperty("auto_merge")
-    private Object autoMerge;
+    private String autoMerge;
     /**
      * activeLockReason
      */
     @JsonProperty("active_lock_reason")
-    private Object activeLockReason;
+    private String activeLockReason;
     /**
      * merged
      */
@@ -201,12 +201,12 @@ public class PullRequest {
      * mergeable
      */
     @JsonProperty("mergeable")
-    private Object mergeable;
+    private String mergeable;
     /**
      * rebaseable
      */
     @JsonProperty("rebaseable")
-    private Object rebaseable;
+    private String rebaseable;
     /**
      * mergeableState
      */
@@ -216,7 +216,7 @@ public class PullRequest {
      * mergedBy
      */
     @JsonProperty("merged_by")
-    private Object mergedBy;
+    private String mergedBy;
     /**
      * comments
      */
