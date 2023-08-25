@@ -46,7 +46,8 @@ public class IssueHookNotifyEventHandler extends GitlabNotifyEventHandler<IssueH
             statusEmoji = "✌️";
         }
         sb.append(String.format("#### %s%s **%s** %n", titleEmoji, projectUrl, objectAttributes.getTitle()));
-        sb.append(String.format("<font color='#000000'>The Issue [%s] %s%s by [%s](%s) </font> %n>%s", issue, objectAttributes.getState(), statusEmoji, user.getUsername(), getUserHomePage(project.getWebUrl(), user.getUsername()), objectAttributes.getDescription()));
+        sb.append(String.format("<font color='#000000'>The Issue [%s] %s%s by [%s](%s) </font> %n>%s", issue, objectAttributes.getState(), statusEmoji, user.getUsername(), getUserHomePage(project.getWebUrl(), user.getUsername()),
+                objectAttributes.getDescription() == null ? "" : objectAttributes.getDescription()));
         message.setMessage(sb.toString());
         return message;
     }
