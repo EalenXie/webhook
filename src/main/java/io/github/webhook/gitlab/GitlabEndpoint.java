@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.regex.Pattern;
 
 /**
@@ -33,7 +34,7 @@ public class GitlabEndpoint {
     private static final Pattern PATTERN = Pattern.compile("^cancel$|^delete$|^retry$");
 
     @GetMapping(ENDPOINT_URL + "/{webhookId}/gitlab/pipeline/{action}")
-    public String pipelineAction(@PathVariable String webhookId, @PathVariable String action, PipelineDTO dto) {
+    public String pipelineAction(@PathVariable String webhookId, @PathVariable String action, @Valid PipelineDTO dto) {
         Webhook webhook = webhookRepository.findById(webhookId);
         if (webhook != null && PATTERN.matcher(action).find()) {
             GitlabRestClient gitlabRestClient = gitlabRestClientFactory.getGitlabRestClient(webhook);
