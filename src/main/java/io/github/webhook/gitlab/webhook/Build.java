@@ -33,7 +33,10 @@ public class Build implements Comparable<Build> {
     private Runner runner;
     @JsonProperty("artifacts_file")
     private ArtifactsFile artifactFile;
-    private String environment;
+    /**
+     * 新旧版本不一致,使用Object对象兼容
+     */
+    private Object environment;
 
     @Getter
     @Setter
