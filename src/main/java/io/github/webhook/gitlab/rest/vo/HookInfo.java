@@ -6,17 +6,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PipelineInfo {
+public class HookInfo {
     /**
-     * 项目ID或URL编码路径（必填）
+     * hook ID
      */
     @JsonProperty("id")
     private String id;
     /**
      * hookId
      */
-    @JsonProperty("hook_id")
-    private String hookId;
+    @JsonProperty("project_id")
+    private String projectId;
     /**
      * 钩子接收URL（必填）
      */

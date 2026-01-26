@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PipelinesDTO {
+public class PipelinesQueryParams {
     /**
      * The scope of pipelines, one of: running, pending, finished, branches, tags
      */

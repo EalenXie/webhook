@@ -58,7 +58,7 @@ public class GitlabRestClient {
      *
      * @param userId 用户Id
      */
-    public GitlabUser getUserById(Long userId) {
+    public GitlabUser getUser(Long userId) {
         return restOperations.exchange(URI.create(String.format("%s/api/v4/users/%s", host, userId)), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), GitlabUser.class).getBody();
     }
 
@@ -68,7 +68,7 @@ public class GitlabRestClient {
      *
      * @param groupId 组Id
      */
-    public List<Member> getAllMembersByGroupId(Long groupId) {
+    public List<Member> getMembersByGroupId(Long groupId) {
         return restOperations.exchange(URI.create(String.format("%s/api/v4/groups/%s/members/all", host, groupId)), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), new ParameterizedTypeReference<List<Member>>() {
         }).getBody();
     }
@@ -79,11 +79,107 @@ public class GitlabRestClient {
      *
      * @param projectId 项目Id
      */
-    public List<Member> getAllMembersByProjectId(Long projectId) {
+    public List<Member> getMembersByProjectId(Long projectId) {
         return restOperations.exchange(URI.create(String.format("%s/api/v4/projects/%s/members/all", host, projectId)), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), new ParameterizedTypeReference<List<Member>>() {
         }).getBody();
     }
 
+    /**
+     * 列出项目钩子
+     *
+     * @param projectId projectId
+     */
+    public String listHooks(String projectId) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks", host, projectId), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), String.class).getBody();
+    }
+
+    /**
+     * 添加项目钩子
+     *
+     * @param payload pipeline
+     */
+    public HookInfo addHook(PipelineAddPayload payload) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks", host, payload.getId()), HttpMethod.POST, new HttpEntity<>(payload, httpHeaders), HookInfo.class).getBody();
+    }
+
+    /**
+     * 编辑项目钩子
+     *
+     * @param payload pipeline
+     */
+    public HookInfo editHook(PipelineEditPayload payload) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks/%s", host, payload.getId(), payload.getHookId()), HttpMethod.PUT, new HttpEntity<>(payload, httpHeaders), HookInfo.class).getBody();
+    }
+
+    /**
+     * 删除项目钩子
+     *
+     * @param projectId 项目Id
+     * @param hookId    hookId
+     */
+    public String deleteHook(String projectId, String hookId) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks/%s", host, projectId, hookId), HttpMethod.DELETE, new HttpEntity<>(null, httpHeaders), String.class).getBody();
+    }
+
+    /**
+     * 获取项目钩子
+     *
+     * @param projectId 项目Id
+     * @param hookId    hookId
+     */
+    public HookInfo getHook(String projectId, String hookId) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks/%s", host, projectId, hookId), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), HookInfo.class).getBody();
+    }
+
+    /**
+     * 取消pipeline
+     *
+     * @param projectId  项目Id
+     * @param pipelineId pipelineId
+     */
+    public CancelPipeline cancelPipeline(Long projectId, Long pipelineId) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/pipelines/%s/cancel", host, projectId, pipelineId), HttpMethod.POST, new HttpEntity<>(null, httpHeaders), CancelPipeline.class).getBody();
+    }
+
+    /**
+     * 调用Gitlab 获取pipelines
+     *
+     * @param projectId   项目Id
+     * @param queryParams 请求参数
+     */
+    public List<Pipeline> getPipelines(Long projectId, @Nullable PipelinesQueryParams queryParams) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/api/v4/projects/%s/pipelines", host, projectId));
+        if (queryParams != null) {
+            Map<String, String> args = objectMapper.convertValue(queryParams, new TypeReference<Map<String, String>>() {
+            });
+            LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.setAll(args);
+            builder.queryParams(map);
+        }
+        URI uri = builder.build().encode().toUri();
+        return restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null, httpHeaders), new ParameterizedTypeReference<List<Pipeline>>() {
+        }).getBody();
+    }
+
+    /**
+     * 重试pipeline
+     *
+     * @param projectId  项目Id
+     * @param pipelineId pipelineId
+     */
+    public CancelPipeline retryPipeline(Long projectId, Long pipelineId) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/pipelines/%s/retry", host, projectId, pipelineId), HttpMethod.POST, new HttpEntity<>(null, httpHeaders), CancelPipeline.class).getBody();
+    }
+
+    /**
+     * 删除pipeline
+     *
+     * @param projectId  项目Id
+     * @param pipelineId pipelineId
+     */
+    public void deletePipeline(Long projectId, Long pipelineId) {
+        restOperations.exchange(String.format("%s/api/v4/projects/%s/pipelines/%s", host, projectId, pipelineId), HttpMethod.DELETE, new HttpEntity<>(null, httpHeaders), Void.class);
+    }
 
     /**
      * 调用Gitlab 根据组Id获取Jobs
@@ -111,103 +207,5 @@ public class GitlabRestClient {
         return restOperations.exchange(String.format("%s/api/v4/projects/%s/jobs/%s/erase", host, projectId, jobId), HttpMethod.POST, new HttpEntity<>(null, httpHeaders), EraseJob.class).getBody();
     }
 
-
-    /**
-     * 调用Gitlab 获取pipelines
-     *
-     * @param projectId 项目Id
-     * @param dto       请求参数
-     */
-    public List<Pipeline> getPipelinesByProjectId(Long projectId, @Nullable PipelinesDTO dto) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/api/v4/projects/%s/pipelines", host, projectId));
-        if (dto != null) {
-            Map<String, String> args = objectMapper.convertValue(dto, new TypeReference<Map<String, String>>() {
-            });
-            LinkedMultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-            queryParams.setAll(args);
-            builder.queryParams(queryParams);
-        }
-        URI uri = builder.build().encode().toUri();
-        return restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null, httpHeaders), new ParameterizedTypeReference<List<Pipeline>>() {
-        }).getBody();
-    }
-
-    /**
-     * 列出项目钩子
-     *
-     * @param projectId projectId
-     */
-    public String listPipeline(String projectId) {
-        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks", host, projectId), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), String.class).getBody();
-    }
-
-    /**
-     * 添加项目钩子
-     *
-     * @param payload pipeline
-     */
-    public String addPipeline(PipelineAddPayload payload) {
-        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks", host, payload.getId()), HttpMethod.POST, new HttpEntity<>(payload, httpHeaders), String.class).getBody();
-    }
-
-    /**
-     * 编辑项目钩子
-     *
-     * @param payload pipeline
-     */
-    public String editPipeline(PipelineEditPayload payload) {
-        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks/%s", host, payload.getId(), payload.getHookId()), HttpMethod.PUT, new HttpEntity<>(payload, httpHeaders), String.class).getBody();
-    }
-
-    /**
-     * 删除项目钩子
-     *
-     * @param projectId 项目Id
-     * @param hookId    hookId
-     */
-    public String deletePipeline(String projectId, String hookId) {
-        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks/%s", host, projectId, hookId), HttpMethod.DELETE, new HttpEntity<>(null, httpHeaders), String.class).getBody();
-    }
-
-    /**
-     * 获取项目钩子
-     *
-     * @param projectId 项目Id
-     * @param hookId    hookId
-     */
-    public PipelineInfo getPipeline(String projectId, String hookId) {
-        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks/%s", host, projectId, hookId), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), PipelineInfo.class).getBody();
-    }
-
-    /**
-     * 取消pipeline
-     *
-     * @param projectId  项目Id
-     * @param pipelineId pipelineId
-     */
-    public CancelPipeline cancelPipeline(Long projectId, Long pipelineId) {
-        return restOperations.exchange(String.format("%s/api/v4/projects/%s/pipelines/%s/cancel", host, projectId, pipelineId), HttpMethod.POST, new HttpEntity<>(null, httpHeaders), CancelPipeline.class).getBody();
-    }
-
-
-    /**
-     * 重试pipeline
-     *
-     * @param projectId  项目Id
-     * @param pipelineId pipelineId
-     */
-    public CancelPipeline retryPipeline(Long projectId, Long pipelineId) {
-        return restOperations.exchange(String.format("%s/api/v4/projects/%s/pipelines/%s/retry", host, projectId, pipelineId), HttpMethod.POST, new HttpEntity<>(null, httpHeaders), CancelPipeline.class).getBody();
-    }
-
-    /**
-     * 删除pipeline
-     *
-     * @param projectId  项目Id
-     * @param pipelineId pipelineId
-     */
-    public void deletePipeline(Long projectId, Long pipelineId) {
-        restOperations.exchange(String.format("%s/api/v4/projects/%s/pipelines/%s", host, projectId, pipelineId), HttpMethod.DELETE, new HttpEntity<>(null, httpHeaders), Void.class);
-    }
 
 }
