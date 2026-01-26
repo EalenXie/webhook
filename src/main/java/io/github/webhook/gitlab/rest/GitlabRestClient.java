@@ -45,6 +45,7 @@ public class GitlabRestClient {
         this.objectMapper = objectMapper;
         httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(privateToken);
+        httpHeaders.add("PRIVATE-TOKEN", privateToken);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     }
 
@@ -131,6 +132,52 @@ public class GitlabRestClient {
         }).getBody();
     }
 
+    /**
+     * 列出项目钩子
+     *
+     * @param projectId projectId
+     */
+    public String listPipeline(String projectId) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks", host, projectId), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), String.class).getBody();
+    }
+
+    /**
+     * 添加项目钩子
+     *
+     * @param payload pipeline
+     */
+    public String addPipeline(PipelineAddPayload payload) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks", host, payload.getId()), HttpMethod.POST, new HttpEntity<>(payload, httpHeaders), String.class).getBody();
+    }
+
+    /**
+     * 编辑项目钩子
+     *
+     * @param payload pipeline
+     */
+    public String editPipeline(PipelineEditPayload payload) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks/%s", host, payload.getId(), payload.getHookId()), HttpMethod.PUT, new HttpEntity<>(payload, httpHeaders), String.class).getBody();
+    }
+
+    /**
+     * 删除项目钩子
+     *
+     * @param projectId 项目Id
+     * @param hookId    hookId
+     */
+    public String deletePipeline(String projectId, String hookId) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks/%s", host, projectId, hookId), HttpMethod.DELETE, new HttpEntity<>(null, httpHeaders), String.class).getBody();
+    }
+
+    /**
+     * 获取项目钩子
+     *
+     * @param projectId 项目Id
+     * @param hookId    hookId
+     */
+    public PipelineInfo getPipeline(String projectId, String hookId) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks/%s", host, projectId, hookId), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), PipelineInfo.class).getBody();
+    }
 
     /**
      * 取消pipeline
