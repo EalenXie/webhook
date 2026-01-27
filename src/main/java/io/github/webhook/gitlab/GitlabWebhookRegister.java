@@ -38,7 +38,14 @@ public class GitlabWebhookRegister {
                 ProjectQuery query = new ProjectQuery();
                 query.setSimple(true);
                 query.setSearchNamespaces(true);
-                query.setSearch(webUrl.replace(webhook.getGitlabHost(), ""));
+                if (webUrl.endsWith(".git")) {
+                    webUrl = webUrl.replace(".git", "");
+                }
+                String namespace = webUrl.replace(webhook.getGitlabHost(), "");
+                if (namespace.startsWith("/")) {
+                    namespace = namespace.substring(1);
+                }
+                query.setSearch(namespace);
                 List<Project> projects = gitlabRestClient.getProjects(query);
                 Project project = getProjectByWebUrl(webUrl, projects);
                 if (project != null) {
