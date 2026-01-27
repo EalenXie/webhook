@@ -17,6 +17,7 @@ import java.util.Map;
 public abstract class DefaultEventHandlerFactory implements EventHandlerFactory {
     private final ApplicationContext applicationContext;
     private final Map<String, List<EventHandler<Object, Object>>> handlers = new HashMap<>();
+
     protected DefaultEventHandlerFactory(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }

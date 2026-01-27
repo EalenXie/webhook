@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class Commit implements Comparable<Commit>{
+public class Commit implements Comparable<Commit> {
     /**
      * id
      */
