@@ -132,9 +132,10 @@ public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<Pip
             Long projectId = project.getId();
             Long pipelineId = objectAttributes.getId();
             String hostSchema = String.format("%s%s/%s/gitlab/pipeline", webhookProperties.getWebhookHost(), GitlabEndpoint.ENDPOINT_URL, webhook.getId());
-            sb.append(String.format("[\uD83D\uDEAB取消运行](%s/cancel?projectId=%s&pipelineId=%s) ", hostSchema, projectId, pipelineId));
-            sb.append(String.format("[♻️重新运行](%s/retry?projectId=%s&pipelineId=%s) ", hostSchema, projectId, pipelineId));
-            sb.append(String.format("[⛔删除](%s/delete?projectId=%s&pipelineId=%s) %n%n", hostSchema, projectId, pipelineId));
+            String query = String.format("projectId=%s&pipelineId=%s", projectId, pipelineId);
+            sb.append(String.format("[\uD83D\uDEAB取消运行](%s/cancel?%s) ", hostSchema, query));
+            sb.append(String.format("[♻️重新运行](%s/retry?%s) ", hostSchema, query));
+            sb.append(String.format("[⛔删除](%s/delete?%s) %n%n", hostSchema, query));
         }
         message.setMessage(sb.toString());
         return message;

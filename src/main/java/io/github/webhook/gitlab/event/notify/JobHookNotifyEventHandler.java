@@ -30,7 +30,7 @@ public class JobHookNotifyEventHandler extends GitlabNotifyEventHandler<JobHook>
         String project = String.format("[[%s]](%s)", repository.getName(), repository.getHomepage());
         String pipeline = String.format("pipeline[#%s](%s/-/pipelines/%s)", pipelineId, repository.getHomepage(), pipelineId);
         String costTime = String.format("%.0f", jobHook.getBuildDuration());
-        if (costTime.equals("")) {
+        if (costTime.isEmpty()) {
             costTime = "0";
         }
         String emoji = "";

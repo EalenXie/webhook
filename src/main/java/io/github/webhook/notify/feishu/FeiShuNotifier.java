@@ -36,7 +36,7 @@ public class FeiShuNotifier implements Notifier<InteractiveMessage, Object> {
         NotifyConf notify = webhook.getNotify();
         FeiShuConf feiShu = notify.getFeiShu();
         String signKey = feiShu.getSignKey();
-        if (signKey != null && !"".equals(signKey.trim())) {
+        if (signKey != null && !signKey.trim().isEmpty()) {
             long timestamp = System.currentTimeMillis();
             String sign = sign(timestamp, signKey);
             interactiveMessage.setTimestamp(String.valueOf(timestamp));
