@@ -33,11 +33,13 @@ public class GitlabWebhookRegister {
         List<String> success = new ArrayList<>();
         List<String> gitlabProjectWebUrls = webhook.getGitlabProjectWebUrls();
         GitlabRestClient gitlabRestClient = gitlabRestClientFactory.getGitlabRestClient(webhook);
-        ProjectQuery query = new ProjectQuery();
-        query.setSimple(true);
-        List<Project> projects = gitlabRestClient.getProjects(query);
         for (String webUrl : gitlabProjectWebUrls) {
             try {
+                ProjectQuery query = new ProjectQuery();
+                query.setSimple(true);
+                query.setSearchNamespaces(true);
+                query.setSearch(webUrl.replace(webhook.getGitlabHost(), ""));
+                List<Project> projects = gitlabRestClient.getProjects(query);
                 Project project = getProjectByWebUrl(webUrl, projects);
                 if (project != null) {
                     String webhookUrl = webhookProperties.getWebhookUrl(webhook.getId());

@@ -13,7 +13,8 @@ public class ProjectQuery {
      * 搜索项目（按 name / path / path_with_namespace）
      */
     private String search;
-
+    @JsonProperty("search_namespaces")
+    private Boolean searchNamespaces;
     @JsonProperty("id_after")
     private Long idAfter;
     /**
@@ -25,7 +26,6 @@ public class ProjectQuery {
      * 只返回当前用户是成员的项目
      */
     private Boolean membership;
-
     /**
      * 只返回当前用户拥有的项目
      */
