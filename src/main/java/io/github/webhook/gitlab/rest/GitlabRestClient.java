@@ -49,6 +49,14 @@ public class GitlabRestClient {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
     }
 
+    private LinkedMultiValueMap<String, String> convertQueryParams(Object queryParams) {
+        Map<String, String> args = objectMapper.convertValue(queryParams, new TypeReference<Map<String, String>>() {
+        });
+        LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.setAll(args);
+        return map;
+    }
+
     public String getHost() {
         return host;
     }
@@ -62,6 +70,15 @@ public class GitlabRestClient {
         return restOperations.exchange(URI.create(String.format("%s/api/v4/users/%s", host, userId)), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), GitlabUser.class).getBody();
     }
 
+    public List<Project> getProjects(ProjectQuery queryParams) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/api/v4/projects", host));
+        if (queryParams != null) {
+            builder.queryParams(convertQueryParams(queryParams));
+        }
+        URI uri = builder.build().encode().toUri();
+        return restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null, httpHeaders), new ParameterizedTypeReference<List<Project>>() {
+        }).getBody();
+    }
 
     /**
      * 调用Gitlab 根据组Id获取用户成员信息
@@ -89,8 +106,9 @@ public class GitlabRestClient {
      *
      * @param projectId projectId
      */
-    public String listHooks(String projectId) {
-        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks", host, projectId), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), String.class).getBody();
+    public List<HookInfo> listHooks(String projectId) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks", host, projectId), HttpMethod.GET, new HttpEntity<>(null, httpHeaders), new ParameterizedTypeReference<List<HookInfo>>() {
+        }).getBody();
     }
 
     /**
@@ -98,7 +116,7 @@ public class GitlabRestClient {
      *
      * @param payload pipeline
      */
-    public HookInfo addHook(PipelineAddPayload payload) {
+    public HookInfo addHook(HookAddPayload payload) {
         return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks", host, payload.getId()), HttpMethod.POST, new HttpEntity<>(payload, httpHeaders), HookInfo.class).getBody();
     }
 
@@ -107,7 +125,7 @@ public class GitlabRestClient {
      *
      * @param payload pipeline
      */
-    public HookInfo editHook(PipelineEditPayload payload) {
+    public HookInfo editHook(HookEditPayload payload) {
         return restOperations.exchange(String.format("%s/api/v4/projects/%s/hooks/%s", host, payload.getId(), payload.getHookId()), HttpMethod.PUT, new HttpEntity<>(payload, httpHeaders), HookInfo.class).getBody();
     }
 
@@ -150,11 +168,7 @@ public class GitlabRestClient {
     public List<Pipeline> getPipelines(Long projectId, @Nullable PipelinesQueryParams queryParams) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format("%s/api/v4/projects/%s/pipelines", host, projectId));
         if (queryParams != null) {
-            Map<String, String> args = objectMapper.convertValue(queryParams, new TypeReference<Map<String, String>>() {
-            });
-            LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-            map.setAll(args);
-            builder.queryParams(map);
+            builder.queryParams(convertQueryParams(queryParams));
         }
         URI uri = builder.build().encode().toUri();
         return restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null, httpHeaders), new ParameterizedTypeReference<List<Pipeline>>() {

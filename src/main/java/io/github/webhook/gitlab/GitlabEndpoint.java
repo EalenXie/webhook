@@ -25,6 +25,9 @@ public class GitlabEndpoint {
     private WebhookRepository webhookRepository;
     @Resource
     private GitlabRestClientFactory gitlabRestClientFactory;
+    /**
+     * 默认Endpoint端点
+     */
     public static final String ENDPOINT_URL = "/actuator/webhook";
     /**
      * 默认的404页面 😄

@@ -1,12 +1,12 @@
 package io.github.webhook.core;
 
-import io.github.webhook.config.SpringEnvHelper;
-import io.github.webhook.endpoint.WebhookEndpoint;
+import io.github.webhook.gitlab.GitlabWebhookRegister;
 import io.github.webhook.meta.Webhook;
+import io.github.webhook.meta.WebhookProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -17,33 +17,28 @@ import java.util.List;
 @Slf4j
 @Component
 public class WebhookCommandLineRunner implements CommandLineRunner {
-
-
     @Resource
-    private Environment environment;
-
+    private WebhookProperties webhookProperties;
     @Resource
     private WebhookRepository webhookRepository;
+    @Resource
+    private GitlabWebhookRegister gitlabWebhookRegister;
 
     @Override
     public void run(String... args) {
-        String ip = SpringEnvHelper.getLocalhostIp();
-        int port = SpringEnvHelper.getPort();
-        String contextPath = environment.getProperty("server.servlet.context-path");
-        String contentPath;
-        if (contextPath != null) {
-            contentPath = String.format("%s://%s:%s%s", "http", ip, port, contextPath);
-        } else {
-            contentPath = String.format("%s://%s:%s", "http", ip, port);
-        }
         List<Webhook> webhooks = webhookRepository.getWebhooks();
         if (!webhooks.isEmpty()) {
-            StringBuilder sb = new StringBuilder("Webhooks are successfully configured.\n");
-            sb.append("The following webhooks are available,Please fill in the following address in your system's webhook: \n");
+            log.info("Webhooks are successfully configured. The following webhooks are available:");
             for (Webhook webhook : webhooks) {
-                sb.append(String.format("Webhook[%s] of type %s is configured,Address: %s%s/%s%n", webhook.getId(), webhook.getType(), contentPath, WebhookEndpoint.ENDPOINT_URL, webhook.getId()));
+                StringBuilder sb = new StringBuilder(String.format("Webhook[%s][%s]success!,Url: %s", webhook.getId(), webhook.getType(), webhookProperties.getWebhookUrl(webhook.getId())));
+                if (!ObjectUtils.isEmpty(webhook.getGitlabProjectWebUrls())) {
+                    List<String> success = gitlabWebhookRegister.register(webhook);
+                    if (!ObjectUtils.isEmpty(success)) {
+                        sb.append(String.format(" ,Projects:%s", success));
+                    }
+                }
+                log.info(sb.toString());
             }
-            log.info(sb.toString());
         }
 
     }

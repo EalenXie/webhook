@@ -1,7 +1,6 @@
 package io.github.webhook.gitlab.event.notify;
 
 import io.github.webhook.config.FileConvert;
-import io.github.webhook.config.SpringEnvHelper;
 import io.github.webhook.gitlab.GitlabEndpoint;
 import io.github.webhook.gitlab.event.PipelineEventHandler;
 import io.github.webhook.gitlab.webhook.Build;
@@ -9,9 +8,11 @@ import io.github.webhook.gitlab.webhook.Commit;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.pipeline.PipelineHook;
 import io.github.webhook.meta.Webhook;
+import io.github.webhook.meta.WebhookProperties;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +24,9 @@ import java.util.List;
  * @author EalenXie created on 2023/4/14 12:53
  */
 public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<PipelineHook> implements PipelineEventHandler {
+
+    @Resource
+    private WebhookProperties webhookProperties;
 
     public PipelineHookNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
@@ -126,12 +130,9 @@ public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<Pip
                 sb.append(String.format(">%s [%s](%s/-/jobs/%s) : <font color='%s'>%s</font> %s %s %ss%n%n", emoji, build.getStage(), project.getWebUrl(), build.getId(), color, build.getStatus(), fileName, "\uD83D\uDD57", costTime));
             }
         } else {
-            String pipelineEndpointUrl = GitlabEndpoint.ENDPOINT_URL;
-            String localhostIp = SpringEnvHelper.getLocalhostIp();
             Long projectId = project.getId();
             Long pipelineId = objectAttributes.getId();
-            Integer port = SpringEnvHelper.getPort();
-            String hostSchema = String.format("http://%s:%s%s/%s/gitlab/pipeline", localhostIp, port, pipelineEndpointUrl, webhook.getId());
+            String hostSchema = String.format("http://%s/%s/gitlab/pipeline", webhookProperties.getWebhookHost(), GitlabEndpoint.ENDPOINT_URL, webhook.getId());
             sb.append(String.format("[\uD83D\uDEAB取消运行](%s/cancel?projectId=%s&pipelineId=%s) ", hostSchema, projectId, pipelineId));
             sb.append(String.format("[♻️重新运行](%s/retry?projectId=%s&pipelineId=%s) ", hostSchema, projectId, pipelineId));
             sb.append(String.format("[⛔删除](%s/delete?projectId=%s&pipelineId=%s) %n%n", hostSchema, projectId, pipelineId));

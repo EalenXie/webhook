@@ -3,6 +3,9 @@ package io.github.webhook.meta;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author EalenXie created on 2023/4/14 11:21
  */
@@ -25,4 +28,20 @@ public class Webhook {
      * webhook 配置
      */
     private WebhookConf conf;
+
+
+    public String getGitlabHost() {
+        if (conf != null && conf.getGitlab() != null) {
+            return conf.getGitlab().getHost();
+        }
+        return null;
+    }
+
+    public List<String> getGitlabProjectWebUrls() {
+        if (conf != null && conf.getGitlab() != null) {
+            return conf.getGitlab().getProjectWebUrls();
+        }
+        return Collections.emptyList();
+    }
+
 }

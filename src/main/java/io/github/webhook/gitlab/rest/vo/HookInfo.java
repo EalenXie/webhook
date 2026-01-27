@@ -87,4 +87,8 @@ public class HookInfo {
      */
     @JsonProperty("wiki_page_events")
     private Boolean wikiPageEvents;
+
+    @JsonProperty("created_at")
+    private String createdAt;
+
 }

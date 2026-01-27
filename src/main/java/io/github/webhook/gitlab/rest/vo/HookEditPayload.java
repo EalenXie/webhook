@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PipelineEditPayload {
+public class HookEditPayload {
 
     /**
      * 项目ID或URL编码路径（必填）
