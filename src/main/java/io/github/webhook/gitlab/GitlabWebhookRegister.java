@@ -60,10 +60,10 @@ public class GitlabWebhookRegister {
                     }
                     success.add(project.getWebUrl());
                 } else {
-                    log.error("register {} fail , not found", webUrl);
+                    log.error("register {} fail !!!, not found", webUrl);
                 }
             } catch (Exception e) {
-                log.error("register {} fail:{}", webUrl, e.getMessage());
+                log.error("register {} fail !!! :{}", webUrl, e.getMessage());
             }
         }
         return success;

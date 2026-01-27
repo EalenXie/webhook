@@ -10,10 +10,9 @@ import javax.validation.constraints.NotNull;
  */
 @Getter
 @Setter
-public class PipelineDTO {
+public class PipelinePayload {
     @NotNull(message = "projectId不允许为null")
     private Long projectId;
     @NotNull(message = "pipelineId不允许为null")
     private Long pipelineId;
-
 }

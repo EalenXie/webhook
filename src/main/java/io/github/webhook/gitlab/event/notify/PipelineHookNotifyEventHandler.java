@@ -12,7 +12,6 @@ import io.github.webhook.meta.WebhookProperties;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -25,11 +24,11 @@ import java.util.List;
  */
 public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<PipelineHook> implements PipelineEventHandler {
 
-    @Resource
-    private WebhookProperties webhookProperties;
+    private final WebhookProperties webhookProperties;
 
-    public PipelineHookNotifyEventHandler(NotifierFactory notifierFactory) {
+    public PipelineHookNotifyEventHandler(WebhookProperties webhookProperties, NotifierFactory notifierFactory) {
         super(notifierFactory);
+        this.webhookProperties = webhookProperties;
     }
 
     @Override

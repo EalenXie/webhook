@@ -2,6 +2,7 @@ package io.github.webhook.gitlab.event;
 
 import io.github.webhook.core.DefaultEventHandlerFactory;
 import io.github.webhook.gitlab.event.notify.*;
+import io.github.webhook.meta.WebhookProperties;
 import io.github.webhook.notify.NotifierFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -34,7 +35,7 @@ public class GitlabEventFactory extends DefaultEventHandlerFactory {
         beanFactory.registerSingleton("noteHookNotifyEventHandler", new NoteHookNotifyEventHandler(notifierFactory));
         beanFactory.registerSingleton("releaseHookNotifyEventHandler", new ReleaseHookNotifyEventHandler(notifierFactory));
         beanFactory.registerSingleton("tagPushHookNotifyEventHandler", new TagPushHookNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("pipelineHookNotifyEventHandler", new PipelineHookNotifyEventHandler(notifierFactory));
+        beanFactory.registerSingleton("pipelineHookNotifyEventHandler", new PipelineHookNotifyEventHandler(beanFactory.getBean(WebhookProperties.class), notifierFactory));
     }
 
 

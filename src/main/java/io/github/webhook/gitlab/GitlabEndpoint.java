@@ -1,7 +1,7 @@
 package io.github.webhook.gitlab;
 
 import io.github.webhook.core.WebhookRepository;
-import io.github.webhook.gitlab.dto.PipelineDTO;
+import io.github.webhook.gitlab.dto.PipelinePayload;
 import io.github.webhook.gitlab.rest.GitlabRestClient;
 import io.github.webhook.gitlab.rest.GitlabRestClientFactory;
 import io.github.webhook.gitlab.rest.vo.CancelPipeline;
@@ -37,7 +37,7 @@ public class GitlabEndpoint {
     private static final Pattern PATTERN = Pattern.compile("^cancel$|^delete$|^retry$");
 
     @GetMapping(ENDPOINT_URL + "/{webhookId}/gitlab/pipeline/{action}")
-    public String pipelineAction(@PathVariable String webhookId, @PathVariable String action, @Valid PipelineDTO dto) {
+    public String pipelineAction(@PathVariable String webhookId, @PathVariable String action, @Valid PipelinePayload dto) {
         Webhook webhook = webhookRepository.findById(webhookId);
         if (webhook != null && PATTERN.matcher(action).find()) {
             GitlabRestClient gitlabRestClient = gitlabRestClientFactory.getGitlabRestClient(webhook);
