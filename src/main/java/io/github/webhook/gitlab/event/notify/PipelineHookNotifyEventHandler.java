@@ -53,20 +53,20 @@ public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<Pip
         message.setTitle(pipelineHook.getObjectKind());
         message.setNotifies(Collections.singletonList(String.valueOf(pipelineHook.getUser().getId())));
         StringBuilder sb = new StringBuilder();
-        PipelineHook.ObjectAttributes objectAttributes = pipelineHook.getObjectAttributes();
+        PipelineHook.ObjectAttributes attributes = pipelineHook.getObjectAttributes();
         Project project = pipelineHook.getProject();
         Commit commit = pipelineHook.getCommit();
         List<Build> builds = pipelineHook.getBuilds();
-        String status = objectAttributes.getStatus();
-        String pipeline = String.format("%s [#%s %s](%s/-/pipelines/%s)", pipelineHook.getObjectKind(), objectAttributes.getId(), "\uD83D\uDE80", project.getWebUrl(), objectAttributes.getId());
-        sb.append(String.format("[[%s:%s]](%s/-/tree/%s) <font color='#000000'>%s %s</font>%n%n", project.getName(), objectAttributes.getRef(), project.getWebUrl(), objectAttributes.getRef(), pipeline, status));
+        String status = attributes.getStatus();
+        String pipeline = String.format("%s [#%s %s](%s/-/pipelines/%s)", pipelineHook.getObjectKind(), attributes.getId(), "\uD83D\uDE80", project.getWebUrl(), attributes.getId());
+        sb.append(String.format("[[%s:%s]](%s/-/tree/%s) <font color='#000000'>%s %s</font>%n%n", project.getName(), attributes.getRef(), project.getWebUrl(), attributes.getRef(), pipeline, status));
         if (!"running".equals(status)) {
             int totalTime = 0;
-            if (objectAttributes.getDuration() != null) {
-                totalTime += objectAttributes.getDuration();
+            if (attributes.getDuration() != null) {
+                totalTime += attributes.getDuration();
             }
-            if (objectAttributes.getQueuedDuration() != null) {
-                totalTime += objectAttributes.getQueuedDuration();
+            if (attributes.getQueuedDuration() != null) {
+                totalTime += attributes.getQueuedDuration();
             }
             sb.append(String.format(">[%s](%s) %s - %s%n%n", commit.getId().substring(0, 8), commit.getUrl(), commit.getAuthor().getName(), commit.getTitle()));
             String statusEmoji = "";
@@ -91,7 +91,7 @@ public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<Pip
                 default:
                     break;
             }
-            sb.append(String.format("%s%s : <font color='%s'>%s</font> %s %ss%n%n", statusEmoji, pipeline, statusColor, objectAttributes.getDetailedStatus(), "\uD83D\uDD57", totalTime));
+            sb.append(String.format("%s%s : <font color='%s'>%s</font> %s %ss%n%n", statusEmoji, pipeline, statusColor, attributes.getDetailedStatus(), "\uD83D\uDD57", totalTime));
             Collections.sort(builds);
             for (Build build : builds) {
                 String costTime = String.format("%.0f", build.getDuration());
@@ -139,7 +139,7 @@ public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<Pip
             }
         } else {
             Long projectId = project.getId();
-            Long pipelineId = objectAttributes.getId();
+            Long pipelineId = attributes.getId();
             String hostSchema = String.format("%s%s/%s/gitlab/pipeline", webhookProperties.getWebhookHost(), GitlabEndpoint.ENDPOINT_URL, webhook.getId());
             String query = String.format("projectId=%s&pipelineId=%s", projectId, pipelineId);
             sb.append(String.format("[\uD83D\uDEAB取消运行](%s/cancel?%s) ", hostSchema, query));
