@@ -41,15 +41,18 @@ public abstract class FactoryEventHandler implements WebhookHandler<Object> {
         List<EventHandler<Object, Object>> handlers = eventHandlerFactory.getEventHandlers(event, webhook);
         List<Object> resp = new ArrayList<>();
         for (EventHandler<Object, Object> handler : handlers) {
-            // 获取请求信息
-            Object value = objectMapper.convertValue(params, handler.getDataType());
-            // 是否处理事件(不满足条件的事件处理将被丢弃)
-            if (handler.shouldHandleEvent(webhook, value)) {
-                // 处理事件
-                resp.add(handler.handleEvent(webhook, value));
-            } else {
-                log.warn("不满足事件条件，消息被丢弃:{}", value);
+            try {
+                // 获取请求信息
+                Object value = objectMapper.convertValue(params, handler.getDataType());
+                // 是否处理事件(不满足条件的事件处理将被丢弃)
+                if (handler.shouldHandleEvent(webhook, value)) {
+                    // 处理事件
+                    resp.add(handler.handleEvent(webhook, value));
+                }
+            } catch (Exception e) {
+                log.error("Webhook[{}]事件[{}],处理失败:", webhook.getId(), handler.getClass(), e);
             }
+
         }
         return resp.size() == 1 ? resp.get(0) : resp;
 

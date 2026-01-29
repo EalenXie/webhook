@@ -37,6 +37,9 @@ public class WebhookCommandLineRunner implements CommandLineRunner {
                         sb.append(String.format(" ,Projects:%s", success));
                     }
                 }
+                if (!ObjectUtils.isEmpty(webhook.getGitlabOnlyRefs())){
+                    sb.append(String.format(" ,Branches:%s", webhook.getGitlabOnlyRefs()));
+                }
                 log.info(sb.toString());
             }
         }
