@@ -2,6 +2,7 @@ package io.github.webhook.core;
 
 import io.github.webhook.meta.Webhook;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +34,14 @@ public abstract class DefaultEventHandlerFactory implements EventHandlerFactory 
     public abstract void registerEvents();
 
     /**
+     * 注册事件处理器
+     */
+    protected void regEventHandler(EventHandler<?, ?> eventHandler) {
+        String className = eventHandler.getClass().getName();
+        ((DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory()).registerSingleton(Character.toLowerCase(className.charAt(0)) + className.substring(1), eventHandler);
+    }
+
+    /**
      * 根据事件获取事件处理器
      *
      * @param event   事件
@@ -58,6 +67,7 @@ public abstract class DefaultEventHandlerFactory implements EventHandlerFactory 
         }
         return eventHandlers;
     }
+
 
     /**
      * 默认方法 根据事件名称获取到通知类型的BeanName -> xxxNotifyEventHandler

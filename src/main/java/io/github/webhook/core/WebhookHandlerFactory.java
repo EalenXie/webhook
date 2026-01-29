@@ -24,6 +24,9 @@ public class WebhookHandlerFactory implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * 注册Webhook处理器
+     */
     @PostConstruct
     public void init() {
         webhookHandlers.put(WebhookType.GITLAB, getWebhookHandler(GitlabWebhookHandler.class));

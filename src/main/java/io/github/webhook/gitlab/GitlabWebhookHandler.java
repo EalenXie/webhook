@@ -25,10 +25,12 @@ public class GitlabWebhookHandler extends FactoryEventHandler {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         assert attributes != null;
         HttpServletRequest request = attributes.getRequest();
+        // 获取Gitlab请求事件
         String event = request.getHeader("X-Gitlab-Event");
         if (ObjectUtils.isEmpty(event)) {
             throw new UnsupportedOperationException("Unable to get the Gitlab event type, please check that your webhook configuration is correct");
         }
+        // 执行事件处理
         return handlerExecute(event, webhook, params);
     }
 

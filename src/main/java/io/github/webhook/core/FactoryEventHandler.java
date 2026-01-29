@@ -47,12 +47,15 @@ public abstract class FactoryEventHandler implements WebhookHandler<Object> {
                 // 是否处理事件(不满足条件的事件处理将被丢弃)
                 if (handler.shouldHandleEvent(webhook, value)) {
                     // 处理事件
-                    resp.add(handler.handleEvent(webhook, value));
+                    Object response = handler.handleEvent(webhook, value);
+                    // 获取事件处理结果
+                    if (response != null) {
+                        resp.add(response);
+                    }
                 }
             } catch (Exception e) {
                 log.error("Webhook[{}]事件[{}],处理失败:", webhook.getId(), handler.getClass(), e);
             }
-
         }
         return resp.size() == 1 ? resp.get(0) : resp;
 

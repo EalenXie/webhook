@@ -6,7 +6,6 @@ import io.github.webhook.github.event.notify.PullRequestNotifyEventHandler;
 import io.github.webhook.github.event.notify.PushNotifyEventHandler;
 import io.github.webhook.github.event.notify.StarNotifyEventHandler;
 import io.github.webhook.notify.NotifierFactory;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -26,11 +25,10 @@ public class GithubEventFactory extends DefaultEventHandlerFactory {
      */
     @Override
     public void registerEvents() {
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) getApplicationContext().getAutowireCapableBeanFactory();
         // Github 通知类 事件处理器 xxxNotifyEventHandler
-        beanFactory.registerSingleton("pushNotifyEventHandler", new PushNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("starNotifyEventHandler", new StarNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("pullRequestNotifyEventHandler", new PullRequestNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("forkNotifyEventHandler", new ForkNotifyEventHandler(notifierFactory));
+        regEventHandler(new PushNotifyEventHandler(notifierFactory));
+        regEventHandler(new StarNotifyEventHandler(notifierFactory));
+        regEventHandler(new PullRequestNotifyEventHandler(notifierFactory));
+        regEventHandler(new ForkNotifyEventHandler(notifierFactory));
     }
 }

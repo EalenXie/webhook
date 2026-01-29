@@ -4,16 +4,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.github.webhook.meta.Webhook;
 
 /**
+ * webhook处理器
+ *
  * @author EalenXie created on 2023/4/14 12:23
  */
 public interface WebhookHandler<R> {
 
 
     /**
-     * 处理webhook请求信息
+     * 处理webhook
      *
-     * @param params 请求参数
-     * @return 返回对象
+     * @param params 输入信息
+     * @return 输出信息
      */
     R handleWebhook(Webhook webhook, JsonNode params);
 

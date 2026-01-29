@@ -5,9 +5,9 @@ import io.github.webhook.notify.Notifier;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
 import io.github.webhook.notify.NotifyMessageGenerator;
+import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,6 +39,7 @@ public abstract class NotifyEventHandler<D> implements NotifyMessageGenerator<D>
     }
 
     @Override
+    @Nullable
     public Object handleEvent(Webhook webhook, D data) {
         if (shouldNotify(webhook, data)) {
             List<Object> resp = new ArrayList<>();
@@ -51,6 +52,6 @@ public abstract class NotifyEventHandler<D> implements NotifyMessageGenerator<D>
             }
             return resp.size() == 1 ? resp.get(0) : resp;
         }
-        return Collections.emptyList();
+        return null;
     }
 }

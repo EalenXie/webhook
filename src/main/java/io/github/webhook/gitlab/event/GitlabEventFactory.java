@@ -4,7 +4,6 @@ import io.github.webhook.core.DefaultEventHandlerFactory;
 import io.github.webhook.gitlab.event.notify.*;
 import io.github.webhook.meta.WebhookProperties;
 import io.github.webhook.notify.NotifierFactory;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 
 import javax.annotation.PostConstruct;
@@ -26,16 +25,15 @@ public class GitlabEventFactory extends DefaultEventHandlerFactory {
      */
     @PostConstruct
     public void registerEvents() {
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) getApplicationContext().getAutowireCapableBeanFactory();
         // Gitlab 通知类 事件处理器 xxxHookNotifyEventHandler
-        beanFactory.registerSingleton("pushHookNotifyEventHandler", new PushHookNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("issueHookNotifyEventHandler", new IssueHookNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("mergeRequestHookNotifyEventHandler", new MergeRequestHookNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("jobHookNotifyEventHandler", new JobHookNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("noteHookNotifyEventHandler", new NoteHookNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("releaseHookNotifyEventHandler", new ReleaseHookNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("tagPushHookNotifyEventHandler", new TagPushHookNotifyEventHandler(notifierFactory));
-        beanFactory.registerSingleton("pipelineHookNotifyEventHandler", new PipelineHookNotifyEventHandler(beanFactory.getBean(WebhookProperties.class), notifierFactory));
+        regEventHandler(new PushHookNotifyEventHandler(notifierFactory));
+        regEventHandler(new IssueHookNotifyEventHandler(notifierFactory));
+        regEventHandler(new MergeRequestHookNotifyEventHandler(notifierFactory));
+        regEventHandler(new JobHookNotifyEventHandler(notifierFactory));
+        regEventHandler(new NoteHookNotifyEventHandler(notifierFactory));
+        regEventHandler(new ReleaseHookNotifyEventHandler(notifierFactory));
+        regEventHandler(new TagPushHookNotifyEventHandler(notifierFactory));
+        regEventHandler(new PipelineHookNotifyEventHandler(getApplicationContext().getBean(WebhookProperties.class), notifierFactory));
     }
 
 
