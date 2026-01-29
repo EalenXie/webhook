@@ -20,6 +20,10 @@ public class GitlabConf {
      */
     private String privateToken;
     /**
+     * 仅部分分支（事件处理）生效 注：改配置项目仅只支持包含有分支信息的消息类型有效（例如：{pushHook PushHook，PipelinePush JobHook TagPushHook）
+     */
+    private List<String> onlyRefs;
+    /**
      * 配置多个项目地址
      */
     private List<String> projectWebUrls;

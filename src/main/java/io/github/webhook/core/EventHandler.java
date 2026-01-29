@@ -14,6 +14,12 @@ public interface EventHandler<D, R> {
      */
     Class<D> getDataType();
 
+
+    /**
+     * 是否执行 处理事情请求
+     */
+    boolean shouldHandleEvent(Webhook webhook, D data);
+
     /**
      * 处理请求事件
      *

@@ -6,6 +6,7 @@ import io.github.webhook.gitlab.webhook.job.JobHook;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -17,6 +18,15 @@ public class JobHookNotifyEventHandler extends GitlabNotifyEventHandler<JobHook>
 
     public JobHookNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
+    }
+
+
+    @Override
+    public boolean shouldHandleEvent(Webhook webhook, JobHook data) {
+        if (!ObjectUtils.isEmpty(webhook.getGitlabOnlyRefs())) {
+            return onlyRefs(webhook.getGitlabOnlyRefs(), data.getRef());
+        }
+        return super.shouldHandleEvent(webhook, data);
     }
 
     @Override

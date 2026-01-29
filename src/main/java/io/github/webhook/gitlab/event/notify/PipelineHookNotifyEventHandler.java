@@ -11,6 +11,7 @@ import io.github.webhook.meta.Webhook;
 import io.github.webhook.meta.WebhookProperties;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -29,6 +30,14 @@ public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<Pip
     public PipelineHookNotifyEventHandler(WebhookProperties webhookProperties, NotifierFactory notifierFactory) {
         super(notifierFactory);
         this.webhookProperties = webhookProperties;
+    }
+
+    @Override
+    public boolean shouldHandleEvent(Webhook webhook, PipelineHook data) {
+        if (!ObjectUtils.isEmpty(webhook.getGitlabOnlyRefs())) {
+            return onlyRefs(webhook.getGitlabOnlyRefs(), data.getObjectAttributes().getRef());
+        }
+        return super.shouldHandleEvent(webhook, data);
     }
 
     @Override

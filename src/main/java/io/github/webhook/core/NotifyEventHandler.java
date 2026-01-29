@@ -22,6 +22,12 @@ public abstract class NotifyEventHandler<D> implements NotifyMessageGenerator<D>
         this.notifierFactory = notifierFactory;
     }
 
+
+    @Override
+    public boolean shouldHandleEvent(Webhook webhook, D data) {
+        return true;
+    }
+
     /**
      * 是否执行通知
      *

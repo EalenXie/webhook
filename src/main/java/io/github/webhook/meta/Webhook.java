@@ -44,4 +44,12 @@ public class Webhook {
         return Collections.emptyList();
     }
 
+
+    public List<String> getGitlabOnlyRefs() {
+        if (conf != null && conf.getGitlab() != null) {
+            return conf.getGitlab().getOnlyRefs();
+        }
+        return Collections.emptyList();
+    }
+
 }

@@ -22,6 +22,14 @@ public class PushHookNotifyEventHandler extends GitlabNotifyEventHandler<PushHoo
     }
 
     @Override
+    public boolean shouldHandleEvent(Webhook webhook, PushHook data) {
+        if (!ObjectUtils.isEmpty(webhook.getGitlabOnlyRefs())) {
+            return onlyRefs(webhook.getGitlabOnlyRefs(), data.getRef());
+        }
+        return super.shouldHandleEvent(webhook, data);
+    }
+
+    @Override
     protected boolean shouldNotify(Webhook webhook, PushHook data) {
         return !ObjectUtils.isEmpty(data.getCommits());
     }
