@@ -29,7 +29,7 @@ public class WebhookCommandLineRunner implements CommandLineRunner {
         List<Webhook> webhooks = webhookRepository.getWebhooks();
         if (!webhooks.isEmpty()) {
             log.info("Webhooks are successfully configured. The following webhooks are available:");
-            for (Webhook webhook : webhooks) {
+            webhooks.forEach(webhook -> {
                 StringBuilder sb = new StringBuilder(String.format("Webhook[%s][%s]success!,Url: %s", webhook.getId(), webhook.getType(), webhookProperties.getWebhookUrl(webhook.getId())));
                 if (!ObjectUtils.isEmpty(webhook.getGitlabProjectWebUrls())) {
                     List<String> success = gitlabWebhookRegister.register(webhook);
@@ -37,12 +37,11 @@ public class WebhookCommandLineRunner implements CommandLineRunner {
                         sb.append(String.format(" ,Projects:%s", success));
                     }
                 }
-                if (!ObjectUtils.isEmpty(webhook.getGitlabOnlyRefs())){
+                if (!ObjectUtils.isEmpty(webhook.getGitlabOnlyRefs())) {
                     sb.append(String.format(" ,Branches:%s", webhook.getGitlabOnlyRefs()));
                 }
                 log.info(sb.toString());
-            }
+            });
         }
-
     }
 }

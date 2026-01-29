@@ -15,10 +15,10 @@ public class WebhookExecutor {
     }
 
     public Object handleWebhook(Webhook webhook, JsonNode json) {
-        WebhookHandler<?> webhookHandler = webhookHandlerFactory.getWebhookHandler(webhook.getType());
-        if (webhookHandler == null) {
+        WebhookHandler<?> handler = webhookHandlerFactory.getWebhookHandler(webhook.getType());
+        if (handler == null) {
             throw new UnsupportedOperationException("unsupported webhook handler");
         }
-        return webhookHandler.handleWebhook(webhook, json);
+        return handler.handleWebhook(webhook, json);
     }
 }
