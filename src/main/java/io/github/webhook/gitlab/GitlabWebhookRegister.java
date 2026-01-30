@@ -55,7 +55,7 @@ public class GitlabWebhookRegister {
                         HookAddPayload payload = new HookAddPayload();
                         payload.setId(project.getId());
                         payload.setUrl(webhookUrl);
-                        GitlabConf.GitlabWebhookTrigger trigger = webhook.getTrigger();
+                        GitlabConf.Trigger trigger = webhook.getGitlabTrigger();
                         payload.setPushEvents(trigger.getPush());
                         payload.setPipelineEvents(trigger.getPipeline());
                         payload.setJobEvents(trigger.getJob());

@@ -52,7 +52,7 @@ public class Webhook {
         return Collections.emptyList();
     }
 
-    public GitlabConf.GitlabWebhookTrigger getTrigger() {
+    public GitlabConf.Trigger getGitlabTrigger() {
         if (conf != null && conf.getGitlab() != null) {
             return conf.getGitlab().getTrigger();
         }

@@ -27,18 +27,17 @@ public class GitlabConf {
     /**
      * 需要注册的gitlab Webhook触发来源，默认为push和pipeline（需配置服务器地址和Token，会对配置项目进行自动注册Webhook，针对固定事件进行触发注册）
      */
-    private GitlabWebhookTrigger trigger;
+    private Trigger trigger;
     /**
      * 仅部分分支（事件处理）生效 注：此配置仅对包含有分支信息的消息类型有效（例如：PushHook，PipelinePush，JobHook，TagPushHook）
      */
     private List<String> onlyRefs;
 
-
     @SuppressWarnings("unused")
     public void setProjectWebUrls(List<String> projectWebUrls) {
         this.projectWebUrls = projectWebUrls;
         if (!ObjectUtils.isEmpty(this.projectWebUrls) && this.trigger == null) {
-            this.trigger = new GitlabWebhookTrigger();
+            this.trigger = new Trigger();
         }
     }
 
@@ -47,7 +46,7 @@ public class GitlabConf {
      */
     @Getter
     @Setter
-    public static class GitlabWebhookTrigger {
+    public static class Trigger {
         /**
          * 问题事件触发钩子
          */
