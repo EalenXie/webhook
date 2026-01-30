@@ -110,7 +110,12 @@ public class HookAddPayload {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("tag_push_events")
     private Boolean tagPushEvents;
-
+    /**
+     * 发布事件
+     */
+    @JsonProperty("releases_events")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean releasesEvents;
     /**
      * 验证接收负载的秘密令牌（响应中不返回）
      */

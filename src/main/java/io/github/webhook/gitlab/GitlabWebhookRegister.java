@@ -7,6 +7,7 @@ import io.github.webhook.gitlab.rest.vo.HookAddPayload;
 import io.github.webhook.gitlab.rest.vo.HookInfo;
 import io.github.webhook.gitlab.rest.vo.Project;
 import io.github.webhook.gitlab.rest.vo.ProjectQuery;
+import io.github.webhook.meta.GitlabConf;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.meta.WebhookProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -53,9 +54,16 @@ public class GitlabWebhookRegister {
                     if (getWebhookByUrl(webhookUrl, gitlabRestClient.listHooks(project.getId())) == null) {
                         HookAddPayload payload = new HookAddPayload();
                         payload.setId(project.getId());
-                        payload.setPushEvents(true);
-                        payload.setPipelineEvents(true);
                         payload.setUrl(webhookUrl);
+                        GitlabConf.GitlabWebhookTrigger trigger = webhook.getTrigger();
+                        payload.setPushEvents(trigger.getPush());
+                        payload.setPipelineEvents(trigger.getPipeline());
+                        payload.setJobEvents(trigger.getJob());
+                        payload.setMergeRequestsEvents(trigger.getMergeRequest());
+                        payload.setNoteEvents(trigger.getNote());
+                        payload.setIssuesEvents(trigger.getIssue());
+                        payload.setTagPushEvents(trigger.getTagPush());
+                        payload.setReleasesEvents(trigger.getRelease());
                         gitlabRestClient.addHook(payload);
                     }
                     success.add(project.getWebUrl());
