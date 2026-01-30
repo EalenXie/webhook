@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>系统登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+            Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: 360px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .form-item {
+            margin-bottom: 16px;
+        }
+
+        .form-item input {
+            width: 100%;
+            height: 42px;
+            padding: 0 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            outline: none;
+            transition: all .2s;
+        }
+
+        .form-item input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            height: 42px;
+            border: none;
+            border-radius: 6px;
+            background: #667eea;
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .login-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #bbb;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+    <div class="login-title">Webhook</div>
+    <div class="login-subtitle">请输入账号密码登录</div>
+
+    <div class="form-item">
+        <input type="text" id="username" placeholder="用户名" value="admin">
+    </div>
+
+    <div class="form-item">
+        <input type="password" id="password" placeholder="密码" value="123456">
+    </div>
+
+    <button class="login-btn" id="loginBtn">登录</button>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <div class="footer">© 2026 Company</div>
+</div>
+
+<script>
+    const loginBtn = document.getElementById("loginBtn");
+    const errorMsg = document.getElementById("errorMsg");
+
+    function showError(msg) {
+        errorMsg.innerText = msg;
+        errorMsg.style.display = "block";
+    }
+
+    function clearError() {
+        errorMsg.style.display = "none";
+    }
+
+    async function login() {
+        clearError();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (!username || !password) {
+            showError("请输入用户名和密码");
+            return;
+        }
+
+        loginBtn.disabled = true;
+        loginBtn.innerText = "登录中...";
+
+        try {
+            const resp = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            });
+
+            // ✅ 关键修复点：先判断 HTTP 状态
+            if (!resp.ok) {
+                throw new Error("HTTP error " + resp.status);
+            }
+
+            const data = await resp.json();
+
+            if (data.code === 0) {
+                // ✅ 登录成功，前端跳转
+                window.location.href = "/index";
+            } else {
+                showError(data.msg || "用户名或密码错误");
+            }
+
+        } catch (e) {
+            console.error(e);
+            showError("服务异常，请稍后再试");
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.innerText = "登录";
+        }
+    }
+
+    loginBtn.addEventListener("click", login);
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            login();
+        }
+    });
+</script>
+
+</body>
+</html>

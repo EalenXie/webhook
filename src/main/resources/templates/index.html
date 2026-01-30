@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Webhook & Pipeline 控制台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Vue CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial;
+            background: #f5f7fb;
+            color: #333;
+        }
+
+        header {
+            background: #1f2937;
+            color: white;
+            padding: 16px 24px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin: 0 0 12px;
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f8fafc;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+
+        .tag.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .tag.running {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .tag.failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .tag.disabled {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .tag.scope {
+            background: #eef2ff;
+            color: #3730a3;
+        }
+
+        .pipeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+        }
+
+        .pipeline-card {
+            border-radius: 12px;
+            background: white;
+            padding: 14px;
+            border-left: 6px solid #2563eb;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+        }
+
+        .pipeline-card.failed {
+            border-left-color: #dc2626;
+        }
+
+        .pipeline-card.success {
+            border-left-color: #16a34a;
+        }
+
+        .pipeline-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .job {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 13px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 12px;
+            color: #666;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap; /* 允许换行 */
+            gap: 6px;
+            max-width: 100%; /* 限制在 td 内宽度 */
+            word-break: break-word; /* 超长 URL 折行 */
+            white-space: normal; /* 阻止 nowrap */
+        }
+
+        .type-cell {
+            display: flex;
+            align-items: center; /* 垂直居中 */
+            gap: 8px; /* logo 和文字间距 */
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .type-logo {
+            width: 24px; /* 原来是 18px */
+            height: 24px; /* 原来是 18px */
+            display: inline-block;
+        }
+
+        .host-link {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: 500;
+            font-size: 13px;
+            word-break: break-all; /* URL 太长自动换行 */
+        }
+
+        .host-link:hover {
+            color: #1d4ed8;
+        }
+
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap; /* 支持换行 */
+            gap: 6px;
+            max-width: 100%;
+        }
+
+        .url-tag {
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            text-decoration: none; /* 链接去掉下划线 */
+            word-break: break-all;
+            transition: background 0.2s;
+        }
+
+        .url-tag:hover {
+            background: #e0e7ff; /* hover 高亮 */
+        }
+
+        .copy-url {
+            cursor: pointer;
+            background: #fef3c7;
+            color: #b45309;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            word-break: break-all;
+            transition: background 0.2s;
+        }
+
+        .copy-url:hover {
+            background: #fde68a;
+        }
+
+        .copy-tooltip {
+            position: absolute;
+            top: -22px;
+            left: 0;
+            background: #111;
+            color: #fff;
+            padding: 2px 6px;
+            font-size: 11px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    🚀 Webhook 控制台
+</header>
+
+<div id="app" class="container">
+    <div class="card">
+        <h2>Webhook 配置列表</h2>
+
+        <div v-if="loadingWebhooks" class="loading">加载中...</div>
+        <div v-if="webhookError" class="error">{{ webhookError }}</div>
+
+        <table v-if="!loadingWebhooks && webhooks.length">
+            <thead>
+            <tr>
+                <th>类型</th>
+                <th>ID</th>
+                <th>Webhook 地址</th>
+                <th>Webhook Server Host</th>
+                <th>触发事件</th>
+                <th>触发分支</th>
+                <th>触发项目</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr v-for="w in webhooks" :key="w.id">
+                <td>
+                  <span class="type-cell">
+                    <img v-if="w.type === 'GITLAB'"
+                         src="https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png" class="type-logo"
+                         alt="GitLab">
+                    <img v-else-if="w.type === 'GITHUB'"
+                         src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                         class="type-logo" alt="GitHub">
+                    {{ w.type }}
+                  </span>
+                </td>
+                <td><strong>{{ w.id }}</strong></td>
+                <td style="position: relative;"><span v-if="w.webhookUrl" class="tag url-tag copy-url"
+                                                      @click="copyToClipboard(w.webhookUrl)"
+                                                      :title="w.webhookUrl">{{ w.webhookUrl }}</span>
+                    <span v-else class="tag disabled">未配置</span>
+                    <span v-if="w.copied" class="copy-tooltip">已复制</span>
+                </td>
+                <td>
+                    <a v-if="w.host" :href="w.host" target="_blank" rel="noopener noreferrer"
+                       class="host-link">
+                        {{ w.host }}
+                    </a>
+                    <span v-else class="tag disabled">未配置</span>
+                </td>
+                <td>
+                    <template v-if="w.triggers && w.triggers.length > 0">
+                        <span v-for="e in w.triggers" :key="e" class="tag scope">{{ e }}</span>
+                    </template>
+                    <template v-else>
+                        <span class="tag disabled">未配置</span>
+                    </template>
+                </td>
+                <td>
+                    <template v-if="w.onlyRefs && w.onlyRefs.length > 0">
+                        <span v-for="e in w.onlyRefs" :key="e" class="tag scope">{{ e }}</span>
+                    </template>
+                    <template v-else>
+                        <span class="tag disabled">未配置</span>
+                    </template>
+                </td>
+                <td>
+                    <div class="tag-group">
+                        <template v-if="w.webUrls && w.webUrls.length > 0">
+                            <a v-for="url in w.webUrls"
+                               :key="url"
+                               :href="url.startsWith('http') ? url : 'https://' + url"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="tag url-tag"
+                               :title="url">{{ url }}</a>
+                        </template>
+                        <template v-else>
+                            <span class="tag disabled">未配置</span>
+                        </template>
+                    </div>
+                </td>
+
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ================= Pipeline 模块 ================= -->
+    <div class="card">
+        <h2>Pipeline 实时状态</h2>
+
+        <div class="pipeline-grid">
+            <div
+                    v-for="p in pipelines"
+                    :key="p.pipelineId"
+                    class="pipeline-card"
+                    :class="p.status">
+                <div class="pipeline-title">
+                    {{ p.project }} —
+                    <span style="color:#2563eb">{{ p.branch }}</span>
+                </div>
+
+                <div>Pipeline #{{ p.pipelineId }}</div>
+
+                <div class="tag" :class="p.status">
+                    {{ p.status.toUpperCase() }}
+                </div>
+
+                <div style="margin-top:10px;">
+                    <div v-for="job in p.jobs" class="job">
+                        <span>{{ job.name }}</span>
+                        <span class="tag" :class="job.status">{{ job.status }}</span>
+                    </div>
+                </div>
+
+                <div style="margin-top:10px;font-size:12px;color:#777;">
+                    Updated at {{ p.updatedAt }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const {createApp} = Vue;
+
+    createApp({
+        data() {
+            return {
+                webhooks: [],
+                loadingWebhooks: true,
+                webhookError: null,
+
+                pipelines: [
+                    {
+                        project: "kte-ntms-api",
+                        branch: "main",
+                        pipelineId: 342,
+                        status: "success",
+                        jobs: [
+                            {name: "Build", status: "success"},
+                            {name: "Test", status: "success"},
+                            {name: "Deploy", status: "success"}
+                        ],
+                        updatedAt: "12:22"
+                    },
+                    {
+                        project: "data-service",
+                        branch: "dev",
+                        pipelineId: 343,
+                        status: "running",
+                        jobs: [
+                            {name: "Build", status: "success"},
+                            {name: "Test", status: "running"},
+                            {name: "Deploy", status: "pending"}
+                        ],
+                        updatedAt: "12:25"
+                    },
+                    {
+                        project: "auth-center",
+                        branch: "feature/login",
+                        pipelineId: 344,
+                        status: "failed",
+                        jobs: [
+                            {name: "Build", status: "success"},
+                            {name: "Test", status: "failed"},
+                            {name: "Deploy", status: "pending"}
+                        ],
+                        updatedAt: "12:18"
+                    }
+                ]
+            };
+        },
+
+        mounted() {
+            this.loadWebhooks();
+        },
+
+        methods: {
+            loadWebhooks() {
+                fetch("/actuator/webhooks/configs", {
+                    credentials: "include"
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        this.webhooks = data;
+                        this.loadingWebhooks = false;
+                    })
+                    .catch(() => {
+                        this.webhookError = "Webhook 数据加载失败";
+                        this.loadingWebhooks = false;
+                    });
+            },
+            copyToClipboard(text, event) {
+                if (!text) return;
+                navigator.clipboard.writeText(text)
+                    .then(() => {
+                        // 找到对应 webhook 对象
+                        const w = this.webhooks.find(item => item.webhookUrl === text);
+                        if (w) {
+                            w.copied = true;
+                            setTimeout(() => w.copied = false, 1500); // 1.5秒后消失
+                        }
+                    })
+                    .catch(err => {
+                        console.error("复制失败", err);
+                    });
+            }
+        }
+    }).mount("#app");
+</script>
+
+</body>
+</html>

@@ -26,6 +26,7 @@ public class WebhookCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        log.info("Webhook Home Address : {}/login.html", webhookProperties.getWebhookHost());
         List<Webhook> webhooks = webhookRepository.getWebhooks();
         if (!webhooks.isEmpty()) {
             log.info("Webhooks are successfully configured. The following webhooks are available:");
@@ -43,5 +44,6 @@ public class WebhookCommandLineRunner implements CommandLineRunner {
                 log.info(sb.toString());
             });
         }
+
     }
 }
