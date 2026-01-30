@@ -2,7 +2,6 @@ package io.github.webhook.gitlab.event.notify;
 
 import io.github.webhook.config.FileConvert;
 import io.github.webhook.gitlab.GitlabEndpoint;
-import io.github.webhook.gitlab.event.PipelineEventHandler;
 import io.github.webhook.gitlab.webhook.Build;
 import io.github.webhook.gitlab.webhook.Commit;
 import io.github.webhook.gitlab.webhook.Project;
@@ -23,13 +22,18 @@ import java.util.List;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<PipelineHook> implements PipelineEventHandler {
+public class PipelineHookNotifyEventHandler extends GitlabNotifyEventHandler<PipelineHook>  {
 
     private final WebhookProperties webhookProperties;
 
     public PipelineHookNotifyEventHandler(WebhookProperties webhookProperties, NotifierFactory notifierFactory) {
         super(notifierFactory);
         this.webhookProperties = webhookProperties;
+    }
+
+    @Override
+    public Class<PipelineHook> getDataType() {
+        return PipelineHook.class;
     }
 
     @Override

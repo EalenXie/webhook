@@ -5,7 +5,6 @@ import io.github.webhook.github.dto.Commit;
 import io.github.webhook.github.dto.PushPayload;
 import io.github.webhook.github.dto.Pusher;
 import io.github.webhook.github.dto.Repository;
-import io.github.webhook.github.event.PushEventHandler;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
@@ -17,7 +16,7 @@ import java.util.List;
 /**
  * @author EalenXie created on 2023/7/19 16:18
  */
-public class PushNotifyEventHandler extends GithubNotifyEventHandler<PushPayload> implements PushEventHandler {
+public class PushNotifyEventHandler extends GithubNotifyEventHandler<PushPayload> {
 
 
     public PushNotifyEventHandler(NotifierFactory notifierFactory) {
@@ -25,10 +24,14 @@ public class PushNotifyEventHandler extends GithubNotifyEventHandler<PushPayload
     }
 
     @Override
+    public Class<PushPayload> getDataType() {
+        return PushPayload.class;
+    }
+
+    @Override
     protected boolean shouldNotify(Webhook webhook, PushPayload data) {
         return !ObjectUtils.isEmpty(data.getCommits());
     }
-
 
     @Override
     public NotifyMessage generate(Webhook webhook, PushPayload payload) {

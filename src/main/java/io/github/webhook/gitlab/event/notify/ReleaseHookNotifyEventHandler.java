@@ -1,6 +1,5 @@
 package io.github.webhook.gitlab.event.notify;
 
-import io.github.webhook.gitlab.event.ReleaseEventHandler;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.release.ReleaseHook;
 import io.github.webhook.meta.Webhook;
@@ -10,7 +9,11 @@ import io.github.webhook.notify.NotifyMessage;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public class ReleaseHookNotifyEventHandler extends GitlabNotifyEventHandler<ReleaseHook> implements ReleaseEventHandler {
+public class ReleaseHookNotifyEventHandler extends GitlabNotifyEventHandler<ReleaseHook> {
+    @Override
+    public Class<ReleaseHook> getDataType() {
+        return ReleaseHook.class;
+    }
 
     public ReleaseHookNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
@@ -44,5 +47,6 @@ public class ReleaseHookNotifyEventHandler extends GitlabNotifyEventHandler<Rele
         message.setMessage(context.toString());
         return message;
     }
+
 
 }

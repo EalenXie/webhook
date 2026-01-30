@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 配置型 WebhookRepository
+ *
  * @author EalenXie created on 2023/4/14 11:24
  */
 public class PropertiesWebhookRepository implements WebhookRepository {

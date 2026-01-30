@@ -1,6 +1,5 @@
 package io.github.webhook.gitlab.event.notify;
 
-import io.github.webhook.gitlab.event.IssueEventHandler;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.User;
 import io.github.webhook.gitlab.webhook.issue.IssueHook;
@@ -13,7 +12,12 @@ import java.util.Collections;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public class IssueHookNotifyEventHandler extends GitlabNotifyEventHandler<IssueHook> implements IssueEventHandler {
+public class IssueHookNotifyEventHandler extends GitlabNotifyEventHandler<IssueHook> {
+
+    @Override
+    public Class<IssueHook> getDataType() {
+        return IssueHook.class;
+    }
 
     public IssueHookNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
@@ -30,24 +34,24 @@ public class IssueHookNotifyEventHandler extends GitlabNotifyEventHandler<IssueH
         NotifyMessage message = new NotifyMessage();
         message.setTitle(issueHook.getObjectKind());
         message.setNotifies(Collections.singletonList(String.valueOf(issueHook.getUser().getId())));
-        IssueHook.ObjectAttributes objectAttributes = issueHook.getObjectAttributes();
+        IssueHook.ObjectAttributes attributes = issueHook.getObjectAttributes();
         Project project = issueHook.getProject();
         User user = issueHook.getUser();
         StringBuilder sb = new StringBuilder();
         String projectUrl = String.format("[%s](%s)", project.getName(), project.getWebUrl());
-        String issue = String.format("[#%s](%s)", issueHook.getObjectAttributes().getId(), objectAttributes.getUrl());
-        String titleEmoji = "";
+        String issue = String.format("[#%s](%s)", attributes.getId(), attributes.getUrl());
+        String emoji = "";
         String statusEmoji = "";
-        if (objectAttributes.getState().equals("opened")) {
-            titleEmoji = "\uD83D\uDD34";
+        if (attributes.getState().equals("opened")) {
+            emoji = "\uD83D\uDD34";
             statusEmoji = "\uD83D\uDE4B\u200D♂️";
-        } else if (objectAttributes.getState().equals("closed")) {
-            titleEmoji = "\uD83D\uDFE2";
+        } else if (attributes.getState().equals("closed")) {
+            emoji = "\uD83D\uDFE2";
             statusEmoji = "✌️";
         }
-        sb.append(String.format("#### %s%s **%s** %n", titleEmoji, projectUrl, objectAttributes.getTitle()));
-        sb.append(String.format("<font color='#000000'>The Issue [%s] %s%s by [%s](%s) </font> %n>%s", issue, objectAttributes.getState(), statusEmoji, user.getUsername(), getUserHomePage(project.getWebUrl(), user.getUsername()),
-                objectAttributes.getDescription() == null ? "" : objectAttributes.getDescription()));
+        sb.append(String.format("#### %s%s **%s** %n", emoji, projectUrl, attributes.getTitle()));
+        sb.append(String.format("<font color='#000000'>The Issue [%s] %s%s by [%s](%s) </font> %n>%s", issue, attributes.getState(), statusEmoji, user.getUsername(), getUserHomePage(project.getWebUrl(), user.getUsername()),
+                attributes.getDescription() == null ? "" : attributes.getDescription()));
         message.setMessage(sb.toString());
         return message;
     }

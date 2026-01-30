@@ -1,6 +1,5 @@
 package io.github.webhook.gitlab.event.notify;
 
-import io.github.webhook.gitlab.event.NoteEventHandler;
 import io.github.webhook.gitlab.webhook.Issue;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.User;
@@ -14,7 +13,12 @@ import java.util.Collections;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public class NoteHookNotifyEventHandler extends GitlabNotifyEventHandler<NoteHook> implements NoteEventHandler {
+public class NoteHookNotifyEventHandler extends GitlabNotifyEventHandler<NoteHook> {
+
+    @Override
+    public Class<NoteHook> getDataType() {
+        return NoteHook.class;
+    }
 
     public NoteHookNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
@@ -28,15 +32,16 @@ public class NoteHookNotifyEventHandler extends GitlabNotifyEventHandler<NoteHoo
         User user = noteHook.getUser();
         Project project = noteHook.getProject();
         Issue issue = noteHook.getIssue();
-        NoteHook.ObjectAttributes objectAttributes = noteHook.getObjectAttributes();
+        NoteHook.ObjectAttributes attributes = noteHook.getObjectAttributes();
         StringBuilder sb = new StringBuilder();
         String u = String.format("[%s](%s)", user.getUsername(), getUserHomePage(project.getWebUrl(), user.getUsername()));
         String i = String.format("[#%s](%s)", issue.getId(), issue.getUrl());
-        String n = String.format("[%s](%s)", noteHook.getObjectKind(), objectAttributes.getUrl());
+        String n = String.format("[%s](%s)", noteHook.getObjectKind(), attributes.getUrl());
         sb.append(String.format("<font color='#000000'>%s%s add new %s in Issue[%s]</font>%n%n", u, "\uD83E\uDDD0", n, i));
-        sb.append(String.format("**%s**%n%n>%s%n", issue.getTitle(), objectAttributes.getNote()));
+        sb.append(String.format("**%s**%n%n>%s%n", issue.getTitle(), attributes.getNote()));
         message.setMessage(sb.toString());
         return message;
     }
+
 
 }

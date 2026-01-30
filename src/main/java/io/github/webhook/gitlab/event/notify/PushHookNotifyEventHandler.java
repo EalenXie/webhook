@@ -1,6 +1,5 @@
 package io.github.webhook.gitlab.event.notify;
 
-import io.github.webhook.gitlab.event.PushEventHandler;
 import io.github.webhook.gitlab.webhook.Commit;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.push.PushHook;
@@ -15,10 +14,15 @@ import java.util.List;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public class PushHookNotifyEventHandler extends GitlabNotifyEventHandler<PushHook> implements PushEventHandler {
+public class PushHookNotifyEventHandler extends GitlabNotifyEventHandler<PushHook> {
 
     public PushHookNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
+    }
+
+    @Override
+    public Class<PushHook> getDataType() {
+        return PushHook.class;
     }
 
     @Override
@@ -44,8 +48,7 @@ public class PushHookNotifyEventHandler extends GitlabNotifyEventHandler<PushHoo
         String userUsername = pushHook.getUserUsername();
         Collections.sort(commits);
         StringBuilder sb = new StringBuilder();
-        String ref = pushHook.getRef();
-        String branch = ref.replace("refs/heads/", "");
+        String branch = pushHook.getRef().replace("refs/heads/", "");
         sb.append(String.format("[[%s:%s]](%s/-/tree/%s) ", project.getName(), branch, project.getWebUrl(), branch));
         String c = commits.size() > 1 ? "commits" : "commit";
         String user = userUsername == null ? pushHook.getUserName() : String.format("[%s](%s)", userUsername, getUserHomePage(project.getWebUrl(), userUsername));

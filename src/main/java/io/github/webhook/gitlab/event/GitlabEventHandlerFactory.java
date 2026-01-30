@@ -12,10 +12,10 @@ import javax.annotation.PostConstruct;
  * @author EalenXie created on 2023/4/14 12:57
  * Gitlab 事件工厂
  */
-public class GitlabEventFactory extends DefaultEventHandlerFactory {
+public class GitlabEventHandlerFactory extends DefaultEventHandlerFactory {
     private final NotifierFactory notifierFactory;
 
-    public GitlabEventFactory(ApplicationContext applicationContext, NotifierFactory notifierFactory) {
+    public GitlabEventHandlerFactory(ApplicationContext applicationContext, NotifierFactory notifierFactory) {
         super(applicationContext);
         this.notifierFactory = notifierFactory;
     }

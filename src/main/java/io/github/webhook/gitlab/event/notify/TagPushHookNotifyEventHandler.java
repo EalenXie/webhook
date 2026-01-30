@@ -1,6 +1,5 @@
 package io.github.webhook.gitlab.event.notify;
 
-import io.github.webhook.gitlab.event.TagPushEventHandler;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.tag.TagPushHook;
 import io.github.webhook.meta.Webhook;
@@ -14,10 +13,15 @@ import java.util.Objects;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public class TagPushHookNotifyEventHandler extends GitlabNotifyEventHandler<TagPushHook> implements TagPushEventHandler {
+public class TagPushHookNotifyEventHandler extends GitlabNotifyEventHandler<TagPushHook> {
 
     public TagPushHookNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
+    }
+
+    @Override
+    public Class<TagPushHook> getDataType() {
+        return TagPushHook.class;
     }
 
     @Override

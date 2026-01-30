@@ -1,6 +1,5 @@
 package io.github.webhook.gitlab.event.notify;
 
-import io.github.webhook.gitlab.event.JobEventHandler;
 import io.github.webhook.gitlab.webhook.Repository;
 import io.github.webhook.gitlab.webhook.job.JobHook;
 import io.github.webhook.meta.Webhook;
@@ -14,12 +13,16 @@ import java.util.Objects;
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public class JobHookNotifyEventHandler extends GitlabNotifyEventHandler<JobHook> implements JobEventHandler {
+public class JobHookNotifyEventHandler extends GitlabNotifyEventHandler<JobHook> {
 
     public JobHookNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
     }
 
+    @Override
+    public Class<JobHook> getDataType() {
+        return JobHook.class;
+    }
 
     @Override
     public boolean shouldHandleEvent(Webhook webhook, JobHook data) {
@@ -58,9 +61,7 @@ public class JobHookNotifyEventHandler extends GitlabNotifyEventHandler<JobHook>
             color = "#8E8E8E";
             emoji = "⏭️";
         }
-        String build = String.format("<font color='%s'> [%s](%s/-/jobs/%s) %s%s</font>",
-                color, jobHook.getBuildStage(), repository.getHomepage(),
-                jobHook.getBuildId(), buildStatus, emoji);
+        String build = String.format("<font color='%s'> [%s](%s/-/jobs/%s) %s%s</font>", color, jobHook.getBuildStage(), repository.getHomepage(), jobHook.getBuildId(), buildStatus, emoji);
         message.setMessage(String.format("<font color='#000000'>%s %s %s %s%ss</font>", project, pipeline, build, "\uD83D\uDD57", costTime));
         return message;
     }

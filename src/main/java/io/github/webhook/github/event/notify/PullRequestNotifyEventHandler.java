@@ -3,7 +3,6 @@ package io.github.webhook.github.event.notify;
 import io.github.webhook.github.dto.PullRequest;
 import io.github.webhook.github.dto.PullRequestPayload;
 import io.github.webhook.github.dto.Repository;
-import io.github.webhook.github.event.PullRequestEventHandler;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
@@ -13,9 +12,14 @@ import java.util.Collections;
 /**
  * @author EalenXie created on 2023/7/19 16:18
  */
-public class PullRequestNotifyEventHandler extends GithubNotifyEventHandler<PullRequestPayload> implements PullRequestEventHandler {
+public class PullRequestNotifyEventHandler extends GithubNotifyEventHandler<PullRequestPayload> {
     public PullRequestNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
+    }
+
+    @Override
+    public Class<PullRequestPayload> getDataType() {
+        return PullRequestPayload.class;
     }
 
     @Override

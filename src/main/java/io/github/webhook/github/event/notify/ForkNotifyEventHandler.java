@@ -3,7 +3,6 @@ package io.github.webhook.github.event.notify;
 import io.github.webhook.github.dto.ForkPayload;
 import io.github.webhook.github.dto.Repository;
 import io.github.webhook.github.dto.User;
-import io.github.webhook.github.event.ForkEventHandler;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
@@ -13,9 +12,14 @@ import java.util.Collections;
 /**
  * @author EalenXie created on 2023/7/27 10:19
  */
-public class ForkNotifyEventHandler extends GithubNotifyEventHandler<ForkPayload> implements ForkEventHandler {
+public class ForkNotifyEventHandler extends GithubNotifyEventHandler<ForkPayload> {
     public ForkNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
+    }
+
+    @Override
+    public Class<ForkPayload> getDataType() {
+        return ForkPayload.class;
     }
 
     @Override

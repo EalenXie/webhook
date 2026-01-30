@@ -3,7 +3,6 @@ package io.github.webhook.github.event.notify;
 import io.github.webhook.github.dto.Repository;
 import io.github.webhook.github.dto.StarPayload;
 import io.github.webhook.github.dto.User;
-import io.github.webhook.github.event.StarEventHandler;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import io.github.webhook.notify.NotifyMessage;
@@ -13,9 +12,14 @@ import java.util.Collections;
 /**
  * @author EalenXie created on 2023/7/27 10:19
  */
-public class StarNotifyEventHandler extends GithubNotifyEventHandler<StarPayload> implements StarEventHandler {
+public class StarNotifyEventHandler extends GithubNotifyEventHandler<StarPayload> {
     public StarNotifyEventHandler(NotifierFactory notifierFactory) {
         super(notifierFactory);
+    }
+
+    @Override
+    public Class<StarPayload> getDataType() {
+        return StarPayload.class;
     }
 
     @Override

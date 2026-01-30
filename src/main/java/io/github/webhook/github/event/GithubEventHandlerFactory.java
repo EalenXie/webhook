@@ -12,16 +12,16 @@ import org.springframework.context.ApplicationContext;
  * @author EalenXie created on 2023/4/14 12:57
  * Github 事件处理器工厂
  */
-public class GithubEventFactory extends DefaultEventHandlerFactory {
+public class GithubEventHandlerFactory extends DefaultEventHandlerFactory {
     private final NotifierFactory notifierFactory;
 
-    public GithubEventFactory(ApplicationContext applicationContext, NotifierFactory notifierFactory) {
+    public GithubEventHandlerFactory(ApplicationContext applicationContext, NotifierFactory notifierFactory) {
         super(applicationContext);
         this.notifierFactory = notifierFactory;
     }
 
     /**
-     * 初始化注册Github所有事件
+     * 初始化注册Github所有事件处理器
      */
     @Override
     public void registerEvents() {

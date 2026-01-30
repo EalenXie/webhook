@@ -5,8 +5,9 @@ import io.github.webhook.meta.Webhook;
 import java.util.List;
 
 /**
- * @author EalenXie created on 2023/7/27 11:32
  * 事件处理器工厂
+ *
+ * @author EalenXie created on 2023/7/27 11:32
  */
 public interface EventHandlerFactory {
 

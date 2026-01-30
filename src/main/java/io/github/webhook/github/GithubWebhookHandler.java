@@ -3,7 +3,7 @@ package io.github.webhook.github;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.webhook.core.FactoryEventHandler;
-import io.github.webhook.github.event.GithubEventFactory;
+import io.github.webhook.github.event.GithubEventHandlerFactory;
 import io.github.webhook.meta.Webhook;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class GithubWebhookHandler extends FactoryEventHandler {
 
-    public GithubWebhookHandler(GithubEventFactory githubEventFactory, ObjectMapper objectMapper) {
-        super(githubEventFactory, objectMapper);
+    public GithubWebhookHandler(GithubEventHandlerFactory githubEventHandlerFactory, ObjectMapper objectMapper) {
+        super(githubEventHandlerFactory, objectMapper);
     }
 
     @Override
