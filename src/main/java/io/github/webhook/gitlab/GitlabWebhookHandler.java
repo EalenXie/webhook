@@ -2,9 +2,9 @@ package io.github.webhook.gitlab;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.DefaultEventHandlerFactory;
 import io.github.webhook.core.FactoryEventHandler;
-import io.github.webhook.config.meta.Webhook;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -30,9 +30,7 @@ public class GitlabWebhookHandler extends FactoryEventHandler {
         if (ObjectUtils.isEmpty(event)) {
             throw new UnsupportedOperationException("Unable to get the Gitlab event type, please check that your webhook configuration is correct");
         }
-        // 执行事件处理
-        return handlerExecute(event, webhook, params);
+        // 事件处理器执行事件
+        return handlersExecute(event, webhook, params);
     }
-
-
 }

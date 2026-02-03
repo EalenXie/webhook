@@ -12,6 +12,9 @@ import java.util.List;
 public interface EventHandlerFactory {
 
 
+
+
+
     /**
      * 根据事件获取事件处理器
      *

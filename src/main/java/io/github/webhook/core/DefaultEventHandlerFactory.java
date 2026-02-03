@@ -5,19 +5,24 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 默认的事件处理器工厂
  *
  * @author EalenXie created on 2023/7/27 11:32
  */
-public class DefaultEventHandlerFactory implements EventHandlerFactory {
+public class DefaultEventHandlerFactory {
     private final ApplicationContext applicationContext;
+    /**
+     * 特殊事件处理器 对应事件KEY
+     */
     private final Map<String, List<EventHandler<Object, Object>>> handlers = new HashMap<>();
+    /**
+     * 公共事件处理器
+     */
+    private final Set<EventHandler<Object, Object>> commonHandlers = new HashSet<>();
+
 
     public DefaultEventHandlerFactory(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -41,13 +46,19 @@ public class DefaultEventHandlerFactory implements EventHandlerFactory {
     }
 
     /**
+     * 获取公共事件处理器
+     */
+    public Set<EventHandler<Object, Object>> getCommonHandlers() {
+        return commonHandlers;
+    }
+
+    /**
      * 根据事件获取事件处理器
      *
      * @param event   事件
      * @param webhook webhook
      * @return 一个事件有多个事件处理器
      */
-    @Override
     @SuppressWarnings("unchecked")
     public List<EventHandler<Object, Object>> getEventHandlers(String event, Webhook webhook) {
         List<EventHandler<Object, Object>> eventHandlers = handlers.get(event);

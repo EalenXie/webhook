@@ -30,6 +30,6 @@ public class GithubWebhookHandler extends FactoryEventHandler {
         if (ObjectUtils.isEmpty(event)) {
             throw new UnsupportedOperationException("Unable to get the GitHub event type, please check that your webhook configuration is correct");
         }
-        return handlerExecute(event, webhook, params);
+        return handlersExecute(event, webhook, params);
     }
 }
