@@ -4,7 +4,7 @@ import io.github.webhook.meta.FeiShuConf;
 import io.github.webhook.meta.NotifyConf;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.Notifier;
-import io.github.webhook.notify.NotifyMessage;
+import io.github.webhook.core.WebhookMessage;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -50,7 +50,7 @@ public class FeiShuNotifier implements Notifier<InteractiveMessage, Object> {
 
 
     @Override
-    public InteractiveMessage process(NotifyMessage message) {
+    public InteractiveMessage process(WebhookMessage message) {
         Interactive interactive = new Interactive();
         interactive.setConfig(new Config(true, true));
         interactive.setHeader(new Header(new Title(message.getTitle(), "plain_text")));

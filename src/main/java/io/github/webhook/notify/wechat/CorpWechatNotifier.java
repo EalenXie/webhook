@@ -4,7 +4,7 @@ import io.github.webhook.meta.NotifyConf;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.meta.WechatConf;
 import io.github.webhook.notify.Notifier;
-import io.github.webhook.notify.NotifyMessage;
+import io.github.webhook.core.WebhookMessage;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,7 +26,7 @@ public class CorpWechatNotifier implements Notifier<MarkdownMessage, Object> {
     }
 
     @Override
-    public MarkdownMessage process(NotifyMessage message) {
+    public MarkdownMessage process(WebhookMessage message) {
         Markdown markdown = new Markdown();
         StringBuilder sb = new StringBuilder();
         if (!ObjectUtils.isEmpty(message.getNotifies())) {

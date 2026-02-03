@@ -1,19 +1,25 @@
-package io.github.webhook.gitlab.event.notify;
+package io.github.webhook.core;
 
-import io.github.webhook.core.NotifyEventHandler;
-import io.github.webhook.notify.NotifierFactory;
+import io.github.webhook.meta.Webhook;
 
 import java.util.List;
 
 /**
- * @author EalenXie created on 2023/4/17 13:12
+ * 消息生成器
+ *
+ * @author EalenXie created on 2023/4/14 14:22
  */
-public abstract class GitlabNotifyEventHandler<D> extends NotifyEventHandler<D> {
+public interface MessageGenerator<D> {
 
+    /**
+     * 生成 webhook消息
+     *
+     * @param webhook webhook信息
+     * @param data    输入数据对象
+     * @return 消息
+     */
+    WebhookMessage generate(Webhook webhook, D data);
 
-    protected GitlabNotifyEventHandler(NotifierFactory notifierFactory) {
-        super(notifierFactory);
-    }
 
     static String getUserHomePage(String projectUrl, String username) {
         return String.format("%s/%s", getHostSchema(projectUrl), username);
@@ -35,6 +41,4 @@ public abstract class GitlabNotifyEventHandler<D> extends NotifyEventHandler<D> 
         }
         return onlyRefs.contains(branch);
     }
-
-
 }

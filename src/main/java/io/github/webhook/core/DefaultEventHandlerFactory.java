@@ -5,21 +5,21 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @author EalenXie created on 2023/7/27 11:32
  * 默认的事件处理器工厂
+ *
+ * @author EalenXie created on 2023/7/27 11:32
  */
-public abstract class DefaultEventHandlerFactory implements EventHandlerFactory {
+public class DefaultEventHandlerFactory implements EventHandlerFactory {
     private final ApplicationContext applicationContext;
     private final Map<String, List<EventHandler<Object, Object>>> handlers = new HashMap<>();
 
-    protected DefaultEventHandlerFactory(ApplicationContext applicationContext) {
+    public DefaultEventHandlerFactory(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
@@ -28,17 +28,16 @@ public abstract class DefaultEventHandlerFactory implements EventHandlerFactory 
     }
 
     /**
-     * 所有的事件处理器工厂需注册事件
-     */
-    @PostConstruct
-    public abstract void registerEvents();
-
-    /**
      * 注册事件处理器
      */
-    protected void regEventHandler(EventHandler<?, ?> eventHandler) {
+    public void regEventHandler(EventHandler<?, ?> eventHandler) {
         String className = eventHandler.getClass().getName();
         ((DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory()).registerSingleton(Character.toLowerCase(className.charAt(0)) + className.substring(1), eventHandler);
+    }
+
+
+    public <T> T getBean(Class<T> requiredType) {
+        return getApplicationContext().getBean(requiredType);
     }
 
     /**
@@ -56,7 +55,8 @@ public abstract class DefaultEventHandlerFactory implements EventHandlerFactory 
             eventHandlers = new ArrayList<>();
             // 查找通知类 事件处理器
             if (webhook.getNotify() != null) {
-                String beanName = getNotifyHandlerBeanName(event);
+                // 根据事件名称获取到通知类型的BeanName -> xxxNotifyEventHandler
+                String beanName = getHandlerBeanName(event, "Notify");
                 try {
                     eventHandlers.add((EventHandler<Object, Object>) applicationContext.getBean(beanName));
                     handlers.put(event, eventHandlers);
@@ -68,14 +68,14 @@ public abstract class DefaultEventHandlerFactory implements EventHandlerFactory 
         return eventHandlers;
     }
 
-
     /**
-     * 默认方法 根据事件名称获取到通知类型的BeanName -> xxxNotifyEventHandler
+     * 默认方法 根据事件类型和名称获取到通知类型的BeanName -> (event) (eventType) EventHandler
      *
-     * @param event 事件名称
+     * @param event     事件名称
+     * @param eventType 事件类型
      * @return 获取到BeanName
      */
-    protected String getNotifyHandlerBeanName(String event) {
+    protected String getHandlerBeanName(String event, String eventType) {
         StringBuilder sb = new StringBuilder();
         boolean nextUpperCase = false;
         for (int i = 0; i < event.length(); i++) {
@@ -91,6 +91,7 @@ public abstract class DefaultEventHandlerFactory implements EventHandlerFactory 
                 }
             }
         }
-        return String.format("%sNotifyEventHandler", sb);
+        return String.format("%s%sEventHandler", eventType, sb);
     }
+
 }

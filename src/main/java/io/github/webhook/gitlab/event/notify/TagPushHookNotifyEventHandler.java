@@ -1,22 +1,21 @@
 package io.github.webhook.gitlab.event.notify;
 
-import io.github.webhook.gitlab.webhook.Project;
+import io.github.webhook.core.MessageGenerator;
+import io.github.webhook.core.NotifyEventHandler;
 import io.github.webhook.gitlab.webhook.tag.TagPushHook;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
-import io.github.webhook.notify.NotifyMessage;
 import org.springframework.util.ObjectUtils;
 
-import java.util.Collections;
 import java.util.Objects;
 
 /**
  * @author EalenXie created on 2023/4/14 12:53
  */
-public class TagPushHookNotifyEventHandler extends GitlabNotifyEventHandler<TagPushHook> {
+public class TagPushHookNotifyEventHandler extends NotifyEventHandler<TagPushHook> {
 
-    public TagPushHookNotifyEventHandler(NotifierFactory notifierFactory) {
-        super(notifierFactory);
+    public TagPushHookNotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<TagPushHook> messageGenerator) {
+        super(notifierFactory, messageGenerator);
     }
 
     @Override
@@ -27,7 +26,7 @@ public class TagPushHookNotifyEventHandler extends GitlabNotifyEventHandler<TagP
     @Override
     public boolean shouldHandleEvent(Webhook webhook, TagPushHook data) {
         if (!ObjectUtils.isEmpty(webhook.getGitlabOnlyRefs())) {
-            return onlyRefs(webhook.getGitlabOnlyRefs(), data.getRef());
+            return MessageGenerator.onlyRefs(webhook.getGitlabOnlyRefs(), data.getRef());
         }
         return super.shouldHandleEvent(webhook, data);
     }
@@ -37,20 +36,5 @@ public class TagPushHookNotifyEventHandler extends GitlabNotifyEventHandler<TagP
         return Objects.equals(data.getObjectKind(), "tag_push");
     }
 
-    @Override
-    public NotifyMessage generate(Webhook webhook, TagPushHook tagPushHook) {
-        NotifyMessage message = new NotifyMessage();
-        message.setTitle(tagPushHook.getObjectKind());
-        message.setNotifies(Collections.singletonList(String.valueOf(tagPushHook.getUserId())));
-        Project project = tagPushHook.getProject();
-        String userUsername = tagPushHook.getUserUsername();
-        String[] refSplit = tagPushHook.getRef().split("/");
-        String tag = refSplit[refSplit.length - 1];
-        String t = String.format("[%s](%s/-/tree/%s)", tag, project.getWebUrl(), tag);
-        String p = String.format("[%s](%s)", project.getName(), project.getWebUrl());
-        String user = String.format("[%s](%s)", userUsername, getUserHomePage(project.getWebUrl(), userUsername));
-        message.setMessage(String.format("%s push new tag(%s) by %s %s%n%n > %s", p, t, user, "\uD83D\uDE80\uD83D\uDE80\uD83D\uDE80", tagPushHook.getMessage()));
-        return message;
-    }
 
 }

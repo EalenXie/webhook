@@ -2,8 +2,8 @@ package io.github.webhook.gitlab;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.webhook.core.DefaultEventHandlerFactory;
 import io.github.webhook.core.FactoryEventHandler;
-import io.github.webhook.gitlab.event.GitlabEventHandlerFactory;
 import io.github.webhook.meta.Webhook;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
  * @author EalenXie created on 2023/4/14 12:39
  */
 public class GitlabWebhookHandler extends FactoryEventHandler {
-    public GitlabWebhookHandler(GitlabEventHandlerFactory gitlabEventHandlerFactory, ObjectMapper objectMapper) {
-        super(gitlabEventHandlerFactory, objectMapper);
+    public GitlabWebhookHandler(DefaultEventHandlerFactory eventHandlerFactory, ObjectMapper objectMapper) {
+        super(eventHandlerFactory, objectMapper);
     }
 
     @Override

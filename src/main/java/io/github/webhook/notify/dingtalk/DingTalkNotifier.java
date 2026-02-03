@@ -4,7 +4,7 @@ import io.github.webhook.meta.DingTalkConf;
 import io.github.webhook.meta.NotifyConf;
 import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.Notifier;
-import io.github.webhook.notify.NotifyMessage;
+import io.github.webhook.core.WebhookMessage;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,7 +33,7 @@ public class DingTalkNotifier implements Notifier<MarkdownMessage, Object> {
     }
 
     @Override
-    public MarkdownMessage process(NotifyMessage message) {
+    public MarkdownMessage process(WebhookMessage message) {
         MarkdownMessage markdownMessage = new MarkdownMessage();
         StringBuilder sb = new StringBuilder();
         if (!ObjectUtils.isEmpty(message.getNotifies())) {

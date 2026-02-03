@@ -1,4 +1,4 @@
-package io.github.webhook.notify;
+package io.github.webhook.core;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,9 +10,18 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class NotifyMessage {
+public class WebhookMessage {
+    /**
+     * 消息Title
+     */
     private String title;
+    /**
+     * 消息内容
+     */
     private String message;
+    /**
+     * 通知人
+     */
     private List<String> notifies;
 
 }
