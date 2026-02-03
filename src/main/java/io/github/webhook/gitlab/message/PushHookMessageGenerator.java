@@ -5,7 +5,7 @@ import io.github.webhook.core.WebhookMessage;
 import io.github.webhook.gitlab.webhook.Commit;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.push.PushHook;
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 
 import java.util.Collections;
 import java.util.List;

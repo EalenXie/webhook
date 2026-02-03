@@ -20,22 +20,23 @@ import org.springframework.context.annotation.Configuration;
 public class GithubConfig {
 
 
-    /**
-     * Github Webhook 处理器
-     *
-     * @param githubEventHandlerFactory Github事件工厂
-     */
     @Bean
-    public GithubWebhookHandler githubWebhookHandler(ApplicationContext applicationContext, NotifierFactory notifierFactory, ObjectMapper objectMapper) {
-
+    public DefaultEventHandlerFactory githubEventHandlerFactory(ApplicationContext applicationContext, NotifierFactory notifierFactory) {
         DefaultEventHandlerFactory factory = new DefaultEventHandlerFactory(applicationContext);
         // Github 通知类 事件处理器 xxxNotifyEventHandler
         factory.regEventHandler(new PushNotifyEventHandler(notifierFactory, new PushMessageGenerator()));
         factory.regEventHandler(new StarNotifyEventHandler(notifierFactory, new StarMessageGenerator()));
         factory.regEventHandler(new PullRequestNotifyEventHandler(notifierFactory, new PullRequestMessageGenerator()));
         factory.regEventHandler(new ForkNotifyEventHandler(notifierFactory, new ForkMessageGenerator()));
+        return factory;
+    }
 
-        return new GithubWebhookHandler(factory, objectMapper);
+    /**
+     * Github Webhook 处理器
+     */
+    @Bean
+    public GithubWebhookHandler githubWebhookHandler(DefaultEventHandlerFactory githubEventHandlerFactory, ObjectMapper objectMapper) {
+        return new GithubWebhookHandler(githubEventHandlerFactory, objectMapper);
     }
 
 

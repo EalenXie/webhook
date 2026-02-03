@@ -6,7 +6,7 @@ import io.github.webhook.gitlab.webhook.Issue;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.User;
 import io.github.webhook.gitlab.webhook.note.NoteHook;
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 
 import java.util.Collections;
 

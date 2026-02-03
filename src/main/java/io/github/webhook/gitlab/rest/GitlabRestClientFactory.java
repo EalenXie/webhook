@@ -1,9 +1,8 @@
 package io.github.webhook.gitlab.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.webhook.meta.GitlabConf;
-import io.github.webhook.meta.Webhook;
-import io.github.webhook.meta.WebhookConf;
+import io.github.webhook.config.meta.GitlabConf;
+import io.github.webhook.config.meta.Webhook;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestOperations;
 
@@ -26,7 +25,7 @@ public class GitlabRestClientFactory {
     public GitlabRestClient getGitlabRestClient(Webhook webhook) {
         GitlabRestClient gitlabRestClient = gitlabRestClients.get(webhook.getId());
         if (gitlabRestClient == null) {
-            WebhookConf conf = webhook.getConf();
+            Webhook.Conf conf = webhook.getConf();
             if (!ObjectUtils.isEmpty(conf)) {
                 GitlabConf gitlab = conf.getGitlab();
                 if (!ObjectUtils.isEmpty(gitlab)) {

@@ -9,8 +9,8 @@ import io.github.webhook.gitlab.webhook.Build;
 import io.github.webhook.gitlab.webhook.Commit;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.pipeline.PipelineHook;
-import io.github.webhook.meta.Webhook;
-import io.github.webhook.meta.WebhookProperties;
+import io.github.webhook.config.meta.Webhook;
+import io.github.webhook.config.WebhookConfig;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -21,10 +21,10 @@ import java.util.List;
 
 public class PipelineHookMessageGenerator implements MessageGenerator<PipelineHook> {
 
-    private final WebhookProperties webhookProperties;
+    private final WebhookConfig webhookConfig;
 
-    public PipelineHookMessageGenerator(WebhookProperties webhookProperties) {
-        this.webhookProperties = webhookProperties;
+    public PipelineHookMessageGenerator(WebhookConfig webhookConfig) {
+        this.webhookConfig = webhookConfig;
     }
 
     @SuppressWarnings("all")
@@ -121,7 +121,7 @@ public class PipelineHookMessageGenerator implements MessageGenerator<PipelineHo
         } else {
             Long projectId = project.getId();
             Long pipelineId = attributes.getId();
-            String hostSchema = String.format("%s%s/%s/gitlab/pipeline", webhookProperties.getWebhookHost(), GitlabEndpoint.ENDPOINT_URL, webhook.getId());
+            String hostSchema = String.format("%s%s/%s/gitlab/pipeline", webhookConfig.getWebhookHost(), GitlabEndpoint.ENDPOINT_URL, webhook.getId());
             String query = String.format("projectId=%s&pipelineId=%s", projectId, pipelineId);
             sb.append(String.format("[\uD83D\uDEAB取消运行](%s/cancel?%s) ", hostSchema, query));
             sb.append(String.format("[♻️重新运行](%s/retry?%s) ", hostSchema, query));

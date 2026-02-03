@@ -1,4 +1,4 @@
-package io.github.webhook.meta;
+package io.github.webhook.config.meta;
 
 import lombok.Getter;
 import lombok.Setter;

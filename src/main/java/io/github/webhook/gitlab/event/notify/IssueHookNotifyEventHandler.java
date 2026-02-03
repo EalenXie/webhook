@@ -1,9 +1,9 @@
 package io.github.webhook.gitlab.event.notify;
 
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.NotifyEventHandler;
 import io.github.webhook.gitlab.webhook.issue.IssueHook;
-import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 
 /**
@@ -11,10 +11,6 @@ import io.github.webhook.notify.NotifierFactory;
  */
 public class IssueHookNotifyEventHandler extends NotifyEventHandler<IssueHook> {
 
-    @Override
-    public Class<IssueHook> getDataType() {
-        return IssueHook.class;
-    }
 
     public IssueHookNotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<IssueHook> messageGenerator) {
         super(notifierFactory, messageGenerator);

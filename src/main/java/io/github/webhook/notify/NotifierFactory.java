@@ -1,12 +1,11 @@
 package io.github.webhook.notify;
 
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.notify.dingtalk.DingTalkNotifier;
 import io.github.webhook.notify.feishu.FeiShuNotifier;
 import io.github.webhook.notify.wechat.CorpWechatNotifier;
-import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,12 +15,11 @@ import java.util.Map;
 /**
  * @author EalenXie created on 2023/4/14 16:37
  */
-public class NotifierFactory implements ApplicationContextAware {
+public class NotifierFactory {
     private final Map<String, List<Notifier<Object, Object>>> webhookNotifies = new HashMap<>();
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public NotifierFactory(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
@@ -29,6 +27,11 @@ public class NotifierFactory implements ApplicationContextAware {
         return applicationContext.getBean(clz);
     }
 
+
+    public void registerNotifier(Notifier<?, ?> notifier) {
+        String className = notifier.getClass().getSimpleName();
+        ((DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory()).registerSingleton(Character.toLowerCase(className.charAt(0)) + className.substring(1), notifier);
+    }
 
     @SuppressWarnings("unchecked")
     public List<Notifier<Object, Object>> getNotifies(Webhook webhook) {

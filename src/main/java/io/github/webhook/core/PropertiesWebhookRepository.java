@@ -1,7 +1,7 @@
 package io.github.webhook.core;
 
-import io.github.webhook.meta.Webhook;
-import io.github.webhook.meta.WebhookProperties;
+import io.github.webhook.config.meta.Webhook;
+import io.github.webhook.config.WebhookConfig;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +13,10 @@ import java.util.Map;
  * @author EalenXie created on 2023/4/14 11:24
  */
 public class PropertiesWebhookRepository implements WebhookRepository {
-    private final WebhookProperties properties;
+    private final WebhookConfig properties;
     private final Map<String, Webhook> webhooks = new HashMap<>();
 
-    public PropertiesWebhookRepository(WebhookProperties properties) {
+    public PropertiesWebhookRepository(WebhookConfig properties) {
         this.properties = properties;
         List<Webhook> webhookList = properties.getWebhooks();
         for (Webhook webhook : webhookList) {

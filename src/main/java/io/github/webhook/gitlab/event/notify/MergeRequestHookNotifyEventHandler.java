@@ -1,9 +1,9 @@
 package io.github.webhook.gitlab.event.notify;
 
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.NotifyEventHandler;
 import io.github.webhook.gitlab.webhook.mergerequest.MergeRequestHook;
-import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 
 /**
@@ -11,10 +11,6 @@ import io.github.webhook.notify.NotifierFactory;
  */
 public class MergeRequestHookNotifyEventHandler extends NotifyEventHandler<MergeRequestHook> {
 
-    @Override
-    public Class<MergeRequestHook> getDataType() {
-        return MergeRequestHook.class;
-    }
 
     public MergeRequestHookNotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<MergeRequestHook> messageGenerator) {
         super(notifierFactory, messageGenerator);

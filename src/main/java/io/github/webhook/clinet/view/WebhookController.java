@@ -1,8 +1,8 @@
 package io.github.webhook.clinet.view;
 
 import io.github.webhook.clinet.view.vo.WebhookInfo;
-import io.github.webhook.meta.Webhook;
-import io.github.webhook.meta.WebhookProperties;
+import io.github.webhook.config.meta.Webhook;
+import io.github.webhook.config.WebhookConfig;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,16 +17,16 @@ public class WebhookController {
 
 
     @Resource
-    private WebhookProperties webhookProperties;
+    private WebhookConfig webhookConfig;
 
 
     @GetMapping("/configs")
     public List<WebhookInfo> listConfigs() {
-        List<Webhook> webhooks = webhookProperties.getWebhooks();
+        List<Webhook> webhooks = webhookConfig.getWebhooks();
         List<WebhookInfo> resp = new ArrayList<>();
         for (Webhook webhook : webhooks) {
             WebhookInfo webhookInfo = new WebhookInfo(webhook);
-            webhookInfo.setWebhookUrl(webhookProperties.getWebhookUrl(webhook.getId()));
+            webhookInfo.setWebhookUrl(webhookConfig.getWebhookUrl(webhook.getId()));
             resp.add(webhookInfo);
         }
         return resp;

@@ -1,10 +1,9 @@
 package io.github.webhook.notify.wechat;
 
-import io.github.webhook.meta.NotifyConf;
-import io.github.webhook.meta.Webhook;
-import io.github.webhook.meta.WechatConf;
-import io.github.webhook.notify.Notifier;
+import io.github.webhook.config.meta.NotifyConf;
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.WebhookMessage;
+import io.github.webhook.notify.Notifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -49,7 +48,7 @@ public class CorpWechatNotifier implements Notifier<MarkdownMessage, Object> {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<MarkdownMessage> entity = new HttpEntity<>(markdownMessage, httpHeaders);
         NotifyConf notify = webhook.getNotify();
-        WechatConf wechat = notify.getWechat();
+        NotifyConf.CorpWechat wechat = notify.getWechat();
         return restOperations.postForEntity(String.format("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=%s", wechat.getKey()), entity, Object.class).getBody();
     }
 }

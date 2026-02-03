@@ -10,11 +10,6 @@ import io.github.webhook.notify.NotifierFactory;
  */
 public class NoteHookNotifyEventHandler extends NotifyEventHandler<NoteHook> {
 
-    @Override
-    public Class<NoteHook> getDataType() {
-        return NoteHook.class;
-    }
-
     public NoteHookNotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<NoteHook> messageGenerator) {
         super(notifierFactory, messageGenerator);
     }

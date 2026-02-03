@@ -14,9 +14,5 @@ public class PullRequestNotifyEventHandler extends NotifyEventHandler<PullReques
         super(notifierFactory, messageGenerator);
     }
 
-    @Override
-    public Class<PullRequestPayload> getDataType() {
-        return PullRequestPayload.class;
-    }
 
 }

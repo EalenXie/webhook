@@ -1,9 +1,10 @@
 package io.github.webhook.clinet.view.vo;
 
-import io.github.webhook.meta.GitlabConf;
-import io.github.webhook.meta.Webhook;
-import io.github.webhook.meta.WebhookType;
+import io.github.webhook.config.meta.GitlabConf;
+import io.github.webhook.config.meta.Webhook;
+import io.github.webhook.config.meta.WebhookType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.beans.BeanInfo;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class WebhookInfo {
     private String type;
     private String id;
@@ -23,8 +25,6 @@ public class WebhookInfo {
     private List<String> webUrls;
     private List<String> triggers;
 
-    public WebhookInfo() {
-    }
 
     public WebhookInfo(Webhook webhook) {
         this.id = webhook.getId();
@@ -51,9 +51,5 @@ public class WebhookInfo {
                 }
             }
         }
-
-
     }
-
-
 }

@@ -6,7 +6,7 @@ import io.github.webhook.github.dto.Commit;
 import io.github.webhook.github.dto.PushPayload;
 import io.github.webhook.github.dto.Pusher;
 import io.github.webhook.github.dto.Repository;
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,6 +1,6 @@
 package io.github.webhook.core;
 
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 
 import java.util.List;
 

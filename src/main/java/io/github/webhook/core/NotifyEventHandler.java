@@ -1,6 +1,6 @@
 package io.github.webhook.core;
 
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.notify.Notifier;
 import io.github.webhook.notify.NotifierFactory;
 import org.springframework.lang.Nullable;
@@ -26,18 +26,6 @@ public abstract class NotifyEventHandler<D> implements EventHandler<D, Object> {
     protected NotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<D> messageGenerator) {
         this.notifierFactory = notifierFactory;
         this.messageGenerator = messageGenerator;
-    }
-
-    /**
-     * 是否执行 处理事情请求
-     *
-     * @param webhook webhook
-     * @param data    事件输入数据
-     * @return 是否执行事件处理
-     */
-    @Override
-    public boolean shouldHandleEvent(Webhook webhook, D data) {
-        return true;
     }
 
     /**

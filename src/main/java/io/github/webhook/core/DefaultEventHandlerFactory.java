@@ -1,6 +1,6 @@
 package io.github.webhook.core;
 
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -31,8 +31,8 @@ public class DefaultEventHandlerFactory implements EventHandlerFactory {
      * 注册事件处理器
      */
     public void regEventHandler(EventHandler<?, ?> eventHandler) {
-        String className = eventHandler.getClass().getName();
-        ((DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory()).registerSingleton(Character.toLowerCase(className.charAt(0)) + className.substring(1), eventHandler);
+        String simpleName = eventHandler.getClass().getSimpleName();
+        ((DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory()).registerSingleton(Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1), eventHandler);
     }
 
 
@@ -91,7 +91,7 @@ public class DefaultEventHandlerFactory implements EventHandlerFactory {
                 }
             }
         }
-        return String.format("%s%sEventHandler", eventType, sb);
+        return String.format("%s%sEventHandler", sb, eventType);
     }
 
 }

@@ -1,4 +1,4 @@
-package io.github.webhook.meta;
+package io.github.webhook.config.meta;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +27,16 @@ public class Webhook {
     /**
      * webhook 配置
      */
-    private WebhookConf conf;
+    private Conf conf;
+
+    @Getter
+    @Setter
+    public static class Conf {
+        /**
+         * 开启此配置 可启用 gitlab rest api
+         */
+        private GitlabConf gitlab;
+    }
 
 
     public String getGitlabHost() {

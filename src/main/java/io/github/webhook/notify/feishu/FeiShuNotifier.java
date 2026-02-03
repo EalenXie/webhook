@@ -1,10 +1,9 @@
 package io.github.webhook.notify.feishu;
 
-import io.github.webhook.meta.FeiShuConf;
-import io.github.webhook.meta.NotifyConf;
-import io.github.webhook.meta.Webhook;
-import io.github.webhook.notify.Notifier;
+import io.github.webhook.config.meta.NotifyConf;
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.WebhookMessage;
+import io.github.webhook.notify.Notifier;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,7 +33,7 @@ public class FeiShuNotifier implements Notifier<InteractiveMessage, Object> {
     @Override
     public Object notify(Webhook webhook, InteractiveMessage interactiveMessage) {
         NotifyConf notify = webhook.getNotify();
-        FeiShuConf feiShu = notify.getFeiShu();
+        NotifyConf.FeiShu feiShu = notify.getFeiShu();
         String signKey = feiShu.getSignKey();
         if (signKey != null && !signKey.trim().isEmpty()) {
             long timestamp = System.currentTimeMillis();

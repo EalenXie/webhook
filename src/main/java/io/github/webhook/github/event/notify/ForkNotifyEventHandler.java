@@ -14,8 +14,5 @@ public class ForkNotifyEventHandler extends NotifyEventHandler<ForkPayload> {
         super(notifierFactory, messageGenerator);
     }
 
-    @Override
-    public Class<ForkPayload> getDataType() {
-        return ForkPayload.class;
-    }
+
 }

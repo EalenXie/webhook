@@ -1,6 +1,6 @@
 package io.github.webhook.core;
 
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 
 import java.util.List;
 
@@ -19,7 +19,6 @@ public interface MessageGenerator<D> {
      * @return 消息
      */
     WebhookMessage generate(Webhook webhook, D data);
-
 
     static String getUserHomePage(String projectUrl, String username) {
         return String.format("%s/%s", getHostSchema(projectUrl), username);

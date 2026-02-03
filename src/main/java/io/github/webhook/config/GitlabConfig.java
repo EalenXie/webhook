@@ -7,7 +7,6 @@ import io.github.webhook.gitlab.GitlabWebhookRegister;
 import io.github.webhook.gitlab.event.notify.*;
 import io.github.webhook.gitlab.message.*;
 import io.github.webhook.gitlab.rest.GitlabRestClientFactory;
-import io.github.webhook.meta.WebhookProperties;
 import io.github.webhook.notify.NotifierFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -22,14 +21,8 @@ import org.springframework.web.client.RestOperations;
 @Configuration
 public class GitlabConfig {
 
-
-    /**
-     * Gitlab Webhook 处理器
-     *
-     * @param gitlabEventHandlerFactory Gitlab事件工厂
-     */
     @Bean
-    public GitlabWebhookHandler gitlabWebhookHandler(ApplicationContext applicationContext, NotifierFactory notifierFactory, ObjectMapper objectMapper) {
+    public DefaultEventHandlerFactory gitlabEventHandlerFactory(ApplicationContext applicationContext, NotifierFactory notifierFactory) {
         // 事件处理器工厂
         DefaultEventHandlerFactory factory = new DefaultEventHandlerFactory(applicationContext);
         // Gitlab 通知类 事件处理器 xxxNotifyEventHandler
@@ -40,8 +33,19 @@ public class GitlabConfig {
         factory.regEventHandler(new NoteHookNotifyEventHandler(notifierFactory, new NoteHookMessageGenerator()));
         factory.regEventHandler(new ReleaseHookNotifyEventHandler(notifierFactory, new ReleaseHookMessageGenerator()));
         factory.regEventHandler(new TagPushHookNotifyEventHandler(notifierFactory, new TagPushHookMessageGenerator()));
-        factory.regEventHandler(new PipelineHookNotifyEventHandler(notifierFactory, new PipelineHookMessageGenerator(applicationContext.getBean(WebhookProperties.class))));
-        return new GitlabWebhookHandler(factory, objectMapper);
+        factory.regEventHandler(new PipelineHookNotifyEventHandler(notifierFactory, new PipelineHookMessageGenerator(applicationContext.getBean(WebhookConfig.class))));
+        return factory;
+    }
+
+
+    /**
+     * Gitlab Webhook 处理器
+     *
+     * @param gitlabEventHandlerFactory Gitlab事件工厂
+     */
+    @Bean
+    public GitlabWebhookHandler gitlabWebhookHandler(DefaultEventHandlerFactory gitlabEventHandlerFactory, ObjectMapper objectMapper) {
+        return new GitlabWebhookHandler(gitlabEventHandlerFactory, objectMapper);
     }
 
     @Bean
@@ -50,8 +54,8 @@ public class GitlabConfig {
     }
 
     @Bean
-    public GitlabWebhookRegister gitlabWebhookRegister(WebhookProperties webhookProperties, GitlabRestClientFactory gitlabRestClientFactory) {
-        return new GitlabWebhookRegister(webhookProperties, gitlabRestClientFactory);
+    public GitlabWebhookRegister gitlabWebhookRegister(WebhookConfig webhookConfig, GitlabRestClientFactory gitlabRestClientFactory) {
+        return new GitlabWebhookRegister(webhookConfig, gitlabRestClientFactory);
     }
 
 }

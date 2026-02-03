@@ -1,9 +1,9 @@
 package io.github.webhook.gitlab.event.notify;
 
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.NotifyEventHandler;
 import io.github.webhook.gitlab.webhook.tag.TagPushHook;
-import io.github.webhook.meta.Webhook;
 import io.github.webhook.notify.NotifierFactory;
 import org.springframework.util.ObjectUtils;
 
@@ -19,22 +19,15 @@ public class TagPushHookNotifyEventHandler extends NotifyEventHandler<TagPushHoo
     }
 
     @Override
-    public Class<TagPushHook> getDataType() {
-        return TagPushHook.class;
-    }
-
-    @Override
-    public boolean shouldHandleEvent(Webhook webhook, TagPushHook data) {
-        if (!ObjectUtils.isEmpty(webhook.getGitlabOnlyRefs())) {
-            return MessageGenerator.onlyRefs(webhook.getGitlabOnlyRefs(), data.getRef());
-        }
-        return super.shouldHandleEvent(webhook, data);
-    }
-
-    @Override
     protected boolean shouldNotify(Webhook webhook, TagPushHook data) {
-        return Objects.equals(data.getObjectKind(), "tag_push");
+        boolean shouldNotify = true;
+        if (!ObjectUtils.isEmpty(webhook.getGitlabOnlyRefs())) {
+            shouldNotify = MessageGenerator.onlyRefs(webhook.getGitlabOnlyRefs(), data.getRef());
+        }
+        if (shouldNotify) {
+            return Objects.equals(data.getObjectKind(), "tag_push");
+        }
+        return false;
     }
-
 
 }

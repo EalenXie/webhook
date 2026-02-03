@@ -4,7 +4,7 @@ import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.WebhookMessage;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.release.ReleaseHook;
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 
 public class ReleaseHookMessageGenerator implements MessageGenerator<ReleaseHook> {
 

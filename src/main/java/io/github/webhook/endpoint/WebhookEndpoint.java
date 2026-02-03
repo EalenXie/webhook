@@ -1,9 +1,10 @@
 package io.github.webhook.endpoint;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.github.webhook.core.WebhookExecutor;
+import io.github.webhook.config.meta.Webhook;
+import io.github.webhook.core.WebhookHandler;
+import io.github.webhook.core.WebhookHandlerFactory;
 import io.github.webhook.core.WebhookRepository;
-import io.github.webhook.meta.Webhook;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,7 @@ public class WebhookEndpoint {
     @Resource
     private WebhookRepository webhookRepository;
     @Resource
-    private WebhookExecutor webhookExecutor;
+    private WebhookHandlerFactory webhookHandlerFactory;
 
     @PostMapping(ENDPOINT_URL + "/{id}")
     public ResponseEntity<Object> webhook(@PathVariable String id, @RequestBody JsonNode requestBody) {
@@ -31,7 +32,11 @@ public class WebhookEndpoint {
         if (webhook == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(webhookExecutor.handleWebhook(webhook, requestBody));
+        WebhookHandler<?> handler = webhookHandlerFactory.getWebhookHandler(webhook.getType());
+        if (handler == null) {
+            throw new UnsupportedOperationException("unsupported webhook handler");
+        }
+        return ResponseEntity.ok(handler.handleWebhook(webhook, requestBody));
     }
 
 

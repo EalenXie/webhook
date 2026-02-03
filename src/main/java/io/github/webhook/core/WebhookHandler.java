@@ -1,7 +1,7 @@
 package io.github.webhook.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 
 /**
  * webhook处理器

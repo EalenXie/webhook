@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.webhook.core.DefaultEventHandlerFactory;
 import io.github.webhook.core.FactoryEventHandler;
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

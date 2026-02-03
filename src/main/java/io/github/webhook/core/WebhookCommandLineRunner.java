@@ -1,8 +1,8 @@
 package io.github.webhook.core;
 
 import io.github.webhook.gitlab.GitlabWebhookRegister;
-import io.github.webhook.meta.Webhook;
-import io.github.webhook.meta.WebhookProperties;
+import io.github.webhook.config.meta.Webhook;
+import io.github.webhook.config.WebhookConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 public class WebhookCommandLineRunner implements CommandLineRunner {
     @Resource
-    private WebhookProperties webhookProperties;
+    private WebhookConfig webhookConfig;
     @Resource
     private WebhookRepository webhookRepository;
     @Resource
@@ -26,12 +26,12 @@ public class WebhookCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("Webhook Home Address : {}/login.html", webhookProperties.getWebhookHost());
+        log.info("Webhook Home Address : {}/login.html", webhookConfig.getWebhookHost());
         List<Webhook> webhooks = webhookRepository.getWebhooks();
         if (!webhooks.isEmpty()) {
             log.info("Webhooks are successfully configured. The following webhooks are available:");
             webhooks.forEach(webhook -> {
-                StringBuilder sb = new StringBuilder(String.format("Webhook[%s][%s]success!,Url: %s", webhook.getId(), webhook.getType(), webhookProperties.getWebhookUrl(webhook.getId())));
+                StringBuilder sb = new StringBuilder(String.format("Webhook[%s][%s]success!,Url: %s", webhook.getId(), webhook.getType(), webhookConfig.getWebhookUrl(webhook.getId())));
                 if (!ObjectUtils.isEmpty(webhook.getGitlabProjectWebUrls())) {
                     List<String> success = gitlabWebhookRegister.register(webhook);
                     if (!ObjectUtils.isEmpty(success)) {

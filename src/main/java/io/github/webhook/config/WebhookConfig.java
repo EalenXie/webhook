@@ -1,6 +1,6 @@
-package io.github.webhook.meta;
+package io.github.webhook.config;
 
-import io.github.webhook.config.SpringEnvHelper;
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.endpoint.WebhookEndpoint;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,14 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * webhook 配置
+ *
  * @author EalenXie created on 2023/4/14 11:28
  */
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(WebhookProperties.PREFIX)
+@ConfigurationProperties(WebhookConfig.PREFIX)
 @Validated
-public class WebhookProperties {
+public class WebhookConfig {
     public static final String PREFIX = "config";
     /**
      * 默认为本机HOST 当本机需要进行域名或外部映射地址配置时需配置该值
@@ -30,8 +32,15 @@ public class WebhookProperties {
     private String webhookHost;
     @Resource
     private Environment environment;
+
     @NotEmpty(message = "请配置webhooks")
     private List<Webhook> webhooks = new ArrayList<>();
+
+    /**
+     * 客户端配置
+     */
+    private Admin admin;
+
 
     public String getWebhookHost() {
         if (webhookHost == null) {
@@ -51,5 +60,11 @@ public class WebhookProperties {
         return String.format("%s%s/%s", getWebhookHost(), WebhookEndpoint.ENDPOINT_URL, webhookId);
     }
 
+    @Getter
+    @Setter
+    public static class Admin {
+        private String username;
+        private String password;
+    }
 
 }

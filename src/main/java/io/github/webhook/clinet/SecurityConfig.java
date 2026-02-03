@@ -1,5 +1,6 @@
 package io.github.webhook.clinet;
 
+import io.github.webhook.config.WebhookConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,9 +10,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Resource;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+
+    @Resource
+    private WebhookConfig webhookConfig;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -21,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // 放行登录页与静态资源
                 .authorizeRequests()
-                .antMatchers("/login.html", "/actuator/**","/css/**", "/js/**").permitAll()
+                .antMatchers("/login.html", "/actuator/**", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
@@ -50,12 +57,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 });
     }
 
-    // 用户认证配置（内存用户，演示用）
+    // 用户认证配置
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        WebhookConfig.Admin admin = webhookConfig.getAdmin();
+        String username = "admin";
+        String password = "123456";
+        if (admin != null) {
+            username = admin.getUsername();
+            password = admin.getPassword();
+        }
         auth.inMemoryAuthentication()
-                .withUser("admin")
-                .password(passwordEncoder().encode("123456"))
+                .withUser(username)
+                .password(passwordEncoder().encode(password))
                 .roles("ADMIN");
     }
 

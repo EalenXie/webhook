@@ -1,10 +1,9 @@
 package io.github.webhook.notify.dingtalk;
 
-import io.github.webhook.meta.DingTalkConf;
-import io.github.webhook.meta.NotifyConf;
-import io.github.webhook.meta.Webhook;
-import io.github.webhook.notify.Notifier;
+import io.github.webhook.config.meta.NotifyConf;
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.WebhookMessage;
+import io.github.webhook.notify.Notifier;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -61,7 +60,7 @@ public class DingTalkNotifier implements Notifier<MarkdownMessage, Object> {
     @Override
     public Object notify(Webhook webhook, MarkdownMessage markdownMessage) {
         NotifyConf notify = webhook.getNotify();
-        DingTalkConf dingTalk = notify.getDingTalk();
+        NotifyConf.DingTalk dingTalk = notify.getDingTalk();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<MarkdownMessage> entity = new HttpEntity<>(markdownMessage, httpHeaders);

@@ -14,9 +14,4 @@ public class StarNotifyEventHandler extends NotifyEventHandler<StarPayload> {
         super(notifierFactory, messageGenerator);
     }
 
-    @Override
-    public Class<StarPayload> getDataType() {
-        return StarPayload.class;
-    }
-
 }

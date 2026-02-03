@@ -2,7 +2,7 @@ package io.github.webhook.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.webhook.meta.Webhook;
+import io.github.webhook.config.meta.Webhook;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -42,16 +42,13 @@ public abstract class FactoryEventHandler implements WebhookHandler<Object> {
         List<Object> resp = new ArrayList<>();
         for (EventHandler<Object, Object> handler : handlers) {
             try {
-                // 获取请求信息
+                // 获取事件输入对象
                 Object value = objectMapper.convertValue(params, handler.getDataType());
-                // 是否处理事件(不满足条件的事件处理将被丢弃)
-                if (handler.shouldHandleEvent(webhook, value)) {
-                    // 处理事件
-                    Object response = handler.handleEvent(webhook, value);
-                    // 获取事件处理结果
-                    if (response != null) {
-                        resp.add(response);
-                    }
+                // 处理事件
+                Object response = handler.handleEvent(webhook, value);
+                // 获取事件处理结果
+                if (response != null) {
+                    resp.add(response);
                 }
             } catch (Exception e) {
                 log.error("Webhook[{}]事件[{}],处理失败:", webhook.getId(), handler.getClass(), e);
