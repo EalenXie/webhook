@@ -15,16 +15,10 @@ import java.util.List;
  */
 @Slf4j
 public abstract class FactoryEventHandler implements WebhookHandler<Object> {
+
     private final DefaultEventHandlerFactory eventHandlerFactory;
+
     private final ObjectMapper objectMapper;
-
-    public DefaultEventHandlerFactory getEventHandlerFactory() {
-        return eventHandlerFactory;
-    }
-
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
-    }
 
     protected FactoryEventHandler(DefaultEventHandlerFactory eventHandlerFactory, ObjectMapper objectMapper) {
         this.eventHandlerFactory = eventHandlerFactory;
@@ -42,14 +36,14 @@ public abstract class FactoryEventHandler implements WebhookHandler<Object> {
         List<Object> resp = new ArrayList<>();
         // 事件处理器(针对该事件的事件处理器)执行
         eventHandlerFactory.getEventHandlers(event, webhook).forEach(handler -> {
-            Object response = handlerExecute(webhook, params, handler);
+            Object response = handlerExecute(webhook, event, params, handler);
             if (response != null) {
                 resp.add(response);
             }
         });
         // 公共事件处理器执行
         eventHandlerFactory.getCommonHandlers().forEach(handler -> {
-            Object response = handlerExecute(webhook, params, handler);
+            Object response = handlerExecute(webhook, event, params, handler);
             // 获取事件处理结果
             if (response != null) {
                 resp.add(response);
@@ -62,11 +56,12 @@ public abstract class FactoryEventHandler implements WebhookHandler<Object> {
      * 执行事件处理
      *
      * @param webhook webhook
+     * @param event   事件名
      * @param params  请求信息
      * @param handler 事件处理器
      * @return 事件处理结果
      */
-    protected Object handlerExecute(Webhook webhook, JsonNode params, EventHandler<Object, Object> handler) {
+    protected Object handlerExecute(Webhook webhook, String event, JsonNode params, EventHandler<Object, Object> handler) {
         try {
             // 获取事件输入对象
             Object value;
@@ -76,7 +71,7 @@ public abstract class FactoryEventHandler implements WebhookHandler<Object> {
                 value = objectMapper.convertValue(params, handler.getDataType());
             }
             // 处理事件
-            return handler.handleEvent(webhook, value);
+            return handler.handleEvent(webhook, event, value);
         } catch (Exception e) {
             log.error("Webhook[{}]事件[{}],处理失败:", webhook.getId(), handler.getClass(), e);
         }

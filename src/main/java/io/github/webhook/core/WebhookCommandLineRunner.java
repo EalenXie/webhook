@@ -1,8 +1,8 @@
 package io.github.webhook.core;
 
-import io.github.webhook.gitlab.GitlabWebhookRegister;
-import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.config.WebhookConfig;
+import io.github.webhook.config.meta.Webhook;
+import io.github.webhook.gitlab.GitlabHookClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class WebhookCommandLineRunner implements CommandLineRunner {
     @Resource
     private WebhookRepository webhookRepository;
     @Resource
-    private GitlabWebhookRegister gitlabWebhookRegister;
+    private GitlabHookClient gitlabHookClient;
 
     @Override
     public void run(String... args) {
@@ -33,7 +33,7 @@ public class WebhookCommandLineRunner implements CommandLineRunner {
             webhooks.forEach(webhook -> {
                 StringBuilder sb = new StringBuilder(String.format("Webhook[%s][%s]success!,Url: %s", webhook.getId(), webhook.getType(), webhookConfig.getWebhookUrl(webhook.getId())));
                 if (!ObjectUtils.isEmpty(webhook.getGitlabProjectWebUrls())) {
-                    List<String> success = gitlabWebhookRegister.register(webhook);
+                    List<String> success = gitlabHookClient.addHook(webhook);
                     if (!ObjectUtils.isEmpty(success)) {
                         sb.append(String.format(" ,Projects:%s", success));
                     }

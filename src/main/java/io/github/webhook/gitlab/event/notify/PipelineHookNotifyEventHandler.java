@@ -4,7 +4,6 @@ import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.NotifyEventHandler;
 import io.github.webhook.gitlab.webhook.pipeline.PipelineHook;
-import io.github.webhook.notify.NotifierFactory;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -12,8 +11,8 @@ import org.springframework.util.ObjectUtils;
  */
 public class PipelineHookNotifyEventHandler extends NotifyEventHandler<PipelineHook> {
 
-    public PipelineHookNotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<PipelineHook> messageGenerator) {
-        super(notifierFactory, messageGenerator);
+    public PipelineHookNotifyEventHandler(MessageGenerator<PipelineHook> messageGenerator) {
+        super(messageGenerator);
     }
 
 

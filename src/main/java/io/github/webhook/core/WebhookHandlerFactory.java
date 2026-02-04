@@ -12,14 +12,13 @@ public class WebhookHandlerFactory {
 
     private final EnumMap<WebhookType, WebhookHandler<?>> webhookHandlers = new EnumMap<>(WebhookType.class);
 
-    public void registerHandler(WebhookType webhookType, WebhookHandler<?> webhookHandler) {
+    public void addHandler(WebhookType webhookType, WebhookHandler<?> webhookHandler) {
         webhookHandlers.put(webhookType, webhookHandler);
     }
 
     @SuppressWarnings("unchecked")
-    public <H> WebhookHandler<H> getWebhookHandler(WebhookType webhookType) {
+    public <H> WebhookHandler<H> getHandler(WebhookType webhookType) {
         return (WebhookHandler<H>) webhookHandlers.get(webhookType);
     }
-
 
 }

@@ -1,5 +1,6 @@
 package io.github.webhook.core;
 
+import io.github.webhook.config.SpringEnvHelper;
 import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.notify.Notifier;
 import io.github.webhook.notify.NotifierFactory;
@@ -14,17 +15,13 @@ import java.util.List;
  * @author EalenXie created on 2023/4/17 13:07
  */
 public abstract class NotifyEventHandler<D> implements EventHandler<D, Object> {
-    /**
-     * 通知工厂
-     */
-    private final NotifierFactory notifierFactory;
+
     /**
      * 消息生成器
      */
     private final MessageGenerator<D> messageGenerator;
 
-    protected NotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<D> messageGenerator) {
-        this.notifierFactory = notifierFactory;
+    protected NotifyEventHandler(MessageGenerator<D> messageGenerator) {
         this.messageGenerator = messageGenerator;
     }
 
@@ -40,13 +37,13 @@ public abstract class NotifyEventHandler<D> implements EventHandler<D, Object> {
 
     @Override
     @Nullable
-    public Object handleEvent(Webhook webhook, D data) {
+    public Object handleEvent(Webhook webhook, String event, D data) {
         if (shouldNotify(webhook, data)) {
             List<Object> resp = new ArrayList<>();
             // 消息生成器生成消息
             WebhookMessage message = messageGenerator.generate(webhook, data);
             // 根据webhook 获取 Notifier
-            List<Notifier<Object, Object>> notifies = notifierFactory.getNotifies(webhook);
+            List<Notifier<Object, Object>> notifies = SpringEnvHelper.getBean(NotifierFactory.class).getNotifies(webhook);
             // Notifier 发起通知
             notifies.forEach(notifier -> resp.add(notifier.notify(webhook, notifier.process(message))));
 

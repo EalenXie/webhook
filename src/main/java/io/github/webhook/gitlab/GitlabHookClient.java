@@ -18,19 +18,18 @@ import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-public class GitlabWebhookRegister {
-
+public class GitlabHookClient {
 
     private final WebhookConfig webhookConfig;
 
     private final GitlabRestClientFactory gitlabRestClientFactory;
 
-    public GitlabWebhookRegister(WebhookConfig webhookConfig, GitlabRestClientFactory gitlabRestClientFactory) {
+    public GitlabHookClient(WebhookConfig webhookConfig, GitlabRestClientFactory gitlabRestClientFactory) {
         this.gitlabRestClientFactory = gitlabRestClientFactory;
         this.webhookConfig = webhookConfig;
     }
 
-    public List<String> register(Webhook webhook) {
+    public List<String> addHook(Webhook webhook) {
         List<String> success = new ArrayList<>();
         List<String> gitlabProjectWebUrls = webhook.getGitlabProjectWebUrls();
         GitlabRestClient gitlabRestClient = gitlabRestClientFactory.getGitlabRestClient(webhook);

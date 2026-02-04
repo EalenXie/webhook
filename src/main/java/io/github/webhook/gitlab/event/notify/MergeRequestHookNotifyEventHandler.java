@@ -4,7 +4,6 @@ import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.NotifyEventHandler;
 import io.github.webhook.gitlab.webhook.mergerequest.MergeRequestHook;
-import io.github.webhook.notify.NotifierFactory;
 
 /**
  * @author EalenXie created on 2023/4/14 12:53
@@ -12,8 +11,8 @@ import io.github.webhook.notify.NotifierFactory;
 public class MergeRequestHookNotifyEventHandler extends NotifyEventHandler<MergeRequestHook> {
 
 
-    public MergeRequestHookNotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<MergeRequestHook> messageGenerator) {
-        super(notifierFactory, messageGenerator);
+    public MergeRequestHookNotifyEventHandler(MessageGenerator<MergeRequestHook> messageGenerator) {
+        super(messageGenerator);
     }
 
     @Override

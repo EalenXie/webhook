@@ -32,7 +32,7 @@ public class WebhookEndpoint {
         if (webhook == null) {
             return ResponseEntity.notFound().build();
         }
-        WebhookHandler<?> handler = webhookHandlerFactory.getWebhookHandler(webhook.getType());
+        WebhookHandler<?> handler = webhookHandlerFactory.getHandler(webhook.getType());
         if (handler == null) {
             throw new UnsupportedOperationException("unsupported webhook handler");
         }

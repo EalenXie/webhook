@@ -1,13 +1,17 @@
 package io.github.webhook.config;
 
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
@@ -29,8 +33,19 @@ public class SpringEnvHelper implements ApplicationContextAware {
 
     private static Integer port;
 
+    private static ApplicationContext applicationContext;
+
+    /**
+     * 设置Spring环境下的静态属性
+     */
+    private static void setStaticProperties(ApplicationContext context) {
+        applicationContext = context;
+    }
+
+
     @Override
     public void setApplicationContext(@Autowired @NonNull ApplicationContext applicationContext) {
+        setStaticProperties(applicationContext);
         setPort(applicationContext);
     }
 
@@ -111,5 +126,93 @@ public class SpringEnvHelper implements ApplicationContextAware {
         throw new UnsupportedOperationException(new UnknownHostException());
     }
 
+    /**
+     * 获取一个JavaBean
+     */
+    public static <T> T getBean(Class<T> beanClass) {
+        if (applicationContext == null) {
+            throw new NoSuchBeanDefinitionException(SpringEnvHelper.class);
+        }
+        return applicationContext.getBean(beanClass);
+    }
 
+    /**
+     * 获取一个JavaBean
+     */
+    public static Object getBean(String beanName) {
+        if (applicationContext == null) {
+            throw new NoSuchBeanDefinitionException(SpringEnvHelper.class);
+        }
+        return applicationContext.getBean(beanName);
+    }
+
+
+    /**
+     * 获取一个JavaBean（如果没有，先注册Bean）
+     */
+    public static <T> T getOrRegisterBean(Class<T> beanClass) {
+        if (applicationContext == null) {
+            throw new NoSuchBeanDefinitionException(SpringEnvHelper.class);
+        }
+        try {
+            return applicationContext.getBean(beanClass);
+        } catch (Exception ignored) {
+            registerSingleton(beanClass);
+            return applicationContext.getBean(beanClass);
+        }
+    }
+
+
+    /**
+     * 获取一个JavaBean（如果没有，先注册Bean）
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getOrRegisterBean(T bean) {
+        if (applicationContext == null) {
+            throw new NoSuchBeanDefinitionException(SpringEnvHelper.class);
+        }
+        try {
+            return (T) applicationContext.getBean(bean.getClass());
+        } catch (Exception ignored) {
+            registerSingleton(bean);
+            return (T) applicationContext.getBean(bean.getClass());
+        }
+    }
+
+    /**
+     * 注册一个单例Bean（不允许重名）
+     */
+    public static <T> void registerSingleton(T bean) {
+        if (applicationContext == null) {
+            throw new NoSuchBeanDefinitionException(SpringEnvHelper.class);
+        }
+        ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
+        String className = bean.getClass().getSimpleName();
+        String beanName = Character.toLowerCase(className.charAt(0)) + className.substring(1);
+        if (beanFactory.containsSingleton(beanName) || beanFactory.containsBeanDefinition(beanName)) {
+            throw new UnsupportedOperationException(String.format("Bean name conflict: '%s' already exists. Existing bean type: %s, New bean type: %s", beanName, beanFactory.getType(beanName), bean.getClass()));
+        }
+        beanFactory.registerSingleton(beanName, bean);
+    }
+
+    /**
+     * 注册一个单例Bean（不允许重名）
+     */
+    public static <T> void registerSingleton(Class<T> beanClass) {
+        if (applicationContext == null) {
+            throw new NoSuchBeanDefinitionException(SpringEnvHelper.class);
+        }
+        try {
+            ConfigurableListableBeanFactory beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
+            String className = beanClass.getSimpleName();
+            String beanName = Character.toLowerCase(className.charAt(0)) + className.substring(1);
+            if (beanFactory.containsSingleton(beanName) || beanFactory.containsBeanDefinition(beanName)) {
+                throw new UnsupportedOperationException(String.format("Bean name conflict: '%s' already exists. Existing bean type: %s, New bean type: %s", beanName, beanFactory.getType(beanName), beanClass));
+            }
+            beanFactory.registerSingleton(beanName, beanClass.getDeclaredConstructor().newInstance());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
+            throw new UnsupportedOperationException(e);
+        }
+    }
 }

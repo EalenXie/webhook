@@ -4,7 +4,6 @@ import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.NotifyEventHandler;
 import io.github.webhook.gitlab.webhook.job.JobHook;
-import io.github.webhook.notify.NotifierFactory;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -12,8 +11,8 @@ import org.springframework.util.ObjectUtils;
  */
 public class JobHookNotifyEventHandler extends NotifyEventHandler<JobHook> {
 
-    public JobHookNotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<JobHook> messageGenerator) {
-        super(notifierFactory, messageGenerator);
+    public JobHookNotifyEventHandler(MessageGenerator<JobHook> messageGenerator) {
+        super(messageGenerator);
     }
 
     @Override

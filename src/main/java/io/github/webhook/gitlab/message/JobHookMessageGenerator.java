@@ -1,10 +1,10 @@
 package io.github.webhook.gitlab.message;
 
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.WebhookMessage;
 import io.github.webhook.gitlab.webhook.Repository;
 import io.github.webhook.gitlab.webhook.job.JobHook;
-import io.github.webhook.config.meta.Webhook;
 
 import java.util.Collections;
 import java.util.Objects;

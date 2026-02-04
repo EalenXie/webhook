@@ -1,9 +1,8 @@
 package io.github.webhook.core;
 
+import io.github.webhook.config.SpringEnvHelper;
 import io.github.webhook.config.meta.Webhook;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.ApplicationContext;
 
 import java.util.*;
 
@@ -13,7 +12,6 @@ import java.util.*;
  * @author EalenXie created on 2023/7/27 11:32
  */
 public class DefaultEventHandlerFactory {
-    private final ApplicationContext applicationContext;
     /**
      * 特殊事件处理器 对应事件KEY
      */
@@ -22,28 +20,6 @@ public class DefaultEventHandlerFactory {
      * 公共事件处理器
      */
     private final Set<EventHandler<Object, Object>> commonHandlers = new HashSet<>();
-
-
-    public DefaultEventHandlerFactory(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-    /**
-     * 注册事件处理器
-     */
-    public void regEventHandler(EventHandler<?, ?> eventHandler) {
-        String simpleName = eventHandler.getClass().getSimpleName();
-        ((DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory()).registerSingleton(Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1), eventHandler);
-    }
-
-
-    public <T> T getBean(Class<T> requiredType) {
-        return getApplicationContext().getBean(requiredType);
-    }
 
     /**
      * 获取公共事件处理器
@@ -69,7 +45,7 @@ public class DefaultEventHandlerFactory {
                 // 根据事件名称获取到通知类型的BeanName -> xxxNotifyEventHandler
                 String beanName = getHandlerBeanName(event, "Notify");
                 try {
-                    eventHandlers.add((EventHandler<Object, Object>) applicationContext.getBean(beanName));
+                    eventHandlers.add((EventHandler<Object, Object>) SpringEnvHelper.getBean(beanName));
                     handlers.put(event, eventHandlers);
                 } catch (BeansException e) {
                     throw new UnsupportedOperationException(String.format("Can not get EventHandler[%s]", beanName));

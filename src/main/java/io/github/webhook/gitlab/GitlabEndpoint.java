@@ -1,11 +1,11 @@
 package io.github.webhook.gitlab;
 
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.WebhookRepository;
 import io.github.webhook.gitlab.dto.PipelinePayload;
 import io.github.webhook.gitlab.rest.GitlabRestClient;
 import io.github.webhook.gitlab.rest.GitlabRestClientFactory;
 import io.github.webhook.gitlab.rest.vo.CancelPipeline;
-import io.github.webhook.config.meta.Webhook;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

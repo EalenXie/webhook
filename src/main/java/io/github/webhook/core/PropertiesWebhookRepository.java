@@ -1,7 +1,7 @@
 package io.github.webhook.core;
 
-import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.config.WebhookConfig;
+import io.github.webhook.config.meta.Webhook;
 
 import java.util.HashMap;
 import java.util.List;

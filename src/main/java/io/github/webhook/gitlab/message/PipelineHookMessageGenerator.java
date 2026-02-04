@@ -2,6 +2,8 @@ package io.github.webhook.gitlab.message;
 
 
 import io.github.webhook.config.FileConvert;
+import io.github.webhook.config.WebhookConfig;
+import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.WebhookMessage;
 import io.github.webhook.gitlab.GitlabEndpoint;
@@ -9,8 +11,6 @@ import io.github.webhook.gitlab.webhook.Build;
 import io.github.webhook.gitlab.webhook.Commit;
 import io.github.webhook.gitlab.webhook.Project;
 import io.github.webhook.gitlab.webhook.pipeline.PipelineHook;
-import io.github.webhook.config.meta.Webhook;
-import io.github.webhook.config.WebhookConfig;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

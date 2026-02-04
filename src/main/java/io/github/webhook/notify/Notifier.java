@@ -1,7 +1,7 @@
 package io.github.webhook.notify;
 
-import io.github.webhook.core.WebhookMessage;
 import io.github.webhook.config.meta.Webhook;
+import io.github.webhook.core.WebhookMessage;
 
 import java.util.regex.Pattern;
 

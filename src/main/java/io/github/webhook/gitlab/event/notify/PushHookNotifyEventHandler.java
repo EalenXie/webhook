@@ -4,7 +4,6 @@ import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.NotifyEventHandler;
 import io.github.webhook.gitlab.webhook.push.PushHook;
-import io.github.webhook.notify.NotifierFactory;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -12,8 +11,8 @@ import org.springframework.util.ObjectUtils;
  */
 public class PushHookNotifyEventHandler extends NotifyEventHandler<PushHook> {
 
-    public PushHookNotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<PushHook> messageGenerator) {
-        super(notifierFactory, messageGenerator);
+    public PushHookNotifyEventHandler(MessageGenerator<PushHook> messageGenerator) {
+        super(messageGenerator);
     }
 
     @Override

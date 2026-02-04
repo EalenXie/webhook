@@ -4,7 +4,6 @@ import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.MessageGenerator;
 import io.github.webhook.core.NotifyEventHandler;
 import io.github.webhook.gitlab.webhook.tag.TagPushHook;
-import io.github.webhook.notify.NotifierFactory;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
@@ -14,8 +13,8 @@ import java.util.Objects;
  */
 public class TagPushHookNotifyEventHandler extends NotifyEventHandler<TagPushHook> {
 
-    public TagPushHookNotifyEventHandler(NotifierFactory notifierFactory, MessageGenerator<TagPushHook> messageGenerator) {
-        super(notifierFactory, messageGenerator);
+    public TagPushHookNotifyEventHandler(MessageGenerator<TagPushHook> messageGenerator) {
+        super(messageGenerator);
     }
 
     @Override
