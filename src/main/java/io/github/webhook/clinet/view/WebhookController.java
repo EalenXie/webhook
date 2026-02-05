@@ -1,8 +1,11 @@
 package io.github.webhook.clinet.view;
 
 import io.github.webhook.clinet.view.vo.WebhookInfo;
+import io.github.webhook.clinet.view.vo.WebhookWebsocketMessage;
 import io.github.webhook.config.WebhookConfig;
 import io.github.webhook.config.meta.Webhook;
+import io.github.webhook.core.WebsocketMessageInMemoryRepository;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +22,8 @@ public class WebhookController {
     @Resource
     private WebhookConfig webhookConfig;
 
+    @Resource
+    private WebsocketMessageInMemoryRepository websocketMessageInMemoryRepository;
 
     @GetMapping("/configs")
     public List<WebhookInfo> listConfigs() {
@@ -30,5 +35,15 @@ public class WebhookController {
             resp.add(webhookInfo);
         }
         return resp;
+    }
+
+    @GetMapping("/message/history")
+    public List<WebhookWebsocketMessage> history() {
+        return websocketMessageInMemoryRepository.list();
+    }
+
+    @DeleteMapping("/message/history")
+    public void clear() {
+        websocketMessageInMemoryRepository.clear();
     }
 }

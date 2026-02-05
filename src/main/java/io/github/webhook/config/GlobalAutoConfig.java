@@ -3,14 +3,9 @@ package io.github.webhook.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.webhook.config.meta.WebhookType;
-import io.github.webhook.core.DefaultEventHandlerFactory;
 import io.github.webhook.core.PropertiesWebhookRepository;
-import io.github.webhook.core.WebhookHandlerFactory;
 import io.github.webhook.core.WebhookRepository;
-import io.github.webhook.github.GithubWebhookHandler;
 import io.github.webhook.gitlab.GitlabHookClient;
-import io.github.webhook.gitlab.GitlabWebhookHandler;
 import io.github.webhook.gitlab.rest.GitlabRestClientFactory;
 import io.github.webhook.notify.NotifierFactory;
 import org.apache.http.config.SocketConfig;
@@ -20,7 +15,6 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -43,38 +37,6 @@ public class GlobalAutoConfig {
         return new SpringEnvHelper();
     }
 
-    /**
-     * 默认的事件处理器工厂
-     */
-    @Bean
-    public DefaultEventHandlerFactory defaultEventHandlerFactory() {
-        return new DefaultEventHandlerFactory();
-    }
-
-    /**
-     * Webhook事件及其组件注册器
-     */
-    @Bean
-    @DependsOn("springEnvHelper")
-    public WebhookBeanRegister webhookBeanRegister(RestOperations httpClientRestTemplate) {
-        return new WebhookBeanRegister(httpClientRestTemplate);
-    }
-
-    /**
-     * Github Webhook 处理器
-     */
-    @Bean
-    public GithubWebhookHandler githubWebhookHandler(DefaultEventHandlerFactory defaultEventHandlerFactory, ObjectMapper objectMapper) {
-        return new GithubWebhookHandler(defaultEventHandlerFactory, objectMapper);
-    }
-
-    /**
-     * Gitlab Webhook 处理器
-     */
-    @Bean
-    public GitlabWebhookHandler gitlabWebhookHandler(DefaultEventHandlerFactory defaultEventHandlerFactory, ObjectMapper objectMapper) {
-        return new GitlabWebhookHandler(defaultEventHandlerFactory, objectMapper);
-    }
 
     @Bean
     public GitlabRestClientFactory gitlabRestClientFactory(ObjectMapper objectMapper, RestOperations httpClientRestTemplate) {
@@ -86,17 +48,6 @@ public class GlobalAutoConfig {
         return new GitlabHookClient(webhookConfig, gitlabRestClientFactory);
     }
 
-    /**
-     * Webhook 处理器 工厂
-     */
-    @Bean
-    @DependsOn("springEnvHelper")
-    public WebhookHandlerFactory webhookHandlerFactory() {
-        WebhookHandlerFactory factory = new WebhookHandlerFactory();
-        factory.addHandler(WebhookType.GITHUB, SpringEnvHelper.getBean(GithubWebhookHandler.class));
-        factory.addHandler(WebhookType.GITLAB, SpringEnvHelper.getBean(GitlabWebhookHandler.class));
-        return factory;
-    }
 
     /**
      * 通知器 工厂

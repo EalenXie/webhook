@@ -15,7 +15,7 @@ public class NoteHookMessageGenerator implements MessageGenerator<NoteHook> {
     public WebhookMessage generate(Webhook webhook, NoteHook noteHook) {
         WebhookMessage message = new WebhookMessage();
         message.setTitle(noteHook.getObjectKind());
-        message.setNotifies(Collections.singletonList(String.valueOf(noteHook.getUser().getId())));
+        message.setNotifies(Collections.singletonList(String.valueOf(noteHook.getUser().getName())));
         User user = noteHook.getUser();
         Project project = noteHook.getProject();
         Issue issue = noteHook.getIssue();

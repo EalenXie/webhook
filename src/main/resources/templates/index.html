@@ -7,6 +7,9 @@
 
     <!-- Vue CDN -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
     <style>
         body {
@@ -88,40 +91,6 @@
         .tag.scope {
             background: #eef2ff;
             color: #3730a3;
-        }
-
-        .pipeline-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 16px;
-        }
-
-        .pipeline-card {
-            border-radius: 12px;
-            background: white;
-            padding: 14px;
-            border-left: 6px solid #2563eb;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
-        }
-
-        .pipeline-card.failed {
-            border-left-color: #dc2626;
-        }
-
-        .pipeline-card.success {
-            border-left-color: #16a34a;
-        }
-
-        .pipeline-title {
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-
-        .job {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 6px;
-            font-size: 13px;
         }
 
         .loading {
@@ -222,6 +191,95 @@
             pointer-events: none;
         }
 
+
+        .log-panel {
+            height: 420px;
+            overflow-y: auto;
+            background: #ffffff; /* 白底 */
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+            font-size: 13px;
+            color: #111827;
+        }
+
+        /* 单条日志 */
+        .log-row {
+            margin-bottom: 10px;
+        }
+
+        /* 第一行：时间 + 类型 + 标题 */
+        .log-line {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        .log-time {
+            color: #6b7280;
+            font-size: 12px;
+            min-width: 140px;
+        }
+
+        .log-type {
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 1px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .log-title {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        /* Markdown 内容（控制台块） */
+        .log-body {
+            margin-top: 3px;
+            margin-left: 150px; /* 对齐时间列 */
+            padding: 6px 8px;
+            background: #f9fafb; /* 很浅的灰 */
+            border-left: 3px solid #e5e7eb;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            color: #1f2937;
+            font-family: inherit;
+            border-radius: 4px;
+        }
+
+        /* Markdown 内部 */
+        .log-body code {
+            background: #eef2ff;
+            padding: 1px 4px;
+            border-radius: 4px;
+            color: #4338ca;
+        }
+
+        .log-body strong {
+            color: #111827;
+            font-weight: 600;
+        }
+
+        /* 通知人 */
+        .log-notify {
+            margin-left: 150px;
+            margin-top: 4px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .tag {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 999px;
+            margin-right: 4px;
+        }
+
     </style>
 </head>
 
@@ -317,36 +375,22 @@
         </table>
     </div>
 
-    <!-- ================= Pipeline 模块 ================= -->
     <div class="card">
-        <h2>Pipeline 实时状态</h2>
-
-        <div class="pipeline-grid">
-            <div
-                    v-for="p in pipelines"
-                    :key="p.pipelineId"
-                    class="pipeline-card"
-                    :class="p.status">
-                <div class="pipeline-title">
-                    {{ p.project }} —
-                    <span style="color:#2563eb">{{ p.branch }}</span>
+        <h2>Webhook 实时消息</h2>
+        <div ref="logContainer" class="log-panel">
+            <div v-for="log in messages" class="log-item">
+                <!-- Header Line -->
+                <div class="log-line">
+                    <span class="log-time">{{ log.timeStamp }}</span>
+                    <span class="log-type">{{ log.type }}</span>
+                    <span class="log-title">{{ log.title }}</span>
                 </div>
-
-                <div>Pipeline #{{ p.pipelineId }}</div>
-
-                <div class="tag" :class="p.status">
-                    {{ p.status.toUpperCase() }}
-                </div>
-
-                <div style="margin-top:10px;">
-                    <div v-for="job in p.jobs" class="job">
-                        <span>{{ job.name }}</span>
-                        <span class="tag" :class="job.status">{{ job.status }}</span>
-                    </div>
-                </div>
-
-                <div style="margin-top:10px;font-size:12px;color:#777;">
-                    Updated at {{ p.updatedAt }}
+                <!-- Markdown Body -->
+                <pre class="log-body" v-html="renderMarkdown(log.message)"></pre>
+                <!-- Notify -->
+                <div v-if="log.notifies?.length" class="log-notify">
+                    通知人:
+                    <span class="tag" v-for="n in log.notifies">{{ n }}</span>
                 </div>
             </div>
         </div>
@@ -363,53 +407,25 @@
                 webhooks: [],
                 loadingWebhooks: true,
                 webhookError: null,
-
-                pipelines: [
-                    {
-                        project: "kte-ntms-api",
-                        branch: "main",
-                        pipelineId: 342,
-                        status: "success",
-                        jobs: [
-                            {name: "Build", status: "success"},
-                            {name: "Test", status: "success"},
-                            {name: "Deploy", status: "success"}
-                        ],
-                        updatedAt: "12:22"
-                    },
-                    {
-                        project: "data-service",
-                        branch: "dev",
-                        pipelineId: 343,
-                        status: "running",
-                        jobs: [
-                            {name: "Build", status: "success"},
-                            {name: "Test", status: "running"},
-                            {name: "Deploy", status: "pending"}
-                        ],
-                        updatedAt: "12:25"
-                    },
-                    {
-                        project: "auth-center",
-                        branch: "feature/login",
-                        pipelineId: 344,
-                        status: "failed",
-                        jobs: [
-                            {name: "Build", status: "success"},
-                            {name: "Test", status: "failed"},
-                            {name: "Deploy", status: "pending"}
-                        ],
-                        updatedAt: "12:18"
-                    }
-                ]
+                messages: [],
+                loadingMessages: false
             };
         },
 
         mounted() {
             this.loadWebhooks();
+            this.loadHistory();
+            this.connectWebSocket();
         },
 
         methods: {
+            renderMarkdown(md) {
+                if (!md) return '';
+                return marked.parse(md, {
+                    breaks: true,   // 单换行生效
+                    gfm: true
+                });
+            },
             loadWebhooks() {
                 fetch("/actuator/webhooks/configs", {
                     credentials: "include"
@@ -459,6 +475,36 @@
                     w.copied = true;
                     setTimeout(() => w.copied = false, 1500);
                 }
+            },
+
+
+            loadHistory() {
+                this.loadingMessages = true;
+                fetch('/actuator/webhooks/message/history')
+                    .then(res => res.json())
+                    .then(data => {
+                        this.messages = data.reverse(); // 时间正序
+                    })
+                    .finally(() => this.loadingMessages = false);
+            },
+
+            connectWebSocket() {
+                const socket = new SockJS('/ws');
+                const stomp = Stomp.over(socket);
+
+                stomp.connect({}, () => {
+                    stomp.subscribe('/topic/messages', msg => {
+                        this.messages.push(JSON.parse(msg.body));
+                        this.scrollToBottom();
+                    });
+                });
+            },
+
+            scrollToBottom() {
+                this.$nextTick(() => {
+                    const el = this.$refs.logContainer;
+                    if (el) el.scrollTop = el.scrollHeight;
+                });
             }
         }
     }).mount("#app");

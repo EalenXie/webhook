@@ -14,7 +14,7 @@ public class IssueHookMessageGenerator implements MessageGenerator<IssueHook> {
     public WebhookMessage generate(Webhook webhook, IssueHook issueHook) {
         WebhookMessage message = new WebhookMessage();
         message.setTitle(issueHook.getObjectKind());
-        message.setNotifies(Collections.singletonList(String.valueOf(issueHook.getUser().getId())));
+        message.setNotifies(Collections.singletonList(String.valueOf(issueHook.getUser().getName())));
         IssueHook.ObjectAttributes attributes = issueHook.getObjectAttributes();
         Project project = issueHook.getProject();
         User user = issueHook.getUser();

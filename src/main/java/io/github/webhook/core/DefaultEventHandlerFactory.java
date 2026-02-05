@@ -22,6 +22,15 @@ public class DefaultEventHandlerFactory {
     private final Set<EventHandler<Object, Object>> commonHandlers = new HashSet<>();
 
     /**
+     * 添加公共事件处理器
+     */
+    @SuppressWarnings("unchecked")
+    public void addCommonHandlers(EventHandler<?, ?> eventHandler) {
+        EventHandler<Object, Object> handler = (EventHandler<Object, Object>) eventHandler;
+        commonHandlers.add(handler);
+    }
+
+    /**
      * 获取公共事件处理器
      */
     public Set<EventHandler<Object, Object>> getCommonHandlers() {

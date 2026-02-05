@@ -32,7 +32,7 @@ public class PipelineHookMessageGenerator implements MessageGenerator<PipelineHo
     public WebhookMessage generate(Webhook webhook, PipelineHook pipelineHook) {
         WebhookMessage message = new WebhookMessage();
         message.setTitle(pipelineHook.getObjectKind());
-        message.setNotifies(Collections.singletonList(String.valueOf(pipelineHook.getUser().getId())));
+        message.setNotifies(Collections.singletonList(String.valueOf(pipelineHook.getUser().getName())));
         StringBuilder sb = new StringBuilder();
         PipelineHook.ObjectAttributes attributes = pipelineHook.getObjectAttributes();
         Project project = pipelineHook.getProject();
