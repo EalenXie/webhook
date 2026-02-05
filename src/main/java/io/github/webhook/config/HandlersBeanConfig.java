@@ -76,7 +76,7 @@ public class HandlersBeanConfig {
     }
 
     /**
-     * 公共事件处理器 Bean注册
+     * 公共事件处理器 Bean注册 （WebSocketMessage）
      */
     @Bean
     public WebSocketMessageEventHandler webSocketMessageEventHandler(ObjectMapper objectMapper, SimpMessagingTemplate messagingTemplate, WebsocketMessageInMemoryRepository websocketMessageInMemoryRepository) {

@@ -19,7 +19,7 @@ public class WebsocketMessageInMemoryRepository {
         this.cacheSize = cacheSize;
     }
 
-    public synchronized void add(WebhookWebsocketMessage message) {
+    public synchronized void save(WebhookWebsocketMessage message) {
         cache.addFirst(message);
         if (cache.size() > cacheSize) {
             cache.removeLast();

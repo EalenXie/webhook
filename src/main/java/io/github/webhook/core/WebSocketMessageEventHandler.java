@@ -39,7 +39,7 @@ public class WebSocketMessageEventHandler implements EventHandler<JsonNode, Obje
             // 2. 消息生成器 生成消息
             WebhookWebsocketMessage message = new WebhookWebsocketMessage(webhook.getType().name(), messageGenerator.generate(webhook, data));
             // 3. 保存消息(内存级)
-            websocketMessageInMemoryRepository.add(message);
+            websocketMessageInMemoryRepository.save(message);
             // 3. 发送消息到 Websocket消息客户端
             messagingTemplate.convertAndSend("/topic/messages", message);
         } catch (Exception e) {
