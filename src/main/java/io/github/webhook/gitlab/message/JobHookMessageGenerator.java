@@ -14,7 +14,7 @@ public class JobHookMessageGenerator implements MessageGenerator<JobHook> {
     public WebhookMessage generate(Webhook webhook, JobHook jobHook) {
         WebhookMessage message = new WebhookMessage();
         message.setTitle(jobHook.getObjectKind());
-        message.setNotifies(Collections.singletonList(String.valueOf(jobHook.getUser().getName())));
+        message.setNotifies(Collections.singletonList(jobHook.getUser().getName()));
         Repository repository = jobHook.getRepository();
         Long pipelineId = jobHook.getPipelineId();
         String buildStatus = jobHook.getBuildStatus();

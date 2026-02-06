@@ -16,7 +16,7 @@ public class ForkMessageGenerator implements MessageGenerator<ForkPayload> {
         WebhookMessage message = new WebhookMessage();
         message.setTitle("fork");
         Repository repository = payload.getRepository();
-        message.setNotifies(Collections.singletonList(String.valueOf(repository.getOwner().getEmail())));
+        message.setNotifies(Collections.singletonList(repository.getOwner().getEmail()));
         User sender = payload.getSender();
         message.setMessage(String.format("[%s](%s) fork project [%s](%s) ☺️ %n%n current fork↙️ is `%s` ", sender.getLogin(), sender.getHtmlUrl(), repository.getName(), repository.getHtmlUrl(), repository.getForksCount()));
         return message;

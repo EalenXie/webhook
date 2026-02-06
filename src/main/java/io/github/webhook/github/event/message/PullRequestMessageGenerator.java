@@ -16,7 +16,7 @@ public class PullRequestMessageGenerator implements MessageGenerator<PullRequest
         message.setTitle("Pull Request");
         Repository repository = payload.getRepository();
         PullRequest pullRequest = payload.getPullRequest();
-        message.setNotifies(Collections.singletonList(String.valueOf(repository.getOwner().getEmail())));
+        message.setNotifies(Collections.singletonList(repository.getOwner().getEmail()));
         String action = payload.getAction();
         String emoji = "";
         if ("opened".equals(action)) {

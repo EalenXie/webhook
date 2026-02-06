@@ -16,7 +16,7 @@ public class MergeRequestHookMessageGenerator implements MessageGenerator<MergeR
     public WebhookMessage generate(Webhook webhook, MergeRequestHook mergeRequestHook) {
         WebhookMessage message = new WebhookMessage();
         message.setTitle(mergeRequestHook.getObjectKind());
-        message.setNotifies(Collections.singletonList(String.valueOf(mergeRequestHook.getUser().getName())));
+        message.setNotifies(Collections.singletonList(mergeRequestHook.getUser().getName()));
         User user = mergeRequestHook.getUser();
         Project project = mergeRequestHook.getProject();
         MergeRequestHook.ObjectAttributes attributes = mergeRequestHook.getObjectAttributes();

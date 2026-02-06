@@ -15,7 +15,7 @@ public class StarMessageGenerator implements MessageGenerator<StarPayload> {
         WebhookMessage message = new WebhookMessage();
         message.setTitle("star");
         Repository repository = payload.getRepository();
-        message.setNotifies(Collections.singletonList(String.valueOf(repository.getOwner().getEmail())));
+        message.setNotifies(Collections.singletonList(repository.getOwner().getEmail()));
         String action = payload.getAction();
         String emoji = "";
         if ("created".equals(action)) {

@@ -16,7 +16,7 @@ public class PushMessageGenerator implements MessageGenerator<PushPayload> {
     public WebhookMessage generate(Webhook webhook, PushPayload payload) {
         WebhookMessage message = new WebhookMessage();
         message.setTitle("push");
-        message.setNotifies(Collections.singletonList(String.valueOf(payload.getPusher().getEmail())));
+        message.setNotifies(Collections.singletonList(payload.getPusher().getEmail()));
         List<Commit> commits = payload.getCommits();
         Repository repository = payload.getRepository();
         Collections.sort(commits);

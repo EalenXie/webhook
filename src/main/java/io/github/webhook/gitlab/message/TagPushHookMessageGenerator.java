@@ -13,7 +13,7 @@ public class TagPushHookMessageGenerator implements MessageGenerator<TagPushHook
     public WebhookMessage generate(Webhook webhook, TagPushHook tagPushHook) {
         WebhookMessage message = new WebhookMessage();
         message.setTitle(tagPushHook.getObjectKind());
-        message.setNotifies(Collections.singletonList(String.valueOf(tagPushHook.getUserId())));
+        message.setNotifies(Collections.singletonList(tagPushHook.getUserName()));
         Project project = tagPushHook.getProject();
         String userUsername = tagPushHook.getUserUsername();
         String[] refSplit = tagPushHook.getRef().split("/");
