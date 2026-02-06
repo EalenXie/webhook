@@ -15,7 +15,7 @@ public class PushHookMessageGenerator implements MessageGenerator<PushHook> {
     public WebhookMessage generate(Webhook webhook, PushHook pushHook) {
         WebhookMessage message = new WebhookMessage();
         message.setTitle(pushHook.getObjectKind());
-        message.setNotifies(Collections.singletonList(String.valueOf(pushHook.getUserId())));
+        message.setNotifies(Collections.singletonList(String.valueOf(pushHook.getUserName())));
         List<Commit> commits = pushHook.getCommits();
         Project project = pushHook.getProject();
         String userUsername = pushHook.getUserUsername();

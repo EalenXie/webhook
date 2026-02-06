@@ -28,7 +28,7 @@ public interface MessageGenerator<D> {
         String schema = projectUrl.substring(0, projectUrl.indexOf("//"));
         String body = projectUrl.substring(projectUrl.indexOf("//") + 2);
         String host = body.substring(0, body.indexOf("/"));
-        return schema + host;
+        return String.format("%s//%s", schema, host);
     }
 
 

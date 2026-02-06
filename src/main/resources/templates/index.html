@@ -12,281 +12,620 @@
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
     <style>
+        /* ===== 全局样式重置与变量定义 ===== */
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --primary-dark: #4338ca;
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            font-family: "Segoe UI", Roboto, Arial;
-            background: #f5f7fb;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
+        /* ===== 头部样式 ===== */
         header {
-            background: #1f2937;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
             color: white;
-            padding: 16px 24px;
+            padding: 18px 28px;
             font-size: 20px;
-            font-weight: bold;
+            font-weight: 700;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
+        header::before {
+            content: "🚀";
+            font-size: 24px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        /* ===== 主容器 ===== */
         .container {
-            padding: 20px;
+            padding: 28px;
+            max-width: 1600px;
+            margin: 0 auto;
         }
 
+        /* ===== 卡片样式 ===== */
         .card {
-            background: white;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 28px;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
         }
 
-        h2 {
-            margin: 0 0 12px;
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card h2 {
+            margin: 0 0 20px 0;
             font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
+        .card h2::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* ===== 表格样式优化 ===== */
         table {
             width: 100%;
             border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
             font-size: 14px;
         }
 
         th {
+            background: var(--border-light);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 14px;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 18px 14px;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
             background: #f8fafc;
         }
 
-        .tag {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 12px;
-            margin-right: 4px;
-        }
-
-        .tag.success {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .tag.running {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .tag.failed {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .tag.disabled {
-            background: #f3f4f6;
-            color: #6b7280;
-        }
-
-        .tag.scope {
-            background: #eef2ff;
-            color: #3730a3;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 12px;
-            color: #666;
-        }
-
-        .error {
-            color: red;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .tag-group {
-            display: flex;
-            flex-wrap: wrap; /* 允许换行 */
-            gap: 6px;
-            max-width: 100%; /* 限制在 td 内宽度 */
-            word-break: break-word; /* 超长 URL 折行 */
-            white-space: normal; /* 阻止 nowrap */
-        }
-
+        /* ===== 类型单元格 ===== */
         .type-cell {
             display: flex;
-            align-items: center; /* 垂直居中 */
-            gap: 8px; /* logo 和文字间距 */
-            font-weight: bold;
-            font-size: 14px;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
         }
 
         .type-logo {
-            width: 24px; /* 原来是 18px */
-            height: 24px; /* 原来是 18px */
-            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            object-fit: contain;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
         }
 
-        .host-link {
-            color: #2563eb;
-            text-decoration: underline;
-            font-weight: 500;
+        /* ===== ID样式 ===== */
+        td strong {
+            background: #f1f5f9;
+            color: var(--text-primary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-family: var(--font-mono);
             font-size: 13px;
-            word-break: break-all; /* URL 太长自动换行 */
+            font-weight: 600;
         }
 
-        .host-link:hover {
-            color: #1d4ed8;
-        }
-
+        /* ===== 标签组样式 ===== */
         .tag-group {
             display: flex;
-            flex-wrap: wrap; /* 支持换行 */
+            flex-wrap: wrap;
             gap: 6px;
             max-width: 100%;
         }
 
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        .tag.disabled {
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-style: italic;
+            border: 1px dashed #e2e8f0;
+        }
+
+        .tag.scope {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        /* ===== URL标签和复制功能 ===== */
         .url-tag {
             background: #eef2ff;
             color: #3730a3;
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 8px;
-            text-decoration: none; /* 链接去掉下划线 */
-            word-break: break-all;
-            transition: background 0.2s;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+            position: relative;
+            padding-right: 32px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .url-tag:hover {
-            background: #e0e7ff; /* hover 高亮 */
+            background: #dbeafe;
+            border-color: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .url-tag::after {
+            content: "📋";
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            opacity: 0.7;
         }
 
         .copy-url {
             cursor: pointer;
-            background: #fef3c7;
-            color: #b45309;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 12px;
-            word-break: break-all;
-            transition: background 0.2s;
-        }
-
-        .copy-url:hover {
-            background: #fde68a;
+            position: relative;
         }
 
         .copy-tooltip {
             position: absolute;
-            top: -22px;
+            top: -28px;
             left: 0;
-            background: #111;
-            color: #fff;
-            padding: 2px 6px;
+            background: #1e293b;
+            color: white;
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
             font-size: 11px;
-            border-radius: 4px;
+            font-weight: 500;
             white-space: nowrap;
-            opacity: 0.9;
-            pointer-events: none;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            animation: fadeInOut 1.5s ease forwards;
         }
 
-
-        .log-panel {
-            height: 420px;
-            overflow-y: auto;
-            background: #ffffff; /* 白底 */
-            padding: 10px 12px;
-            border-radius: 10px;
-            border: 1px solid #e5e7eb;
-            font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
-            font-size: 13px;
-            color: #111827;
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(5px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-5px); }
         }
 
-        /* 单条日志 */
-        .log-row {
-            margin-bottom: 10px;
-        }
-
-        /* 第一行：时间 + 类型 + 标题 */
-        .log-line {
-            display: flex;
-            gap: 10px;
+        /* ===== 主机链接 ===== */
+        .host-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: inline-flex;
             align-items: center;
-            white-space: nowrap;
-            font-size: 13px;
+            gap: 6px;
         }
 
-        .log-time {
-            color: #6b7280;
+        .host-link::after {
+            content: "↗";
             font-size: 12px;
-            min-width: 140px;
+            opacity: 0.7;
         }
 
-        .log-type {
-            background: #eff6ff;
-            color: #2563eb;
-            padding: 1px 8px;
-            border-radius: 999px;
+        .host-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* ===== 加载和错误状态 ===== */
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .loading::after {
+            content: "";
+            width: 32px;
+            height: 32px;
+            border: 3px solid #f1f5f9;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee2e2;
+            color: var(--error);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid #fecaca;
+            margin: 20px 0;
+        }
+
+        /* ===== 日志面板 ===== */
+        .log-panel {
+            height: 500px;
+            overflow-y: auto;
+            background: var(--bg-card);
+            padding: 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .log-header {
+            background: #f8fafc;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .log-content {
+            flex: 1;
+            padding: 0;
+        }
+
+        /* ===== 调整日志行布局 ===== */
+        .log-row-split {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.2s ease;
+        }
+
+        .log-row-split:hover {
+            background: #f8fafc;
+        }
+
+        .log-row-split:last-child {
+            border-bottom: none;
+        }
+
+        /* ===== 日志元信息 ===== */
+        .log-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 时间行 */
+        .meta-time {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            order: 1;
+        }
+
+        .meta-time::before {
+            content: "🕒";
+            font-size: 11px;
+        }
+
+        /* 类型和标题行 */
+        .meta-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            order: 2;
+        }
+
+        .meta-type {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
         }
 
-        .log-title {
-            font-weight: 600;
-            color: #111827;
+        .meta-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.4;
+            word-break: break-word;
+            flex: 1;
+            min-width: 150px;
         }
 
-        /* Markdown 内容（控制台块） */
-        .log-body {
-            margin-top: 3px;
-            margin-left: 150px; /* 对齐时间列 */
-            padding: 6px 8px;
-            background: #f9fafb; /* 很浅的灰 */
-            border-left: 3px solid #e5e7eb;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            color: #1f2937;
-            font-family: inherit;
-            border-radius: 4px;
-        }
-
-        /* Markdown 内部 */
-        .log-body code {
-            background: #eef2ff;
-            padding: 1px 4px;
-            border-radius: 4px;
-            color: #4338ca;
-        }
-
-        .log-body strong {
-            color: #111827;
-            font-weight: 600;
-        }
-
-        /* 通知人 */
-        .log-notify {
-            margin-left: 150px;
-            margin-top: 4px;
+        /* 通知行 */
+        .meta-notify {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            order: 3;
             font-size: 12px;
-            color: #6b7280;
         }
 
-        .tag {
+        .notify-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .notify-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .notify-tag {
             background: #f1f5f9;
-            padding: 2px 6px;
-            border-radius: 999px;
-            margin-right: 4px;
+            color: var(--text-secondary);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            line-height: 1.2;
         }
 
+        /* ===== Markdown内容样式 ===== */
+        .markdown-tight {
+            background: #f8fafc;
+            padding: 16px;
+            border-left: 3px solid var(--primary);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            overflow-wrap: break-word;
+        }
+
+        .markdown-tight p {
+            margin: 8px 0;
+        }
+
+        .markdown-tight h1 {
+            font-size: 16px;
+            margin: 12px 0 8px;
+            color: var(--text-primary);
+        }
+
+        .markdown-tight h2 {
+            font-size: 15px;
+            margin: 10px 0 6px;
+            color: var(--text-primary);
+        }
+
+        .markdown-tight h3 {
+            font-size: 14px;
+            margin: 8px 0 4px;
+            color: var(--text-primary);
+        }
+
+        .markdown-tight code {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: #1e293b;
+        }
+
+        .markdown-tight pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 12px 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .markdown-tight pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+
+        /* ===== 滚动条美化 ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* ===== 响应式设计 ===== */
+        @media (max-width: 1200px) {
+            .container {
+                padding: 20px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .log-row-split {
+                grid-template-columns: 200px 1fr;
+                gap: 16px;
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 16px 20px;
+                font-size: 18px;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 16px;
+                border-radius: var(--radius-md);
+            }
+
+            .card h2 {
+                font-size: 16px;
+            }
+
+            th, td {
+                padding: 12px 10px;
+                font-size: 13px;
+            }
+
+            .log-panel {
+                height: 400px;
+            }
+
+            .log-row-split {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .meta-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .meta-notify {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            .notify-tags {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .tag-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .meta-title {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 
 <body>
-
 <header>
-    🚀 Webhook 控制台
+    Webhook 控制台
 </header>
 
 <div id="app" class="container">
@@ -323,9 +662,10 @@
                   </span>
                 </td>
                 <td><strong>{{ w.id }}</strong></td>
-                <td style="position: relative;"><span v-if="w.webhookUrl" class="tag url-tag copy-url"
-                                                      @click="copyToClipboard(w.webhookUrl)"
-                                                      :title="w.webhookUrl">{{ w.webhookUrl }}</span>
+                <td style="position: relative;">
+                    <span v-if="w.webhookUrl" class="tag url-tag copy-url"
+                          @click="copyToClipboard(w.webhookUrl)"
+                          :title="w.webhookUrl">{{ w.webhookUrl }}</span>
                     <span v-else class="tag disabled">未配置</span>
                     <span v-if="w.copied" class="copy-tooltip">已复制</span>
                 </td>
@@ -337,20 +677,24 @@
                     <span v-else class="tag disabled">未配置</span>
                 </td>
                 <td>
-                    <template v-if="w.triggers && w.triggers.length > 0">
-                        <span v-for="e in w.triggers" :key="e" class="tag scope">{{ e }}</span>
-                    </template>
-                    <template v-else>
-                        <span class="tag disabled">未配置</span>
-                    </template>
+                    <div class="tag-group">
+                        <template v-if="w.triggers && w.triggers.length > 0">
+                            <span v-for="e in w.triggers" :key="e" class="tag scope">{{ e }}</span>
+                        </template>
+                        <template v-else>
+                            <span class="tag disabled">未配置</span>
+                        </template>
+                    </div>
                 </td>
                 <td>
-                    <template v-if="w.onlyRefs && w.onlyRefs.length > 0">
-                        <span v-for="e in w.onlyRefs" :key="e" class="tag scope">{{ e }}</span>
-                    </template>
-                    <template v-else>
-                        <span class="tag disabled">未配置</span>
-                    </template>
+                    <div class="tag-group">
+                        <template v-if="w.onlyRefs && w.onlyRefs.length > 0">
+                            <span v-for="e in w.onlyRefs" :key="e" class="tag scope">{{ e }}</span>
+                        </template>
+                        <template v-else>
+                            <span class="tag disabled">未配置</span>
+                        </template>
+                    </div>
                 </td>
                 <td>
                     <div class="tag-group">
@@ -368,8 +712,6 @@
                         </template>
                     </div>
                 </td>
-
-
             </tr>
             </tbody>
         </table>
@@ -377,25 +719,36 @@
 
     <div class="card">
         <h2>Webhook 实时消息</h2>
-        <div ref="logContainer" class="log-panel">
-            <div v-for="log in messages" class="log-item">
-                <!-- Header Line -->
-                <div class="log-line">
-                    <span class="log-time">{{ log.timeStamp }}</span>
-                    <span class="log-type">{{ log.type }}</span>
-                    <span class="log-title">{{ log.title }}</span>
-                </div>
-                <!-- Markdown Body -->
-                <pre class="log-body" v-html="renderMarkdown(log.message)"></pre>
-                <!-- Notify -->
-                <div v-if="log.notifies?.length" class="log-notify">
-                    通知人:
-                    <span class="tag" v-for="n in log.notifies">{{ n }}</span>
+
+        <div class="log-panel" ref="logContainer">
+            <div class="log-header">实时日志流</div>
+            <div class="log-content">
+                <div v-for="log in messages" class="log-row-split">
+                    <!-- 左侧元信息 -->
+                    <div class="log-meta">
+                        <div class="meta-time">{{ log.timeStamp }}</div>
+
+                        <!-- 类型和标题在同一行 -->
+                        <div class="meta-header">
+                            <div class="meta-type">{{ log.type }}</div>
+                            <div class="meta-title">{{ log.title }}</div>
+                        </div>
+
+                        <!-- 通知和通知人在同一行 -->
+                        <div v-if="log.notifies?.length" class="meta-notify">
+                            <span class="notify-label">通知：</span>
+                            <div class="notify-tags">
+                                <span class="notify-tag" v-for="n in log.notifies">{{ n }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧 Markdown 内容 -->
+                    <div class="markdown-tight" v-html="renderMarkdown(log.message)"></div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
@@ -422,7 +775,7 @@
             renderMarkdown(md) {
                 if (!md) return '';
                 return marked.parse(md, {
-                    breaks: true,   // 单换行生效
+                    breaks: true,
                     gfm: true
                 });
             },
@@ -443,13 +796,11 @@
             copyToClipboard(text) {
                 if (!text) return;
 
-                // 优先使用现代 Clipboard API
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(text)
                         .then(() => this.showCopied(text))
                         .catch(() => this.fallbackCopy(text));
                 } else {
-                    // fallback
                     this.fallbackCopy(text);
                 }
             },
@@ -468,7 +819,6 @@
                     console.error("复制失败", err);
                 }
             },
-
             showCopied(text) {
                 const w = this.webhooks.find(item => item.webhookUrl === text);
                 if (w) {
@@ -476,18 +826,15 @@
                     setTimeout(() => w.copied = false, 1500);
                 }
             },
-
-
             loadHistory() {
                 this.loadingMessages = true;
                 fetch('/actuator/webhooks/message/history')
                     .then(res => res.json())
                     .then(data => {
-                        this.messages = data.reverse(); // 时间正序
+                        this.messages = data.reverse();
                     })
                     .finally(() => this.loadingMessages = false);
             },
-
             connectWebSocket() {
                 const socket = new SockJS('/ws');
                 const stomp = Stomp.over(socket);
@@ -499,7 +846,6 @@
                     });
                 });
             },
-
             scrollToBottom() {
                 this.$nextTick(() => {
                     const el = this.$refs.logContainer;
@@ -509,6 +855,5 @@
         }
     }).mount("#app");
 </script>
-
 </body>
 </html>
