@@ -31,7 +31,7 @@ public class WebhookCommandLineRunner implements CommandLineRunner {
         if (!webhooks.isEmpty()) {
             log.info("Webhooks are successfully configured. The following webhooks are available:");
             webhooks.forEach(webhook -> {
-                StringBuilder sb = new StringBuilder(String.format("Webhook[%s][%s]success!,Url: %s", webhook.getId(), webhook.getType(), webhookConfig.getWebhookUrl(webhook.getId())));
+                StringBuilder sb = new StringBuilder(String.format("[%s]Webhook[%s]success!,Url: %s", webhook.getType(), webhook.getId(), webhookConfig.getWebhookUrl(webhook.getId())));
                 if (!ObjectUtils.isEmpty(webhook.getGitlabProjectWebUrls())) {
                     List<String> success = gitlabHookClient.addHook(webhook);
                     if (!ObjectUtils.isEmpty(success)) {

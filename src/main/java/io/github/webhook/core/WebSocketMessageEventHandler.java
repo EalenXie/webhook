@@ -36,6 +36,7 @@ public class WebSocketMessageEventHandler implements EventHandler<JsonNode, Obje
             String messageGeneratorName = getMessageGeneratorName(event);
             MessageGenerator<Object> messageGenerator = (MessageGenerator<Object>) SpringEnvHelper.getBean(messageGeneratorName);
             Object data = objectMapper.convertValue(params, ResolvableType.forClass(messageGenerator.getClass()).as(MessageGenerator.class).getGeneric(0).resolve());
+            log.info("[{}]Webhook[{}]接收事件[{}]请求信息:{}", webhook.getType(), webhook.getId(), event, objectMapper.writeValueAsString(data));
             // 2. 消息生成器 生成消息
             WebhookWebsocketMessage message = new WebhookWebsocketMessage(webhook.getType().name(), messageGenerator.generate(webhook, data));
             // 3. 保存消息(内存级)
