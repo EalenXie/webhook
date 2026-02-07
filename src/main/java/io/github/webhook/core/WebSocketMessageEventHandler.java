@@ -2,7 +2,7 @@ package io.github.webhook.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.webhook.clinet.view.vo.WebhookWebsocketMessage;
+import io.github.webhook.client.view.vo.WebhookWebsocketMessage;
 import io.github.webhook.config.SpringEnvHelper;
 import io.github.webhook.config.meta.Webhook;
 import lombok.extern.slf4j.Slf4j;

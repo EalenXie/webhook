@@ -1,4 +1,4 @@
-package io.github.webhook.clinet;
+package io.github.webhook.client;
 
 import io.github.webhook.config.WebhookConfig;
 import org.springframework.context.annotation.Bean;

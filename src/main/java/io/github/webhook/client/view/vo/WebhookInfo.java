@@ -1,4 +1,4 @@
-package io.github.webhook.clinet.view.vo;
+package io.github.webhook.client.view.vo;
 
 import io.github.webhook.config.meta.GitlabConf;
 import io.github.webhook.config.meta.Webhook;

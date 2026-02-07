@@ -1,6 +1,6 @@
 package io.github.webhook.core;
 
-import io.github.webhook.clinet.view.vo.WebhookWebsocketMessage;
+import io.github.webhook.client.view.vo.WebhookWebsocketMessage;
 
 import java.util.ArrayList;
 import java.util.Deque;

@@ -1,4 +1,4 @@
-package io.github.webhook.clinet.view.vo;
+package io.github.webhook.client.view.vo;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

@@ -1,7 +1,7 @@
-package io.github.webhook.clinet.view;
+package io.github.webhook.client.view;
 
-import io.github.webhook.clinet.view.vo.WebhookInfo;
-import io.github.webhook.clinet.view.vo.WebhookWebsocketMessage;
+import io.github.webhook.client.view.vo.WebhookInfo;
+import io.github.webhook.client.view.vo.WebhookWebsocketMessage;
 import io.github.webhook.config.WebhookConfig;
 import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.core.WebsocketMessageInMemoryRepository;

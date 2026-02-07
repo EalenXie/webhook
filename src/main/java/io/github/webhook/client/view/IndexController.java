@@ -1,4 +1,4 @@
-package io.github.webhook.clinet.view;
+package io.github.webhook.client.view;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
