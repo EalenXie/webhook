@@ -25,18 +25,17 @@ public class CorpWechatNotifier implements Notifier<MarkdownMessage, Object> {
     }
 
     @Override
-    public MarkdownMessage process(WebhookMessage message) {
+    public MarkdownMessage process(Webhook webhook, WebhookMessage message) {
         Markdown markdown = new Markdown();
         StringBuilder sb = new StringBuilder();
-        if (!ObjectUtils.isEmpty(message.getNotifies())) {
-            List<String> atMobiles = new ArrayList<>();
-            for (String notifier : message.getNotifies()) {
-                if (!ObjectUtils.isEmpty(notifier) && PHONE_PATTERN.matcher(notifier).matches()) {
-                    atMobiles.add(notifier);
-                }
-            }
-            markdown.setMentionedMobileList(atMobiles.toArray(new String[0]));
+        List<String> atMobiles = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(webhook.getNotify().getNotifyMobiles())) {
+            atMobiles.addAll(webhook.getNotify().getNotifyMobiles());
+        } else if (!ObjectUtils.isEmpty(message.getNotifies())) {
+            atMobiles.addAll(message.getNotifies());
         }
+        atMobiles.removeIf(notifier -> !PHONE_PATTERN.matcher(notifier).matches());
+        markdown.setMentionedMobileList(atMobiles.toArray(new String[0]));
         sb.append(message.getMessage());
         markdown.setContent(sb.toString());
         return new MarkdownMessage(markdown);

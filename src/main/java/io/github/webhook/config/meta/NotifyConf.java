@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 
+import java.util.List;
+
 /**
  * 消息通知配置
  *
@@ -25,6 +27,10 @@ public class NotifyConf {
      * 企业微信
      */
     private CorpWechat wechat;
+    /**
+     * 通知消息（@人）手机号
+     */
+    private List<String> notifyMobiles;
 
     @Getter
     @Setter

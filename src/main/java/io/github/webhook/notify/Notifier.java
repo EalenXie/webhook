@@ -18,11 +18,11 @@ public interface Notifier<M, R> {
     /**
      * 处理 通知消息 得到真正的通知消息对象
      *
+     * @param webhook webhook信息
      * @param message 通知消息
      * @return 请求消息对象
      */
-    M process(WebhookMessage message);
-
+    M process(Webhook webhook, WebhookMessage message);
 
     /**
      * 消息通知

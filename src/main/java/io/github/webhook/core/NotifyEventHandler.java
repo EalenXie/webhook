@@ -45,8 +45,7 @@ public abstract class NotifyEventHandler<D> implements EventHandler<D, Object> {
             // 根据webhook 获取 Notifier
             List<Notifier<Object, Object>> notifies = SpringEnvHelper.getBean(NotifierFactory.class).getNotifies(webhook);
             // Notifier 发起通知
-            notifies.forEach(notifier -> resp.add(notifier.notify(webhook, notifier.process(message))));
-
+            notifies.forEach(notifier -> resp.add(notifier.notify(webhook, notifier.process(webhook, message))));
             return resp.size() == 1 ? resp.get(0) : resp;
         }
         return null;

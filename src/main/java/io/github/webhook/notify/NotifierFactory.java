@@ -1,6 +1,7 @@
 package io.github.webhook.notify;
 
 import io.github.webhook.config.SpringEnvHelper;
+import io.github.webhook.config.meta.NotifyConf;
 import io.github.webhook.config.meta.Webhook;
 import io.github.webhook.notify.dingtalk.DingTalkNotifier;
 import io.github.webhook.notify.feishu.FeiShuNotifier;
@@ -27,15 +28,16 @@ public class NotifierFactory {
         List<Notifier<Object, Object>> notifiers = webhookNotifies.get(webhook.getId());
         if (notifiers == null) {
             notifiers = new ArrayList<>();
-            if (webhook.getNotify().getDingTalk() != null) {
+            NotifyConf notify = webhook.getNotify();
+            if (notify.getDingTalk() != null) {
                 Notifier<?, ?> bean = SpringEnvHelper.getBean(DingTalkNotifier.class);
                 notifiers.add((Notifier<Object, Object>) bean);
             }
-            if (webhook.getNotify().getWechat() != null) {
+            if (notify.getWechat() != null) {
                 Notifier<?, ?> bean = SpringEnvHelper.getBean(CorpWechatNotifier.class);
                 notifiers.add((Notifier<Object, Object>) bean);
             }
-            if (webhook.getNotify().getFeiShu() != null) {
+            if (notify.getFeiShu() != null) {
                 Notifier<?, ?> bean = SpringEnvHelper.getBean(FeiShuNotifier.class);
                 notifiers.add((Notifier<Object, Object>) bean);
             }

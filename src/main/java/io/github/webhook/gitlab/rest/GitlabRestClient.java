@@ -150,16 +150,6 @@ public class GitlabRestClient {
     }
 
     /**
-     * 取消pipeline
-     *
-     * @param projectId  项目Id
-     * @param pipelineId pipelineId
-     */
-    public CancelPipeline cancelPipeline(Long projectId, Long pipelineId) {
-        return restOperations.exchange(String.format("%s/api/v4/projects/%s/pipelines/%s/cancel", host, projectId, pipelineId), HttpMethod.POST, new HttpEntity<>(null, httpHeaders), CancelPipeline.class).getBody();
-    }
-
-    /**
      * 调用Gitlab 获取pipelines
      *
      * @param projectId   项目Id
@@ -173,6 +163,16 @@ public class GitlabRestClient {
         URI uri = builder.build().encode().toUri();
         return restOperations.exchange(uri, HttpMethod.GET, new HttpEntity<>(null, httpHeaders), new ParameterizedTypeReference<List<Pipeline>>() {
         }).getBody();
+    }
+
+    /**
+     * 取消pipeline
+     *
+     * @param projectId  项目Id
+     * @param pipelineId pipelineId
+     */
+    public CancelPipeline cancelPipeline(Long projectId, Long pipelineId) {
+        return restOperations.exchange(String.format("%s/api/v4/projects/%s/pipelines/%s/cancel", host, projectId, pipelineId), HttpMethod.POST, new HttpEntity<>(null, httpHeaders), CancelPipeline.class).getBody();
     }
 
     /**

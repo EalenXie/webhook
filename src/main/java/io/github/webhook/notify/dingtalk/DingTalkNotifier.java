@@ -32,24 +32,29 @@ public class DingTalkNotifier implements Notifier<MarkdownMessage, Object> {
     }
 
     @Override
-    public MarkdownMessage process(WebhookMessage message) {
+    public MarkdownMessage process(Webhook webhook, WebhookMessage message) {
         MarkdownMessage markdownMessage = new MarkdownMessage();
         StringBuilder sb = new StringBuilder();
-        if (!ObjectUtils.isEmpty(message.getNotifies())) {
-            List<String> notifies = message.getNotifies();
-            List<String> atMobiles = new ArrayList<>();
-            for (String notifier : notifies) {
-                if (!ObjectUtils.isEmpty(notifier) && PHONE_PATTERN.matcher(notifier).matches()) {
-                    sb.append("@").append(notifier);
-                    atMobiles.add(notifier);
+        List<String> atMobiles = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(webhook.getNotify().getNotifyMobiles())) {
+            atMobiles.addAll(webhook.getNotify().getNotifyMobiles());
+        } else if (!ObjectUtils.isEmpty(message.getNotifies())) {
+            atMobiles.addAll(message.getNotifies());
+        }
+        if (!atMobiles.isEmpty()) {
+            for (String atMobile : atMobiles) {
+                if (!ObjectUtils.isEmpty(atMobile) && PHONE_PATTERN.matcher(atMobile).matches()) {
+                    sb.append("@").append(atMobile);
+                } else {
+                    atMobiles.remove(atMobile);
                 }
             }
-            if (sb.length() > 0) {
+            if (!atMobiles.isEmpty()) {
                 sb.append("\n\n");
+                DingRobotAt at = new DingRobotAt();
+                at.setAtMobiles(atMobiles);
+                markdownMessage.setAt(at);
             }
-            DingRobotAt at = new DingRobotAt();
-            at.setAtMobiles(atMobiles);
-            markdownMessage.setAt(at);
         }
         sb.append(message.getMessage());
         Markdown markdown = new Markdown(message.getTitle(), sb.toString());

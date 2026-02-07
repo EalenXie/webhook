@@ -49,7 +49,7 @@ public class FeiShuNotifier implements Notifier<InteractiveMessage, Object> {
 
 
     @Override
-    public InteractiveMessage process(WebhookMessage message) {
+    public InteractiveMessage process(Webhook webhook, WebhookMessage message) {
         Interactive interactive = new Interactive();
         interactive.setConfig(new Config(true, true));
         interactive.setHeader(new Header(new Title(message.getTitle(), "plain_text")));
