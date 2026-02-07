@@ -42,7 +42,8 @@ public class DingTalkNotifier implements Notifier<MarkdownMessage, Object> {
             atMobiles.addAll(message.getNotifies());
         }
         if (!atMobiles.isEmpty()) {
-            for (String atMobile : atMobiles) {
+            for (int i = 0; i < atMobiles.size(); i++) {
+                String atMobile = atMobiles.get(i);
                 if (!ObjectUtils.isEmpty(atMobile) && PHONE_PATTERN.matcher(atMobile).matches()) {
                     sb.append("@").append(atMobile);
                 } else {

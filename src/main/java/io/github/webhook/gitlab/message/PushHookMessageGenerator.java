@@ -25,7 +25,7 @@ public class PushHookMessageGenerator implements MessageGenerator<PushHook> {
         sb.append(String.format("[[%s:%s]](%s/-/tree/%s) ", project.getName(), branch, project.getWebUrl(), branch));
         String c = commits.size() > 1 ? "commits" : "commit";
         String user = userUsername == null ? pushHook.getUserName() : String.format("[%s](%s)", userUsername, MessageGenerator.getUserHomePage(project.getWebUrl(), userUsername));
-        sb.append(String.format("<font color='#000000'>%s %s new %s by %s %s </font>%n%n", pushHook.getEventName(), pushHook.getTotalCommitsCount(), c, "\uD83D\uDE00", user));
+        sb.append(String.format("<font color='#000000'>%s %s new %s by <img src='%s' width='16' height='16' style='border-radius:50%%'> %s </font>%n%n", pushHook.getEventName(), pushHook.getTotalCommitsCount(), c, pushHook.getUserAvatar(), user));
         for (Commit vo : commits) {
             sb.append(String.format("> [%s](%s) %s - %s%n%n", vo.getId().substring(0, 8), vo.getUrl(), vo.getAuthor().getName(), vo.getTitle()));
         }
